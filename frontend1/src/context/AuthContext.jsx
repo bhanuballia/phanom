@@ -73,19 +73,25 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
 
-    if (token && user) {
-      const parsedUser = JSON.parse(user);
-      // Debug: Log the user data being loaded from localStorage
-      console.log('Loading user data from localStorage:', parsedUser);
-      console.log('Loading user role from localStorage:', parsedUser?.role);
+    if (token && user && user !== 'undefined') {
+      try {
+        const parsedUser = JSON.parse(user);
+        // Debug: Log the user data being loaded from localStorage
+        console.log('Loading user data from localStorage:', parsedUser);
+        console.log('Loading user role from localStorage:', parsedUser?.role);
 
-      dispatch({
-        type: 'LOGIN_SUCCESS',
-        payload: {
-          token,
-          user: parsedUser,
-        },
-      });
+        dispatch({
+          type: 'LOGIN_SUCCESS',
+          payload: {
+            token,
+            user: parsedUser,
+          },
+        });
+      } catch (err) {
+        console.error('Error parsing user from localStorage:', err);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     }
   }, []);
 

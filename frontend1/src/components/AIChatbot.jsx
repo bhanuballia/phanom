@@ -26,8 +26,15 @@ const AIChatbot = () => {
   const [hasWelcomed, setHasWelcomed] = useState(false);
   const [messages, setMessages] = useState(() => {
     // Load messages from localStorage if available
-    const savedMessages = localStorage.getItem('swamini_chat_history');
-    return savedMessages ? JSON.parse(savedMessages) : [];
+    try {
+      const savedMessages = localStorage.getItem('swamini_chat_history');
+      if (savedMessages && savedMessages !== 'undefined') {
+        return JSON.parse(savedMessages);
+      }
+    } catch (e) {
+      console.error('Error parsing chat history:', e);
+    }
+    return [];
   });
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
