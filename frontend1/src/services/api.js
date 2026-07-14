@@ -14,6 +14,10 @@ const getEnvValue = (key) => {
 };
 
 const computeApiBaseUrl = () => {
+  const envUrl = getEnvValue('VITE_API_BASE_URL');
+  if (envUrl) {
+    return trimTrailingSlash(envUrl);
+  }
   if (typeof window !== 'undefined' && window.location) {
     const { hostname } = window.location;
     if (isLocalhost(hostname)) {
@@ -28,6 +32,12 @@ const computeApiBaseUrl = () => {
 export const API_BASE_URL = computeApiBaseUrl();
 
 const computeUploadsBaseUrl = () => {
+  const envUrl = getEnvValue('VITE_API_BASE_URL');
+  if (envUrl) {
+    // If VITE_API_BASE_URL is 'https://domain.com/api', uploads is 'https://domain.com/uploads'
+    const baseUrl = trimTrailingSlash(envUrl).replace(/\/api$/, '');
+    return `${baseUrl}/uploads`;
+  }
   if (typeof window !== 'undefined' && window.location) {
     const { hostname } = window.location;
     if (isLocalhost(hostname)) {
