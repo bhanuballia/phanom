@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
 import { User, Calendar, Sparkles, Calculator, BookOpen } from 'lucide-react';
+import { VEDIC_ASTROLOGY_BASE_URL } from '../services/api';
 
 const Numerology = () => {
   const [formData, setFormData] = useState({
@@ -152,7 +153,7 @@ const Numerology = () => {
     }
     
     try {
-      const targetUrl = `http://localhost:5173/?numerology=true&name=${encodeURIComponent(formData.name)}&date=${encodeURIComponent(formData.dateOfBirth)}`;
+      const targetUrl = `${VEDIC_ASTROLOGY_BASE_URL}/?numerology=true&name=${encodeURIComponent(formData.name)}&date=${encodeURIComponent(formData.dateOfBirth)}`;
       window.open(targetUrl, '_blank');
     } catch (err) {
       setError('Error redirecting to Numerology Dashboard');

@@ -31,6 +31,8 @@ const computeApiBaseUrl = () => {
 
 export const API_BASE_URL = computeApiBaseUrl();
 
+export const VEDIC_ASTROLOGY_BASE_URL = getEnvValue('VITE_VEDIC_ASTROLOGY_URL') || 'http://localhost:5173';
+
 const computeUploadsBaseUrl = () => {
   const envUrl = getEnvValue('VITE_API_BASE_URL');
   if (envUrl) {

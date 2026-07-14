@@ -17,9 +17,9 @@ import {
   Globe,
   MapPin,
   Clock,
-  LayoutGrid,
-  Star
+  LayoutGrid
 } from 'lucide-react';
+import { VEDIC_ASTROLOGY_BASE_URL } from '../services/api';
 
 const KundaliHub = () => {
   const location = useLocation();
@@ -46,7 +46,7 @@ const KundaliHub = () => {
   const handleRedirect = (type, value) => {
     if (!birthData) return;
 
-    const basePortUrl = 'http://localhost:5173';
+    const basePortUrl = VEDIC_ASTROLOGY_BASE_URL;
     let targetParams = '';
 
     // Map parameters based on type

@@ -36,7 +36,7 @@ import {
 } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import { useAuth } from '../context/AuthContext';
-import { adminAPI, authAPI, buildAssetUrl } from '../services/api';
+import { adminAPI, authAPI, buildAssetUrl, VEDIC_ASTROLOGY_BASE_URL } from '../services/api';
 
 const quickActions = [
   {
@@ -148,7 +148,7 @@ const knowledgeCards = [
 const heroShortcutItems = [
   {
     label: 'Dainik Paanchang',
-    path: 'http://localhost:5173/?panchang=true',
+    path: `${VEDIC_ASTROLOGY_BASE_URL}/?panchang=true`,
     accent: 'from-amber-400 to-yellow-500',
     isExternal: true
   },
@@ -185,18 +185,18 @@ const exploreServices = [
   { name: 'Astrologers', path: '/astrologers', icon: Users, color: 'from-purple-400 to-pink-500' },
   { name: 'Booking', path: '/booking', icon: CalendarClock, color: 'from-green-400 to-emerald-500' },
   { name: 'Kundali', path: '/kundali', icon: ScrollText, color: 'from-amber-400 to-yellow-500' },
-  { name: 'Kundali Matching', path: 'http://localhost:5173/?matchmaking=true', icon: HeartHandshake, color: 'from-pink-400 to-rose-500', isExternal: true },
-  { name: 'Love Calculator', path: 'http://localhost:5173/?compatibility-hub=true', icon: Heart, color: 'from-red-400 to-rose-500', isExternal: true },
-  { name: 'Advanced Muhurt', path: 'http://localhost:5173/?advanced_muhurt=true', icon: Calendar, color: 'from-orange-400 to-amber-500', isExternal: true },
-  { name: 'Ask Prashna', path: 'http://localhost:5173/?prashna=true', icon: MessageCircle, color: 'from-purple-400 to-indigo-500', isExternal: true },
-  { name: 'Ashtamangala Prasna', path: 'http://localhost:5173/?ashtamangala=true', icon: Sparkles, color: 'from-amber-500 to-red-500', isExternal: true },
-  { name: 'KP Astrology', path: 'http://localhost:5173/?kp_astrology=true', icon: Globe, color: 'from-blue-400 to-indigo-500', isExternal: true },
-  { name: 'Nadi Astrology', path: 'http://localhost:5173/?nadi=true', icon: ScrollText, color: 'from-amber-400 to-orange-500', isExternal: true },
-  { name: 'Japa Mala (Mantras)', path: 'http://localhost:5173/?mantra=true', icon: Sparkles, color: 'from-pink-500 to-rose-600', isExternal: true },
-  { name: 'Brahma Muhurt', path: 'http://localhost:5173/?brahma_muhurt=true', icon: Sun, color: 'from-amber-400 to-orange-500', isExternal: true },
-  { name: 'Daily Calendar', path: 'http://localhost:5173/?panchang=true', icon: CalendarDays, color: 'from-indigo-400 to-purple-500', isExternal: true },
-  { name: 'Monthly Calendar', path: 'http://localhost:5173/?monthly_panchang=true', icon: Calendar, color: 'from-blue-400 to-indigo-500', isExternal: true },
-  { name: 'Adv. Nakshatra', path: 'http://localhost:5173/?advanced_nakshatra=true&only_planetary=true', icon: Star, color: 'from-amber-400 to-yellow-500', isExternal: true },
+  { name: 'Kundali Matching', path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true`, icon: HeartHandshake, color: 'from-pink-400 to-rose-500', isExternal: true },
+  { name: 'Love Calculator', path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true`, icon: Heart, color: 'from-red-400 to-rose-500', isExternal: true },
+  { name: 'Advanced Muhurt', path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_muhurt=true`, icon: Calendar, color: 'from-orange-400 to-amber-500', isExternal: true },
+  { name: 'Ask Prashna', path: `${VEDIC_ASTROLOGY_BASE_URL}/?prashna=true`, icon: MessageCircle, color: 'from-purple-400 to-indigo-500', isExternal: true },
+  { name: 'Ashtamangala Prasna', path: `${VEDIC_ASTROLOGY_BASE_URL}/?ashtamangala=true`, icon: Sparkles, color: 'from-amber-500 to-red-500', isExternal: true },
+  { name: 'KP Astrology', path: `${VEDIC_ASTROLOGY_BASE_URL}/?kp_astrology=true`, icon: Globe, color: 'from-blue-400 to-indigo-500', isExternal: true },
+  { name: 'Nadi Astrology', path: `${VEDIC_ASTROLOGY_BASE_URL}/?nadi=true`, icon: ScrollText, color: 'from-amber-400 to-orange-500', isExternal: true },
+  { name: 'Japa Mala (Mantras)', path: `${VEDIC_ASTROLOGY_BASE_URL}/?mantra=true`, icon: Sparkles, color: 'from-pink-500 to-rose-600', isExternal: true },
+  { name: 'Brahma Muhurt', path: `${VEDIC_ASTROLOGY_BASE_URL}/?brahma_muhurt=true`, icon: Sun, color: 'from-amber-400 to-orange-500', isExternal: true },
+  { name: 'Daily Calendar', path: `${VEDIC_ASTROLOGY_BASE_URL}/?panchang=true`, icon: CalendarDays, color: 'from-indigo-400 to-purple-500', isExternal: true },
+  { name: 'Monthly Calendar', path: `${VEDIC_ASTROLOGY_BASE_URL}/?monthly_panchang=true`, icon: Calendar, color: 'from-blue-400 to-indigo-500', isExternal: true },
+  { name: 'Adv. Nakshatra', path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_nakshatra=true&only_planetary=true`, icon: Star, color: 'from-amber-400 to-yellow-500', isExternal: true },
   { name: 'Lal Kitab', path: '/lal-kitab', icon: BookOpen, color: 'from-red-400 to-orange-500' },
   { name: 'Numerology', path: '/numerology', icon: Calculator, color: 'from-teal-400 to-cyan-500' },
   { name: 'Palmistry', path: '/palmistry', icon: Hand, color: 'from-fuchsia-400 to-purple-500' },
