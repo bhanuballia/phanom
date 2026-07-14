@@ -1,0 +1,296 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Lexend+Deca:wght@300;400;500;600;700&family=Varta:wght@300;400;500;600;700&family=Gowun+Dodum&family=Homemade+Apple&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* Tailwind CSS v4 import */
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Hindu Astrology Background Patterns */
+.mandala-bg {
+  background-image: 
+    radial-gradient(circle at 25% 25%, hsla(50, 20%, 94%, 0.911) 0%, transparent 25%),
+    radial-gradient(circle at 75% 75%, hsla(160, 20%, 94%, 0.918) 0%, transparent 25%),
+    radial-gradient(circle at 75% 25%, hsla(348, 42%, 95%, 0.904) 0%, transparent 25%),
+    radial-gradient(circle at 25% 75%, hsla(202, 25%, 94%, 0.897) 0%, transparent 25%);
+}
+
+.celestial-bg {
+  background-image: 
+    linear-gradient(45deg, hsla(30, 23%, 95%, 0.945)0.05 0%, transparent 50%),
+    linear-gradient(-45deg, rgba(245, 243, 247, 0.932) 0%, transparent 50%),
+    radial-gradient(circle at center, rgba(250, 240, 245, 0.925) 0%, transparent 70%);
+}
+
+/* Om Symbol Background */
+.om-pattern {
+  position: relative;
+}
+
+.om-pattern::before {
+  content: '🕉';
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  font-size: 120px;
+  opacity: 0.03;
+  color: #D4AF37;
+}
+
+.om-pattern::after {
+  content: '🕉';
+  position: absolute;
+  bottom: 20%;
+  right: 10%;
+  font-size: 80px;
+  opacity: 0.02;
+  color: #9333EA;
+}
+
+/* Zodiac Symbols */
+.zodiac-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.zodiac-bg::before {
+  content: '♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 24px;
+  color: rgba(212, 175, 55, 0.06);
+  letter-spacing: 60px;
+  line-height: 100px;
+  pointer-events: none;
+}
+
+/* Mystical Glow Effects */
+.mystical-glow {
+  box-shadow: 
+    0 0 20px rgba(212, 175, 55, 0.2),
+    0 0 40px rgba(147, 51, 234, 0.1),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+/* Divine text with Firefox compatibility */
+.divine-text {
+  background: linear-gradient(45deg, #D4AF37, #F59E0B, #D4AF37);
+  -moz-background-clip: text;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  /* Firefox fallback */
+  color: transparent;
+  -moz-animation: goldenShimmer 3s ease-in-out infinite;
+  -webkit-animation: goldenShimmer 3s ease-in-out infinite;
+  animation: goldenShimmer 3s ease-in-out infinite;
+}
+
+/* Firefox specific fallback for text gradients */
+@supports not (-webkit-background-clip: text) {
+  .divine-text {
+    color: #D4AF37;
+    -webkit-text-fill-color: initial;
+    -moz-text-fill-color: initial;
+  }
+}
+
+@keyframes goldenShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Sanskrit-inspired decorative elements */
+.lotus-border {
+  border-image: linear-gradient(45deg, #D4AF37, transparent, #9333EA, transparent) 1;
+}
+
+/* Scrollbar Styling with Firefox compatibility */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #D4AF37, #9333EA);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #F59E0B, #7C3AED);
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #D4AF37 rgba(31, 41, 55, 0.5);
+}
+
+/* Glass morphism effect for cards with Firefox compatibility */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  /* Firefox fallback */
+  -moz-backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced glass effect for navbar elements */
+.glass-navbar {
+  background: rgba(255, 255, 255, 0.06);
+  /* Firefox fallback */
+  -moz-backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Modern pill shape buttons with Firefox compatibility */
+.pill-button {
+  border-radius: 50px;
+  -moz-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pill-button:hover {
+  -moz-transform: translateY(-1px);
+  -webkit-transform: translateY(-1px);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Yantra Pattern Background */
+.yantra-bg {
+  background-image: 
+    conic-gradient(from 0deg at 50% 50%, 
+      rgba(212, 175, 55, 0.1) 0deg, 
+      transparent 60deg, 
+      rgba(147, 51, 234, 0.1) 120deg, 
+      transparent 180deg, 
+      rgba(212, 175, 55, 0.1) 240deg, 
+      transparent 300deg, 
+      rgba(147, 51, 234, 0.1) 360deg
+    );
+}
+
+/* Floating Elements Animation */
+.floating-element {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Gayatri Mantra Background */
+.gayatri-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.gayatri-bg::before {
+  content: 'ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो योनः प्रचोदयात्';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: rgba(235, 232, 225, 0.904);
+  line-height: 80px;
+  letter-spacing: 8px;
+  word-spacing: 20px;
+  text-align: center;
+  padding: 40px;
+  animation: gayatriGlow 15s ease-in-out infinite;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.gayatri-bg::after {
+  content: 'ॐ गायत्री मंत्र ॐ';
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  color: rgba(147, 51, 234, 0.06);
+  pointer-events: none;
+  transform: rotate(15deg);
+}
+
+/* Enhanced Gayatri Mantra with Sacred Geometry */
+.gayatri-sacred-bg {
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(243, 241, 235, 0.938) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(240, 236, 243, 0.911) 0%, transparent 40%),
+    radial-gradient(circle at 40% 80%, rgba(245, 237, 241, 0.925) 0%, transparent 30%),
+    conic-gradient(from 45deg at 50% 50%, 
+      rgba(212, 175, 55, 0.02) 0deg, 
+      transparent 120deg, 
+      rgba(147, 51, 234, 0.02) 240deg, 
+      transparent 360deg
+    );
+}
+
+/* Cinematic Astrology Background */
+.cinematic-astro-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.cinematic-stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Nebula effect */
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.2;
+}
+
+/* Celestial body effects */
+.celestial-body {
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+}
+
+/* Constellation lines */
+.constellation-line {
+  stroke: white;
+  stroke-width: 0.5;
+  stroke-opacity: 0.3;
+}

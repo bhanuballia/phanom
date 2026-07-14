@@ -1,0 +1,591 @@
+import React, { useState } from 'react';
+import Navigation from '../components/Navigation';
+import KundaliChart from '../components/KundaliChart';
+import { 
+  User, 
+  Calendar, 
+  MapPin, 
+  Clock, 
+  Mail, 
+  Phone, 
+  Star,
+  Send,
+  Loader,
+  Download,
+  CheckCircle,
+  Eye,
+  Cpu
+} from 'lucide-react';
+import { kundaliAPI } from '../services/api';
+
+
+const Kundali = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    dateOfBirth: '',
+    placeOfBirth: '',
+    timeOfBirth: '',
+    email: '',
+    phoneNumber: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const [generatedKundali, setGeneratedKundali] = useState(null);
+  const [showDeliveryOptions, setShowDeliveryOptions] = useState(false);
+  const [useJKS, setUseJKS] = useState(false); // Toggle for JKS.exe integration
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Function to generate PDF from text content
+  const generatePDF = (content, filename) => {
+    // Create a Blob with the content
+    const blob = new Blob([content], { type: 'text/plain' });
+    
+    // Create download link
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    
+    // Trigger download
+    document.body.appendChild(a);
+    a.click();
+    
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    // Validate required fields
+    if (!formData.name || !formData.dateOfBirth || !formData.placeOfBirth) {
+      setError('कृपया सभी आवश्यक फील्ड भरें (Please fill all mandatory fields)');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      let response;
+      
+      // Use JKS.exe if toggle is enabled, otherwise use default method
+      if (useJKS) {
+        // Call the JKS Kundali generation API
+        response = await kundaliAPI.generateWithJKS(formData);
+      } else {
+        // Call the default Kundali generation API
+        response = await kundaliAPI.generate(formData);
+      }
+      
+      // Store the generated kundali
+      setGeneratedKundali({
+        text: response.data.kundali,
+        name: formData.name
+      });
+      
+      // Show delivery options
+      setShowDeliveryOptions(true);
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.message || 'कुंडली बनाने में त्रुटि हुई (Error generating Kundali)');
+      setLoading(false);
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    if (generatedKundali) {
+      generatePDF(generatedKundali.text, `${generatedKundali.name}_Kundali.txt`);
+    }
+  };
+
+  const handleSendToEmail = async () => {
+    if (!formData.email) {
+      setError('कृपया ईमेल पता दर्ज करें (Please enter email address)');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      // Send kundali to email using the new API endpoint
+      await kundaliAPI.sendToEmail({
+        name: formData.name,
+        email: formData.email,
+        kundaliText: generatedKundali.text
+      });
+      
+      setSuccess(true);
+      setShowDeliveryOptions(false);
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.message || 'ईमेल भेजने में त्रुटि हुई (Error sending email)');
+      setLoading(false);
+    }
+  };
+
+  const handleSendToPhone = async () => {
+    if (!formData.phoneNumber) {
+      setError('कृपया मोबाइल नंबर दर्ज करें (Please enter phone number)');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      // Send kundali to phone using the new API endpoint
+      await kundaliAPI.sendToPhone({
+        name: formData.name,
+        phoneNumber: formData.phoneNumber,
+        kundaliText: generatedKundali.text
+      });
+      
+      setSuccess(true);
+      setShowDeliveryOptions(false);
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.message || 'SMS भेजने में त्रुटि हुई (Error sending SMS)');
+      setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      dateOfBirth: '',
+      placeOfBirth: '',
+      timeOfBirth: '',
+      email: '',
+      phoneNumber: ''
+    });
+    setSuccess(false);
+    setShowDeliveryOptions(false);
+    setGeneratedKundali(null);
+  };
+
+  // Show success message after delivery
+  if (success) {
+    return (
+      <div className="min-h-screen relative overflow-hidden">
+        {/* Background Image - Standardized across all states */}
+        <div 
+          className="fixed inset-0 -z-10"
+          style={{
+            backgroundImage: 'url(/images/kundali1.jpeg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        ></div>
+
+        {/* Navigation */}
+        <Navigation />
+
+        {/* Main Content - Added pt-20 to ensure content starts below navbar */}
+        <div className="relative z-10 py-12 px-4 pt-20">
+          <div className="max-w-2xl mx-auto">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-cinzel font-bold text-white mb-4">
+                जन्म कुंडली <span className="divine-text">(Birth Kundali)</span>
+              </h1>
+              <p className="text-gray-300 mb-2">
+                Get your detailed Hindu astrology birth chart generated and sent to your mobile & email
+              </p>
+              <p className="text-astro-gold font-hindi text-sm">
+                वैदिक ज्योतिष के अनुसार विस्तृत जन्म कुंडली प्राप्त करें
+              </p>
+            </div>
+
+            {/* Success Message */}
+            <div className="glass-card rounded-2xl shadow-divine border border-astro-gold/20 p-8 mystical-glow text-center">
+              <CheckCircle className="h-16 w-16 text-green-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-white mb-2">कुंडली सफलतापूर्वक बन गई! (Kundali Generated Successfully!)</h2>
+              <p className="text-gray-300 mb-6">
+                आपकी कुंडली आपके द्वारा प्रदान किए गए ईमेल या मोबाइल नंबर पर भेज दी गई है।
+                Your Kundali has been sent to your email or mobile number.
+              </p>
+              <button
+                onClick={resetForm}
+                className="px-6 py-3 bg-gradient-to-r from-astro-gold to-divine-orange text-astro-dark font-semibold rounded-xl hover:shadow-mystical transition-all duration-300"
+              >
+                एक और कुंडली बनाएं (Generate Another)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show delivery options after kundali is generated
+  if (showDeliveryOptions && generatedKundali) {
+    return (
+      <div className="min-h-screen relative overflow-hidden">
+        {/* Background Image - Standardized across all states */}
+        <div 
+          className="fixed inset-0 -z-10"
+          style={{
+            backgroundImage: 'url(/images/kundali1.jpeg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        ></div>
+
+        {/* Navigation */}
+        <Navigation />
+
+        {/* Main Content - Added pt-20 to ensure content starts below navbar */}
+        <div className="relative z-10 py-12 px-4 pt-20">
+          <div className="max-w-2xl mx-auto">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-cinzel font-bold text-white mb-4">
+                जन्म कुंडली <span className="divine-text">(Birth Kundali)</span>
+              </h1>
+              <p className="text-gray-300 mb-2">
+                Get your detailed Hindu astrology birth chart generated and sent to your mobile & email
+              </p>
+              <p className="text-astro-gold font-hindi text-sm">
+                वैदिक ज्योतिष के अनुसार विस्तृत जन्म कुंडली प्राप्त करें
+              </p>
+            </div>
+
+            {/* Form */}
+            <div className="glass-card rounded-2xl shadow-divine border border-astro-gold/20 p-8 mystical-glow">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                  <div className="bg-red-500/20 border border-red-500/50 text-red-100 px-4 py-3 rounded-lg text-center">
+                    {error}
+                  </div>
+                )}
+
+                {/* Name Field */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <User className="inline h-4 w-4 mr-2" />
+                    पूरा नाम (Full Name) <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                    placeholder="अपना पूरा नाम दर्ज करें"
+                  />
+                </div>
+
+                {/* Date of Birth */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <Calendar className="inline h-4 w-4 mr-2" />
+                    जन्म तिथि (Date of Birth) <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                  />
+                </div>
+
+                {/* Place of Birth */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <MapPin className="inline h-4 w-4 mr-2" />
+                    जन्म स्थान (Place of Birth) <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="placeOfBirth"
+                    value={formData.placeOfBirth}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                    placeholder="शहर, राज्य, देश"
+                  />
+                </div>
+
+                {/* Time of Birth */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <Clock className="inline h-4 w-4 mr-2" />
+                    जन्म समय (Time of Birth)
+                  </label>
+                  <input
+                    type="time"
+                    name="timeOfBirth"
+                    value={formData.timeOfBirth}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    यदि समय पता नहीं है तो खाली छोड़ दें (Leave blank if time unknown)
+                  </p>
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <Mail className="inline h-4 w-4 mr-2" />
+                    ईमेल (Email)
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                {/* Phone Number */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <Phone className="inline h-4 w-4 mr-2" />
+                    मोबाइल नंबर (Phone Number)
+                  </label>
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                    placeholder="+91 XXXXX XXXXX"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-astro-gold via-divine-orange to-astro-gold-light text-astro-dark font-semibold rounded-xl hover:shadow-mystical transition-all duration-300 transform hover:scale-105 mystical-glow disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <div className="flex items-center justify-center">
+                        <Loader className="h-5 w-5 mr-2 animate-spin" />
+                        {useJKS ? 'JKS.exe के साथ कुंडली बनाई जा रही है...' : 'कुंडली बनाई जा रही है...'}
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center">
+                        <Send className="h-5 w-5 mr-2" />
+                        {useJKS ? 'JKS.exe के साथ कुंडली बनाएं' : 'कुंडली बनाएं'}
+                      </div>
+                    )}
+                  </button>
+                </div>
+
+                {/* Info Text */}
+                <div className="text-center text-sm text-gray-400">
+                  <p className="mb-1">
+                    🕉 आपकी कुंडली हिंदी में वैदिक ज्योतिष के अनुसार तैयार की जाएगी
+                  </p>
+                  <p>
+                    Your Kundali will be prepared in Hindi according to Vedic astrology
+                  </p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background Image - Standardized across all states */}
+      <div 
+        className="fixed inset-0 -z-10"
+        style={{
+          backgroundImage: 'url(/images/kundali1.jpeg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
+      ></div>
+
+      {/* Navigation */}
+      <Navigation />
+
+      {/* Main Content - Added pt-20 to ensure content starts below navbar */}
+      <div className="relative z-10 py-12 px-4 pt-20">
+        <div className="max-w-2xl mx-auto">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-cinzel font-bold text-white mb-4">
+                जन्म कुंडली <span className="divine-text">(Birth Kundali)</span>
+              </h1>
+              <p className="text-gray-300 mb-2">
+                Get your detailed Hindu astrology birth chart generated and sent to your mobile & email
+              </p>
+              <p className="text-astro-gold font-hindi text-sm">
+                वैदिक ज्योतिष के अनुसार विस्तृत जन्म कुंडली प्राप्त करें
+              </p>
+            </div>
+
+            {/* Form */}
+            <div className="glass-card rounded-2xl shadow-divine border border-astro-gold/20 p-8 mystical-glow">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                  <div className="bg-red-500/20 border border-red-500/50 text-red-100 px-4 py-3 rounded-lg text-center">
+                    {error}
+                  </div>
+                )}
+
+                {/* Name Field */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <User className="inline h-4 w-4 mr-2" />
+                    पूरा नाम (Full Name) <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                    placeholder="अपना पूरा नाम दर्ज करें"
+                  />
+                </div>
+
+                {/* Date of Birth */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <Calendar className="inline h-4 w-4 mr-2" />
+                    जन्म तिथि (Date of Birth) <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                  />
+                </div>
+
+                {/* Place of Birth */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <MapPin className="inline h-4 w-4 mr-2" />
+                    जन्म स्थान (Place of Birth) <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="placeOfBirth"
+                    value={formData.placeOfBirth}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                    placeholder="शहर, राज्य, देश"
+                  />
+                </div>
+
+                {/* Time of Birth */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <Clock className="inline h-4 w-4 mr-2" />
+                    जन्म समय (Time of Birth)
+                  </label>
+                  <input
+                    type="time"
+                    name="timeOfBirth"
+                    value={formData.timeOfBirth}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    यदि समय पता नहीं है तो खाली छोड़ दें (Leave blank if time unknown)
+                  </p>
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <Mail className="inline h-4 w-4 mr-2" />
+                    ईमेल (Email)
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                {/* Phone Number */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <Phone className="inline h-4 w-4 mr-2" />
+                    मोबाइल नंबर (Phone Number)
+                  </label>
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-astro-dark/50 border border-astro-gold/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent backdrop-blur-sm"
+                    placeholder="+91 XXXXX XXXXX"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-astro-gold via-divine-orange to-astro-gold-light text-astro-dark font-semibold rounded-xl hover:shadow-mystical transition-all duration-300 transform hover:scale-105 mystical-glow disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <div className="flex items-center justify-center">
+                        <Loader className="h-5 w-5 mr-2 animate-spin" />
+                        {useJKS ? 'JKS.exe के साथ कुंडली बनाई जा रही है...' : 'कुंडली बनाई जा रही है...'}
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center">
+                        <Send className="h-5 w-5 mr-2" />
+                        {useJKS ? 'JKS.exe के साथ कुंडली बनाएं' : 'कुंडली बनाएं'}
+                      </div>
+                    )}
+                  </button>
+                </div>
+
+                {/* Info Text */}
+                <div className="text-center text-sm text-gray-400">
+                  <p className="mb-1">
+                    🕉 आपकी कुंडली हिंदी में वैदिक ज्योतिष के अनुसार तैयार की जाएगी
+                  </p>
+                  <p>
+                    Your Kundali will be prepared in Hindi according to Vedic astrology
+                  </p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+};
+
+export default Kundali;
