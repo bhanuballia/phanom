@@ -819,6 +819,12 @@ const AstrologerDashboard = () => {
                   ? 'http://localhost:5173'
                   : 'https://astrology-run-frontend.onrender.com';
 
+                // Open the window synchronously first to bypass browser popup blockers
+                const win = window.open('about:blank', '_blank');
+                if (win) {
+                  win.document.write('<html><head><title>Loading Tools...</title></head><body style="display:flex;justify-content:center;align-items:center;height:100vh;background-color:#0f172a;color:#f59e0b;font-family:sans-serif;font-size:1.2rem;">Authenticating session, please wait...</body></html>');
+                }
+
                 try {
                   const response = await api.request('/audit/start', {
                     method: 'POST',
@@ -826,19 +832,23 @@ const AstrologerDashboard = () => {
                   });
                   const logId = response.logId;
                   
-                  const win = window.open(targetUrl, '_blank');
-                  if (win && logId) {
-                    const timer = setInterval(() => {
-                      if (win.closed) {
-                        clearInterval(timer);
-                        api.request(`/audit/end/${logId}`, { method: 'POST' })
-                          .catch(err => console.error("Failed to log session end:", err));
-                      }
-                    }, 1000);
+                  if (win) {
+                    win.location.href = targetUrl;
+                    if (logId) {
+                      const timer = setInterval(() => {
+                        if (win.closed) {
+                          clearInterval(timer);
+                          api.request(`/audit/end/${logId}`, { method: 'POST' })
+                            .catch(err => console.error("Failed to log session end:", err));
+                        }
+                      }, 1000);
+                    }
                   }
                 } catch (err) {
                   console.error("Audit log start failed:", err);
-                  window.open(targetUrl, '_blank');
+                  if (win) {
+                    win.location.href = targetUrl;
+                  }
                 }
               };
 
