@@ -791,8 +791,8 @@ const AstrologerDashboard = () => {
                 if (app.status === 'scheduled') {
                   const appDate = new Date(app.appointmentDate);
                   const isToday = appDate.getDate() === now.getDate() &&
-                                  appDate.getMonth() === now.getMonth() &&
-                                  appDate.getFullYear() === now.getFullYear();
+                    appDate.getMonth() === now.getMonth() &&
+                    appDate.getFullYear() === now.getFullYear();
                   if (isToday) {
                     const timeStr = app.appointmentTime || "";
                     const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)?/i);
@@ -831,7 +831,7 @@ const AstrologerDashboard = () => {
                     body: JSON.stringify({ phoneUsed })
                   });
                   const logId = response.logId;
-                  
+
                   if (win) {
                     win.location.href = targetUrl;
                     if (logId) {
@@ -859,13 +859,13 @@ const AstrologerDashboard = () => {
                 if (confirmPhone) {
                   const enteredPhone = prompt("Enter your registered mobile number:");
                   if (!enteredPhone) return;
-                  
+
                   const cleanEntered = enteredPhone.replace(/\D/g, '');
                   const cleanProfilePhone = (profile?.phone || '').replace(/\D/g, '');
-                  
+
                   const cleanEnteredTail = cleanEntered.slice(-10);
                   const cleanProfilePhoneTail = cleanProfilePhone.slice(-10);
-                  
+
                   if (cleanEnteredTail && cleanProfilePhoneTail && cleanEnteredTail === cleanProfilePhoneTail) {
                     openAndTrackTools(cleanEntered);
                   } else {
@@ -1761,13 +1761,12 @@ const AstrologerDashboard = () => {
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                           </span>
                           <span className="text-xs font-bold text-red-600 uppercase tracking-wider">Live</span>
-                          
+
                           <button
                             type="button"
                             onClick={toggleMicMute}
-                            className={`p-1.5 rounded-lg transition-colors ${
-                              isMicMuted ? 'bg-red-500 text-white' : 'hover:bg-red-100 text-red-600'
-                            }`}
+                            className={`p-1.5 rounded-lg transition-colors ${isMicMuted ? 'bg-red-500 text-white' : 'hover:bg-red-100 text-red-600'
+                              }`}
                             title={isMicMuted ? "Unmute Mic" : "Mute Mic"}
                           >
                             {isMicMuted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
