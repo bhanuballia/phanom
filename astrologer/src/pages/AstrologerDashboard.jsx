@@ -123,7 +123,7 @@ const AstrologerDashboard = () => {
   useEffect(() => {
     const socketUrl = window.location.hostname === 'localhost'
       ? 'http://localhost:5000'
-      : window.location.origin;
+      : 'https://astrology-run-backend.onrender.com';
 
     const newSocket = io(socketUrl);
     setSocket(newSocket);
