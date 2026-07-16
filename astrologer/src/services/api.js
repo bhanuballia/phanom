@@ -5,7 +5,7 @@ const getBaseUrl = () => {
   if (window.location.hostname === 'localhost') {
     return 'http://localhost:5000/api';
   }
-  return 'https://astrology-backend-pink.vercel.app/api';
+  return 'https://astrology-run-backend.onrender.com/api';
 };
 
 const API_BASE_URL = getBaseUrl();
