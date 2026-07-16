@@ -23,7 +23,7 @@ const App = () => {
   };
 
   return (
-    <Router basename="/astrologer">
+    <Router>
       <Routes>
         <Route path="/login" element={<AstrologerLogin />} />
         <Route
