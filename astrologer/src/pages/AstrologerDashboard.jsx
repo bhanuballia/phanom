@@ -414,14 +414,16 @@ const AstrologerDashboard = () => {
     return timeDiff <= 30 * 60 * 1000 && timeDiff > -120 * 60 * 1000;
   };
 
-  const handleJoinCall = (appointmentId) => {
-    console.log('Joining call for appointment:', appointmentId);
-
+  const getVideoChatUrl = (appointmentId) => {
     const mainFrontendUrl = window.location.hostname === 'localhost'
       ? 'http://localhost:5173'
       : 'https://astrology-run-frontend.onrender.com';
+    return `${mainFrontendUrl}/video-chat/${appointmentId}?role=astrologer`;
+  };
 
-    const targetUrl = `${mainFrontendUrl}/video-chat/${appointmentId}`;
+  const handleJoinCall = (appointmentId) => {
+    console.log('Joining call for appointment:', appointmentId);
+    const targetUrl = getVideoChatUrl(appointmentId);
     console.log('Redirecting to:', targetUrl);
     window.location.replace(targetUrl);
   };
@@ -1331,15 +1333,7 @@ const AstrologerDashboard = () => {
                                 {(appointment.status === 'scheduled' || appointment.status === 'in_progress') && (
                                   <div className="flex flex-col space-y-2">
                                     <button
-                                      onClick={() => {
-                                        let baseUrl = window.location.origin;
-                                        if (window.location.hostname === 'localhost') {
-                                          baseUrl = 'http://localhost:3000';
-                                        }
-                                        const targetUrl = baseUrl + '/video-chat/' + appointment._id + '?role=astrologer';
-                                        console.log('Jumping to video call on main frontend:', targetUrl);
-                                        window.location.assign(targetUrl);
-                                      }}
+                                      onClick={() => handleJoinCall(appointment._id)}
                                       className={`inline-flex items-center px-4 py-2 rounded-lg font-medium shadow-sm transition-all duration-200 ${isUpcoming(appointment)
                                         ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 hover:shadow-md'
                                         : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
@@ -1353,11 +1347,7 @@ const AstrologerDashboard = () => {
 
                                     <button
                                       onClick={() => {
-                                        let baseUrl = window.location.origin;
-                                        if (window.location.hostname === 'localhost') {
-                                          baseUrl = 'http://localhost:3000';
-                                        }
-                                        const targetUrl = baseUrl + '/video-chat/' + appointment._id + '?role=astrologer';
+                                        const targetUrl = getVideoChatUrl(appointment._id);
                                         navigator.clipboard.writeText(targetUrl);
                                         alert('Session link copied to clipboard!');
                                       }}
