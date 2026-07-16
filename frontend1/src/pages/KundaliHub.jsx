@@ -17,7 +17,8 @@ import {
   Globe,
   MapPin,
   Clock,
-  LayoutGrid
+  LayoutGrid,
+  Star
 } from 'lucide-react';
 import { VEDIC_ASTROLOGY_BASE_URL } from '../services/api';
 
