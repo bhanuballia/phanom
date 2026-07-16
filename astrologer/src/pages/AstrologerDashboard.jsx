@@ -415,32 +415,15 @@ const AstrologerDashboard = () => {
   };
 
   const handleJoinCall = (appointmentId) => {
-    // Redirect to the main frontend's video chat route
-    // The astrologer portal doesn't have its own VideoChat component
-    // So we redirect to the main app's video chat page
-
     console.log('Joining call for appointment:', appointmentId);
 
-    // In development, astrologer portal might be on different port
-    // In production, both are on same domain
-    const currentUrl = window.location.href;
-    console.log('Current URL:', currentUrl);
+    const mainFrontendUrl = window.location.hostname === 'localhost'
+      ? 'http://localhost:5173'
+      : 'https://astrology-run-frontend.onrender.com';
 
-    // Check if we're in the astrologer portal
-    if (currentUrl.includes('/astrologer')) {
-      // Remove /astrologer from the path to get to main frontend
-      const baseUrl = window.location.origin;
-      const targetUrl = `${baseUrl}/video-chat/${appointmentId}`;
-      console.log('Redirecting to:', targetUrl);
-
-      // Force a full page navigation (not React Router navigation)
-      window.location.replace(targetUrl);
-    } else {
-      // Already in main app, just navigate
-      const targetUrl = `/video-chat/${appointmentId}`;
-      console.log('Navigating to:', targetUrl);
-      window.location.href = targetUrl;
-    }
+    const targetUrl = `${mainFrontendUrl}/video-chat/${appointmentId}`;
+    console.log('Redirecting to:', targetUrl);
+    window.location.replace(targetUrl);
   };
 
   // New function to update pricing
