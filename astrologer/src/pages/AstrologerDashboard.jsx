@@ -817,7 +817,7 @@ const AstrologerDashboard = () => {
               const openAndTrackTools = async (phoneUsed) => {
                 const targetUrl = window.location.hostname === 'localhost'
                   ? 'http://localhost:5173'
-                  : 'https://astrology-run-frontend.onrender.com';
+                  : 'https://pinak-1.onrender.com';
 
                 // Open the window synchronously first to bypass browser popup blockers
                 const win = window.open('about:blank', '_blank');
