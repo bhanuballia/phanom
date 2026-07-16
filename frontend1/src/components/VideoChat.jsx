@@ -160,6 +160,133 @@ const VideoChat = () => {
     setShowTimeLimitModal(true);
   };
 
+  // Load Tesseract.js dynamically
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+    script.async = true;
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  // Web Speech API for real-time transcription
+  useEffect(() => {
+    if (connectionStatus !== 'connected' || !appointment) return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.warn('Speech recognition not supported in this browser.');
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event) => {
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          const transcript = event.results[i][0].transcript;
+          console.log('Spoken text detected:', transcript);
+          const validation = validateMessage(transcript);
+          if (!validation.isValid) {
+            handleViolation(validation.violationType);
+            // Notify other peer via socket
+            if (socketRef.current) {
+              socketRef.current.emit('chat-message', {
+                roomId: appointment.roomId,
+                message: {
+                  text: `[System: Spoken violation blocked - tried to say ${validation.violationType}]`,
+                  sender: 'System',
+                  senderId: 'system',
+                  timestamp: new Date().toISOString(),
+                  isSystem: true
+                }
+              });
+            }
+          }
+        }
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+    };
+
+    recognition.onend = () => {
+      // Restart recognition if call is still active
+      if (connectionStatus === 'connected') {
+        try {
+          recognition.start();
+        } catch (e) {}
+      }
+    };
+
+    try {
+      recognition.start();
+    } catch (e) {
+      console.error(e);
+    }
+
+    return () => {
+      try {
+        recognition.stop();
+      } catch (e) {}
+    };
+  }, [connectionStatus, appointment]);
+
+  // OCR Canvas-based Frame Capture Loop
+  useEffect(() => {
+    if (connectionStatus !== 'connected' || !localVideoRef.current || !appointment) return;
+
+    const interval = setInterval(async () => {
+      if (!window.Tesseract || !localVideoRef.current) return;
+
+      try {
+        const video = localVideoRef.current;
+        if (video.videoWidth === 0 || video.videoHeight === 0) return;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 320; // smaller size for faster OCR performance
+        canvas.height = 240;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Perform OCR on local frame
+        const result = await window.Tesseract.recognize(canvas, 'eng');
+        const text = result.data.text;
+        
+        if (text && text.trim()) {
+          console.log('Visual text detected in video feed:', text);
+          const validation = validateMessage(text);
+          if (!validation.isValid) {
+            handleViolation(validation.violationType + ' (shown on screen)');
+            if (socketRef.current) {
+              socketRef.current.emit('chat-message', {
+                roomId: appointment.roomId,
+                message: {
+                  text: `[System: Visual bypass warning - user showed ${validation.violationType} on screen]`,
+                  sender: 'System',
+                  senderId: 'system',
+                  timestamp: new Date().toISOString(),
+                  isSystem: true
+                }
+              });
+            }
+          }
+        }
+      } catch (ocrError) {
+        console.error('OCR Error:', ocrError);
+      }
+    }, 4000); // scan every 4 seconds to prevent lag
+
+    return () => clearInterval(interval);
+  }, [connectionStatus, appointment]);
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
