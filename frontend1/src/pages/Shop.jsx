@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from '../services/api'; // Use the existing API service
+import axios, { buildAssetUrl } from '../services/api'; // Use the existing API service
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -130,7 +130,7 @@ const Shop = () => {
                 {product.imageUrl ? (
                   <div className="h-48 overflow-hidden">
                     <img
-                      src={product.imageUrl}
+                      src={buildAssetUrl(product.imageUrl)}
                       alt={product.name}
                       className="w-full h-full object-cover"
                     />
