@@ -815,6 +815,10 @@ const AstrologerDashboard = () => {
               });
 
               const openAndTrackTools = async (phoneUsed) => {
+                const targetUrl = window.location.hostname === 'localhost'
+                  ? 'http://localhost:5173'
+                  : 'https://astrology-run-frontend.onrender.com';
+
                 try {
                   const response = await api.request('/audit/start', {
                     method: 'POST',
@@ -822,7 +826,7 @@ const AstrologerDashboard = () => {
                   });
                   const logId = response.logId;
                   
-                  const win = window.open('http://localhost:5173', '_blank');
+                  const win = window.open(targetUrl, '_blank');
                   if (win && logId) {
                     const timer = setInterval(() => {
                       if (win.closed) {
@@ -834,7 +838,7 @@ const AstrologerDashboard = () => {
                   }
                 } catch (err) {
                   console.error("Audit log start failed:", err);
-                  window.open('http://localhost:5173', '_blank');
+                  window.open(targetUrl, '_blank');
                 }
               };
 
