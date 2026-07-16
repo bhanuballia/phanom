@@ -59,6 +59,8 @@ const allowedOrigins = [
   'https://astrology-astrologer-mpug66wh3-bhanuballias-projects.vercel.app',
   'https://astrology-astrologer-pcpj3nqwm-bhanuballias-projects.vercel.app',
   'https://astrologer-m0mrp6zfx-bhanuballias-projects.vercel.app',
+  'https://astrology-run-frontend.onrender.com',
+  'https://astrologer-astroconsult-dashboard.onrender.com',
   ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [])
 ];
 
