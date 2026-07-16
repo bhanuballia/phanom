@@ -42,7 +42,7 @@ const ContactUs = () => {
     {
       icon: <Phone className="h-6 w-6" />,
       title: "Phone Support",
-      details: "+1 (555) 123-4567",
+      details: "+91 9898989898",
       description: "Available 24/7 for urgent consultations"
     },
     {
@@ -54,7 +54,7 @@ const ContactUs = () => {
     {
       icon: <MapPin className="h-6 w-6" />,
       title: "Main Office",
-      details: "Rishikesh, Uttarakhand, India",
+      details: "Ballia, Uttar Pradesh, India",
       description: "Sacred spiritual center"
     },
     {
@@ -113,16 +113,16 @@ const ContactUs = () => {
             <div className="relative z-10 flex-1 space-y-6 text-center lg:text-left">
               <div>
                 <p className="text-astro-gold font-hindi text-xl mb-2">संपर्क करें</p>
-                <p className="text-gray-700 text-sm uppercase tracking-[0.2em]">Connect with us</p>
+                <p className="text-slate-900 text-sm uppercase tracking-[0.2em]">Connect with us</p>
               </div>
               <h1 className="text-5xl md:text-6xl font-cinzel font-bold text-black leading-tight">
                 Contact <span className="divine-text">Our Sacred Team</span>
               </h1>
-              <p className="text-xl text-gray-700 leading-relaxed">
+              <p className="text-xl text-slate-900 leading-relaxed">
                 Have questions about your spiritual journey? Need guidance on our services?
                 Our dedicated support team is here to help you connect with the cosmos.
               </p>
-              <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-sm uppercase tracking-[0.3em] text-gray-600">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-sm uppercase tracking-[0.3em] text-slate-900">
                 <span className="px-4 py-2 bg-black/5 rounded-full">24/7 Support</span>
                 <span className="px-4 py-2 bg-black/5 rounded-full">Expert Guidance</span>
                 <span className="px-4 py-2 bg-black/5 rounded-full">Trusted Advisors</span>
@@ -131,25 +131,25 @@ const ContactUs = () => {
             <div className="relative z-10 flex-1 w-full">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="p-6 rounded-3xl bg-white/90 backdrop-blur-md border border-black/5 shadow-lg">
-                  <p className="text-sm text-gray-600 uppercase tracking-[0.4em] mb-2">Hotline</p>
-                  <p className="text-2xl font-semibold text-black mb-4">+1 (555) 123-4567</p>
-                  <p className="text-gray-600">
+                  <p className="text-sm text-slate-900 uppercase tracking-[0.4em] mb-2">Hotline</p>
+                  <p className="text-2xl font-semibold text-black mb-4">+91 9898989898</p>
+                  <p className="text-slate-900">
                     Reach us anytime for immediate astrological assistance.
                   </p>
                 </div>
                 <div className="p-6 rounded-3xl bg-white/90 backdrop-blur-md border border-black/5 shadow-lg">
-                  <p className="text-sm text-gray-600 uppercase tracking-[0.4em] mb-2">Email</p>
+                  <p className="text-sm text-slate-900 uppercase tracking-[0.4em] mb-2">Email</p>
                   <p className="text-2xl font-semibold text-black mb-4">support@astroconsult.com</p>
-                  <p className="text-gray-600">
+                  <p className="text-slate-900">
                     Expect a response within 2–4 hours from our sacred desk.
                   </p>
                 </div>
                 <div className="p-6 rounded-3xl bg-white/90 backdrop-blur-md border border-black/5 shadow-lg md:col-span-2">
-                  <p className="text-sm text-gray-600 uppercase tracking-[0.4em] mb-2">Office & Availability</p>
+                  <p className="text-sm text-slate-900 uppercase tracking-[0.4em] mb-2">Office & Availability</p>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                     <div>
-                      <p className="text-black font-semibold">Rishikesh, Uttarakhand</p>
-                      <p className="text-gray-600 text-sm">Spiritual HQ • Himalaya foothills</p>
+                      <p className="text-black font-semibold">Ballia, Uttar Pradesh, India</p>
+                      <p className="text-slate-900 text-sm">Spiritual HQ</p>
                     </div>
                     <div className="flex flex-wrap gap-3 text-sm text-black">
                       <span className="px-4 py-2 bg-black/5 rounded-full">24/7 Support</span>
@@ -177,7 +177,7 @@ const ContactUs = () => {
                   </div>
                   <h3 className="text-lg font-semibold text-astro-gold mb-2">{info.title}</h3>
                   <p className="text-black font-medium mb-2">{info.details}</p>
-                  <p className="text-gray-700 text-sm">{info.description}</p>
+                  <p className="text-slate-900 text-sm">{info.description}</p>
                 </div>
               ))}
             </div>
@@ -193,11 +193,11 @@ const ContactUs = () => {
                 <h2 className="text-3xl font-cinzel font-bold text-black mb-6">
                   Send us a <span className="divine-text">Message</span>
                 </h2>
-                
+
                 <form onSubmit={handleSubmit} className="space-y-6 text-black">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                      <label className="block text-sm font-medium text-slate-900 mb-2">
                         Full Name *
                       </label>
                       <input
@@ -206,13 +206,13 @@ const ContactUs = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent"
+                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-slate-900 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent"
                         placeholder="Enter your full name"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                      <label className="block text-sm font-medium text-slate-900 mb-2">
                         Email Address *
                       </label>
                       <input
@@ -221,7 +221,7 @@ const ContactUs = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent"
+                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-slate-900 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent"
                         placeholder="Enter your email"
                       />
                     </div>
@@ -229,7 +229,7 @@ const ContactUs = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                      <label className="block text-sm font-medium text-slate-900 mb-2">
                         Phone Number
                       </label>
                       <input
@@ -237,13 +237,13 @@ const ContactUs = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent"
+                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-slate-900 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent"
                         placeholder="Enter your phone"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                      <label className="block text-sm font-medium text-slate-900 mb-2">
                         Consultation Type
                       </label>
                       <select
@@ -253,7 +253,7 @@ const ContactUs = () => {
                         className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent"
                       >
                         {consultationTypes.map((type) => (
-                          <option key={type.value} value={type.value} className="text-gray-900">
+                          <option key={type.value} value={type.value} className="text-slate-900">
                             {type.label}
                           </option>
                         ))}
@@ -262,7 +262,7 @@ const ContactUs = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
+                    <label className="block text-sm font-medium text-slate-900 mb-2">
                       Subject *
                     </label>
                     <input
@@ -271,13 +271,13 @@ const ContactUs = () => {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent"
+                      className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-slate-900 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent"
                       placeholder="What can we help you with?"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
+                    <label className="block text-sm font-medium text-slate-900 mb-2">
                       Message *
                     </label>
                     <textarea
@@ -286,7 +286,7 @@ const ContactUs = () => {
                       onChange={handleChange}
                       required
                       rows={5}
-                      className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent resize-none"
+                      className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-black placeholder-slate-900 focus:outline-none focus:ring-2 focus:ring-astro-gold/60 focus:border-transparent resize-none"
                       placeholder="Tell us more about your inquiry..."
                     />
                   </div>
@@ -313,7 +313,7 @@ const ContactUs = () => {
                 <h2 className="text-3xl font-cinzel font-bold text-black mb-8">
                   Frequently Asked <span className="divine-text">Questions</span>
                 </h2>
-                
+
                 <div className="space-y-6">
                   {faqs.map((faq, index) => (
                     <div key={index} className="glass-card rounded-xl p-6 border border-black/10 bg-white/85 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.15)]">
@@ -321,7 +321,7 @@ const ContactUs = () => {
                         <MessageCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
                         {faq.question}
                       </h3>
-                      <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                      <p className="text-slate-900 leading-relaxed">{faq.answer}</p>
                     </div>
                   ))}
                 </div>
@@ -330,7 +330,7 @@ const ContactUs = () => {
                   <h3 className="text-lg font-semibold text-astro-gold mb-3">
                     Need Immediate Help?
                   </h3>
-                  <p className="text-gray-700 mb-4">
+                  <p className="text-slate-900 mb-4">
                     For urgent consultations or technical support, you can reach us directly:
                   </p>
                   <div className="space-y-2">
@@ -339,7 +339,7 @@ const ContactUs = () => {
                       className="flex items-center text-astro-gold hover:text-astro-gold-light transition-colors duration-200"
                     >
                       <Phone className="h-4 w-4 mr-2" />
-                      +1 (555) 123-4567
+                      +91-9898989898
                     </a>
                     <a
                       href="mailto:support@astroconsult.com"
@@ -362,7 +362,7 @@ const ContactUs = () => {
               <h2 className="text-3xl font-cinzel font-bold text-black mb-4">
                 Ready to Begin Your <span className="divine-text">Spiritual Journey</span>?
               </h2>
-              <p className="text-xl text-gray-700 mb-8">
+              <p className="text-xl text-slate-900 mb-8">
                 Don't wait for the perfect moment. The stars are aligned for your transformation today.
               </p>
               <a
