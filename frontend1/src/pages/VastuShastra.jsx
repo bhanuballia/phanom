@@ -194,6 +194,33 @@ const VastuShastra = () => {
                         </div>
                     </div>
 
+                    {/* Interactive Vastu Analyzer Banner */}
+                    <div className="mb-12">
+                        <div className="relative bg-gradient-to-br from-indigo-900/40 via-purple-900/40 to-pink-900/40 border border-indigo-500/30 rounded-3xl p-8 backdrop-blur-xl shadow-2xl overflow-hidden text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="space-y-3 max-w-2xl">
+                                <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-mono font-bold uppercase tracking-wider">
+                                    Interactive Tool
+                                </span>
+                                <h3 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200">
+                                    Astro-Vastu Directional Calibrator
+                                </h3>
+                                <p className="text-slate-300 text-lg italic leading-relaxed">
+                                    "Analyze room placements, directional element mapping, and planetary lord charts."
+                                </p>
+                            </div>
+                            <a
+                                href="https://pinak-1.onrender.com/?vastu=true"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold rounded-full hover:from-indigo-600 hover:to-pink-600 transition-all transform hover:scale-105 shadow-lg shadow-indigo-500/30 whitespace-nowrap"
+                            >
+                                <Compass className="h-5 w-5 mr-2" />
+                                Start Vastu Analysis
+                                <ArrowRight className="h-5 w-5 ml-2" />
+                            </a>
+                        </div>
+                    </div>
+
                     {/* Five Elements */}
                     <div className="mb-12">
                         <h2 className="text-3xl font-bold mb-8 text-center text-amber-400">
