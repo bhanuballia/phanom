@@ -7,7 +7,7 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.js',
   },
-  base: '/astrologer/',
+  base: '/',
   server: {
     port: 3001,
     proxy: {
