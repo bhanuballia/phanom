@@ -1,8 +1,11 @@
 const getBaseUrl = () => {
+  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
   if (window.location.hostname === 'localhost') {
     return 'http://localhost:5000/api';
   }
-  return '/api';
+  return 'https://astrology-backend-pink.vercel.app/api';
 };
 
 const API_BASE_URL = getBaseUrl();
