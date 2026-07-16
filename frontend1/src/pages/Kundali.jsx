@@ -829,66 +829,12 @@ const Kundali = () => {
 
                 {/* Divisional Chart Type Selector */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                    <Star className="h-4 w-4 mr-2 text-astro-gold" />
-                    चार्ट प्रकार (Divisional Chart Type)
-                  </label>
-                  <select
-                    name="divisionalChartType"
-                    value={formData.divisionalChartType}
-                    onChange={handleInputChange}
-                    className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                  >
-                    <option value="BhavaChalit">Bhava Chalit (House Chart)</option>
-                    <option value="RasiD1">Rasi D1 (Basic Birth Chart)</option>
-                    <option value="HoraD2">Hora D2 (Wealth)</option>
-                    <option value="DrekkanaD3">Drekkana D3 (Siblings)</option>
-                    <option value="ChaturthamshaD4">Chaturthamsha D4 (Assets)</option>
-                    <option value="SaptamshaD7">Saptamsha D7 (Progeny)</option>
-                    <option value="NavamshaD9">Navamsha D9 (Spouse/Dharma)</option>
-                    <option value="DashamamshaD10">Dashamamsha D10 (Nature/Profession)</option>
-                    <option value="DwadashamshaD12">Dwadashamsha D12 (Ancestors)</option>
-                    <option value="ShodashamshaD16">Shodashamsha D16 (Vehicles)</option>
-                    <option value="VimshamshaD20">Vimshamsha D20 (Spiritual Progress)</option>
-                    <option value="ChaturvimshamshaD24">Chaturvimshamsha D24 (Education)</option>
-                    <option value="BhamshaD27">Bhamsha D27 (Strengths/Weaknesses)</option>
-                    <option value="TrimshamshaD30">Trimshamsha D30 (Adversities)</option>
-                    <option value="KhavedamshaD40">Khavedamsha D40 (Good/Bad Results)</option>
-                    <option value="AkshavedamshaD45">Akshavedamsha D45 (All Areas)</option>
-                    <option value="ShashtyamshaD60">Shashtyamsha D60 (Karma/Past Life)</option>
-                  </select>
+
                 </div>
 
                 {/* Chart Style Selector */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                    <Globe className="h-4 w-4 mr-2 text-astro-gold" />
-                    कुंडली चार्ट शैली (Chart Style)
-                  </label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <label className={`relative flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${formData.chartStyle === 'SouthIndian' ? 'border-astro-gold bg-astro-gold/10' : 'border-black/10 bg-white hover:border-black/20'}`}>
-                      <input
-                        type="radio"
-                        name="chartStyle"
-                        value="SouthIndian"
-                        checked={formData.chartStyle === 'SouthIndian'}
-                        onChange={handleInputChange}
-                        className="sr-only"
-                      />
-                      <span className="font-semibold text-black">South Indian</span>
-                    </label>
-                    <label className={`relative flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${formData.chartStyle === 'NorthIndian' ? 'border-astro-gold bg-astro-gold/10' : 'border-black/10 bg-white hover:border-black/20'}`}>
-                      <input
-                        type="radio"
-                        name="chartStyle"
-                        value="NorthIndian"
-                        checked={formData.chartStyle === 'NorthIndian'}
-                        onChange={handleInputChange}
-                        className="sr-only"
-                      />
-                      <span className="font-semibold text-black">North Indian</span>
-                    </label>
-                  </div>
+
                 </div>
 
                 {/* Form Fields Grid */}
