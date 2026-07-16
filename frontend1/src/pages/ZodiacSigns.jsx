@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import { Star, Calendar, Heart, Briefcase, Zap, User, Moon, Sun, MapPin, Loader } from 'lucide-react';
 import { calculateBothSigns, getZodiacSignByName } from '../utils/zodiacCalculator';
+import { API_BASE_URL } from '../services/api';
 
 const ZodiacSigns = () => {
   const [selectedSign, setSelectedSign] = useState(null);
@@ -313,7 +314,7 @@ const ZodiacSigns = () => {
 
     setIsFetchingForecast(true);
     try {
-      const response = await fetch('http://localhost:5000/api/kundali/daily-horoscope', {
+      const response = await fetch(`${API_BASE_URL}/kundali/daily-horoscope`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -345,7 +346,7 @@ const ZodiacSigns = () => {
     setIsFetchingHoroscopes(true);
     try {
       const fetchSignHoroscope = async (sign) => {
-        const response = await fetch('http://localhost:5000/api/kundali/daily-horoscope', {
+        const response = await fetch(`${API_BASE_URL}/kundali/daily-horoscope`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ sign })
@@ -389,7 +390,7 @@ const ZodiacSigns = () => {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/kundali/calculate-signs', {
+        const response = await fetch(`${API_BASE_URL}/kundali/calculate-signs`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
