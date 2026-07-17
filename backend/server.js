@@ -31,6 +31,7 @@ const liveChatRoutes = require('./routes/liveChat');
 const geoRoutes = require('./routes/geo');
 const auditRoutes = require('./routes/audit');
 const LiveChatMessage = require('./models/LiveChatMessage');
+const axios = require('axios');
 
 
 // Initialize Express app
@@ -124,7 +125,7 @@ const connectDB = async () => {
 connectDB();
 
 // Validation function for chat messages
-const validateChatMessage = (message) => {
+const validateChatMessage = async (message) => {
   const lowerMessage = message.toLowerCase();
 
   // Phone number patterns (various formats)
@@ -197,6 +198,49 @@ const validateChatMessage = (message) => {
     }
   }
 
+  // --- GOOGLE PERSPECTIVE API MODERATION ---
+  const apiKey = process.env.PERSPECTIVE_API_KEY;
+  if (apiKey) {
+    try {
+      const response = await axios.post(
+        `https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=${apiKey}`,
+        {
+          comment: { text: message },
+          languages: ["en", "hi"],
+          requestedAttributes: {
+            TOXICITY: {},
+            INSULT: {},
+            PROFANITY: {},
+            SEXUALLY_EXPLICIT: {},
+            IDENTITY_ATTACK: {}
+          }
+        }
+      );
+
+      const scores = response.data.attributeScores;
+      const threshold = 0.7; // Profanity & abuse threshold
+
+      if (scores.TOXICITY?.summaryScore?.value > threshold) {
+        return { isValid: false, violationType: 'toxic content' };
+      }
+      if (scores.INSULT?.summaryScore?.value > threshold) {
+        return { isValid: false, violationType: 'insulting language' };
+      }
+      if (scores.PROFANITY?.summaryScore?.value > threshold) {
+        return { isValid: false, violationType: 'profanity' };
+      }
+      if (scores.SEXUALLY_EXPLICIT?.summaryScore?.value > threshold) {
+        return { isValid: false, violationType: 'sexually explicit content' };
+      }
+      if (scores.IDENTITY_ATTACK?.summaryScore?.value > threshold) {
+        return { isValid: false, violationType: 'identity attack / defamation' };
+      }
+    } catch (apiError) {
+      console.error('Error calling Google Perspective API:', apiError.response?.data || apiError.message);
+      // Fallback: let the message proceed on API error to avoid completely breaking chat
+    }
+  }
+
   return { isValid: true };
 };
 
@@ -263,11 +307,11 @@ if (io) {
     });
 
     // Handle chat messages with validation
-    socket.on('chat-message', (data) => {
+    socket.on('chat-message', async (data) => {
       const { roomId, message } = data;
 
       // Validate message for personal information
-      const validationResult = validateChatMessage(message.text);
+      const validationResult = await validateChatMessage(message.text);
 
       if (!validationResult.isValid) {
         // Send violation notice back to sender only
@@ -303,7 +347,7 @@ if (io) {
 
       // Validate message content if text is present
       if (text) {
-        const validationResult = validateChatMessage(text);
+        const validationResult = await validateChatMessage(text);
         if (!validationResult.isValid) {
           socket.emit('live-chat-violation', {
             violationType: validationResult.violationType,
