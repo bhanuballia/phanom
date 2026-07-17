@@ -332,6 +332,24 @@ const validateChatMessage = async (message) => {
     }
   }
 
+  // --- LOCAL ABUSE & PROFANITY DICTIONARY FALLBACK ---
+  const localAbusePatterns = [
+    // English swear words
+    /\b(fuck|f\*ck|bitch|b\*tch|asshole|bastard|porn|sex|dick|pussy|whore|cunt)\b/i,
+    // Hindi/Hinglish abusive terms
+    /\b(chutiya|choot|laund|gaand|gand|harami|saala|sala|kamina|bhadwa|randi|dalal|lund|madarchod|bhenchod|bc|mc)\b/i,
+    /(\bचुतिया\b|\bगांड\b|\bहरामी\b|\bसाला\b|\bकमीना\b|\bभड़वा\b|\bरंडी\b|\bलंड\b|\bमादरचोद\b|\bबहनचोद\b)/,
+    // Astrologer defamation / personal attacks
+    /\b(fake\s*astro|fraud|scammer|cheat|lootera|jhootha|loot|dhokebaaz)\b/i,
+    /(\bफ़्रॉड\b|\bलुटेरा\b|\bझूठा\b|\bधोखेबाज\b)/
+  ];
+
+  for (const pattern of localAbusePatterns) {
+    if (pattern.test(message)) {
+      return { isValid: false, violationType: 'profanity / abusive language' };
+    }
+  }
+
   // --- GOOGLE PERSPECTIVE API MODERATION ---
   const apiKey = process.env.PERSPECTIVE_API_KEY;
   if (apiKey) {
