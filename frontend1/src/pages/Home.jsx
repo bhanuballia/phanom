@@ -932,7 +932,7 @@ const Home = () => {
                 <p className="text-xs uppercase tracking-[0.4em] text-amber-200">Horoscopes</p>
                 <h2 className="text-3xl font-bold">All zodiac insights, updated hourly</h2>
               </div>
-              <Link to="/daily-calendar" className="inline-flex items-center text-amber-300 text-sm">
+              <Link to="/kundali" className="inline-flex items-center text-amber-300 text-sm">
                 View all horoscopes
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Link>
