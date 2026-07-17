@@ -52,7 +52,7 @@ const quickActions = [
     title: "Today's Horoscope",
     description: 'Personalized daily love, career & finance guidance.',
     action: 'View Horoscope',
-    link: '/daily-calendar',
+    link: '/zodiac-sign',
     icon: Sun,
     accent: 'from-blue-500 to-indigo-500'
   },
@@ -60,15 +60,16 @@ const quickActions = [
     title: 'Kundli Matching',
     description: 'Ashtakoot score, dosha insights & remedies.',
     action: 'Check Compatibility',
-    link: '/kundali-matching',
+    link: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true`,
     icon: Users,
-    accent: 'from-purple-500 to-fuchsia-500'
+    accent: 'from-purple-500 to-fuchsia-500',
+    isExternal: true
   },
   {
     title: 'Consult Astrologer',
     description: 'Talk to certified experts via chat, call or video.',
     action: 'Book Session',
-    link: '/astrologers',
+    link: '/booking',
     icon: Phone,
     accent: 'from-emerald-500 to-teal-500'
   }
@@ -861,7 +862,7 @@ const Home = () => {
           </section>
 
           <section className="max-w-6xl mx-auto grid lg:grid-cols-4 gap-6">
-            {quickActions.map(({ title, description, action, link, icon: Icon, accent }) => (
+            {quickActions.map(({ title, description, action, link, icon: Icon, accent, isExternal }) => (
               <div key={title} className="bg-slate-900 border border-white/10 rounded-3xl p-6 flex flex-col justify-between">
                 <div>
                   <div className={`inline-flex p-3 rounded-2xl bg-gradient-to-r ${accent} text-slate-950 mb-4`}>
@@ -870,10 +871,17 @@ const Home = () => {
                   <h3 className="text-xl font-semibold">{title}</h3>
                   <p className="text-sm text-slate-300 mt-2">{description}</p>
                 </div>
-                <Link to={link} className="mt-6 inline-flex items-center text-amber-300 text-sm font-semibold">
-                  {action}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Link>
+                {isExternal ? (
+                  <a href={link} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center text-amber-300 text-sm font-semibold">
+                    {action}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </a>
+                ) : (
+                  <Link to={link} className="mt-6 inline-flex items-center text-amber-300 text-sm font-semibold">
+                    {action}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Link>
+                )}
               </div>
             ))}
           </section>
