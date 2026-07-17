@@ -842,14 +842,7 @@ const Home = () => {
                         className="w-full rounded-2xl bg-white/10 border border-white/15 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-amber-400/60"
                         required
                       />
-                      <input
-                        name="placeOfBirth"
-                        value={quickKundaliData.placeOfBirth}
-                        onChange={handleQuickPreviewChange}
-                        className="w-full rounded-2xl bg-white/10 border border-white/15 px-4 py-3 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/60"
-                        placeholder="Birth Place"
-                        required
-                      />
+
                       <button
                         type="submit"
                         className="w-full rounded-2xl bg-gradient-to-r from-amber-400 to-pink-500 text-slate-900 font-semibold py-3 flex items-center justify-center gap-2"
