@@ -128,7 +128,33 @@ connectDB();
 const validateChatMessage = async (message) => {
   const lowerMessage = message.toLowerCase();
 
-  // Phone number patterns (various formats)
+  // Helper: Convert number words (English/Hindi) to digits and remove non-digits
+  const cleanObfuscatedNumbers = (text) => {
+    let clean = text.toLowerCase();
+    const englishNumbers = {
+      'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4',
+      'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9'
+    };
+    const hindiNumbers = {
+      'shunya': '0', 'ek': '1', 'do': '2', 'teen': '3', 'chaar': '4',
+      'paanch': '5', 'chhe': '6', 'saat': '7', 'aath': '8', 'nau': '9',
+      'shoonya': '0', 'char': '4'
+    };
+    
+    // Replace word equivalents
+    for (const [word, digit] of Object.entries(englishNumbers)) {
+      clean = clean.replace(new RegExp(word, 'g'), digit);
+    }
+    for (const [word, digit] of Object.entries(hindiNumbers)) {
+      clean = clean.replace(new RegExp(word, 'g'), digit);
+    }
+    
+    // Strip non-digit characters to check for continuous numeric length
+    const digitsOnly = clean.replace(/\D/g, '');
+    return digitsOnly;
+  };
+
+  // 1. Phone number check (standard + obfuscated sequences)
   const phonePatterns = [
     /\b\d{10}\b/, // 10 digits
     /\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b/, // US format
@@ -137,64 +163,80 @@ const validateChatMessage = async (message) => {
     /\b(phone|call|number|mobile|contact)[\s:]*\d/i
   ];
 
-  // Email patterns
-  const emailPatterns = [
-    /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/,
-    /\b(email|mail|gmail|yahoo|hotmail|outlook)[\s:]*[A-Za-z0-9._%+-]*@?[A-Za-z0-9.-]*\b/i
-  ];
-
-  // WhatsApp patterns
-  const whatsappPatterns = [
-    /\b(whatsapp|whats app|wa|watsapp)\b/i,
-    /\b(whatsapp|whats app|wa)[\s:]*\+?\d/i
-  ];
-
-  // Instagram patterns
-  const instagramPatterns = [
-    /\b(instagram|insta|ig)\b/i,
-    /\b@[A-Za-z0-9._]+\b/,
-    /\b(instagram|insta|ig)[\s:]*[A-Za-z0-9._]/i
-  ];
-
-  // Facebook patterns
-  const facebookPatterns = [
-    /\b(facebook|fb|face book)\b/i,
-    /\bfacebook\.com\b/i,
-    /\b(facebook|fb)[\s:]*[A-Za-z0-9._]/i
-  ];
-
-  // Check for phone numbers
   for (const pattern of phonePatterns) {
     if (pattern.test(message)) {
       return { isValid: false, violationType: 'phone number' };
     }
   }
 
-  // Check for emails
+  // Check digit sequence after translation of words & stripping layout spaces/dashes
+  const digitsOnly = cleanObfuscatedNumbers(message);
+  if (digitsOnly.length >= 10) {
+    return { isValid: false, violationType: 'phone number' };
+  }
+
+  // 2. Email patterns (standard + obfuscated e.g. "user[at]domain(dot)com")
+  const emailPatterns = [
+    /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/,
+    /\b(email|mail|gmail|yahoo|hotmail|outlook)[\s:]*[A-Za-z0-9._%+-]*@?[A-Za-z0-9.-]*\b/i,
+    // Obfuscated emails: e.g., "user at domain dot com", "user[at]domain(dot)com"
+    /[A-Za-z0-9._%+-]+\s*([@]|\[at\]|\(at\)|\bat\b)\s*[A-Za-z0-9.-]+\s*([.]|\[dot\]|\(dot\)|\bdot\b)\s*[A-Za-z]{2,}/i
+  ];
+
   for (const pattern of emailPatterns) {
     if (pattern.test(message)) {
       return { isValid: false, violationType: 'email address' };
     }
   }
 
-  // Check for WhatsApp
+  // 3. WhatsApp patterns
+  const whatsappPatterns = [
+    /\b(whatsapp|whats app|wa|watsapp)\b/i,
+    /\b(whatsapp|whats app|wa)[\s:]*\+?\d/i
+  ];
+
   for (const pattern of whatsappPatterns) {
     if (pattern.test(message)) {
       return { isValid: false, violationType: 'WhatsApp contact' };
     }
   }
 
-  // Check for Instagram
+  // 4. Instagram patterns
+  const instagramPatterns = [
+    /\b(instagram|insta|ig)\b/i,
+    /\b@[A-Za-z0-9._]+\b/,
+    /\b(instagram|insta|ig)[\s:]*[A-Za-z0-9._]/i
+  ];
+
   for (const pattern of instagramPatterns) {
     if (pattern.test(message)) {
       return { isValid: false, violationType: 'Instagram ID' };
     }
   }
 
-  // Check for Facebook
+  // 5. Facebook patterns
+  const facebookPatterns = [
+    /\b(facebook|fb|face book)\b/i,
+    /\bfacebook\.com\b/i,
+    /\b(facebook|fb)[\s:]*[A-Za-z0-9._]/i
+  ];
+
   for (const pattern of facebookPatterns) {
     if (pattern.test(message)) {
       return { isValid: false, violationType: 'Facebook profile' };
+    }
+  }
+
+  // 6. Telegram, Discord & other handle patterns
+  const telegramPatterns = [
+    /\b(telegram|tele|tg|discord|dc)\b/i,
+    /\b(t\s*\.\s*me|t\(dot\)me|telegram\.me)\b/i,
+    /\b(telegram|tele|tg|discord|dc)[\s:]*[A-Za-z0-9._]/i
+  ];
+
+  for (const pattern of telegramPatterns) {
+    if (pattern.test(message)) {
+      return { isValid: false, violationType: 'Telegram/Discord handle' };
     }
   }
 
