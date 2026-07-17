@@ -178,20 +178,26 @@ const validateChatMessage = async (message) => {
       }
     }
 
-    // 5. Emoji & Word Numbers & Devanagari Hindi & NATO phonetic alphabet
-    const emojiDigits = {
-      '0️⃣': '0', '1️⃣': '1', '2️⃣': '2', '3️⃣': '3', '4️⃣': '4', '5️⃣': '5', '6️⃣': '6', '7️⃣': '7', '8️⃣': '8', '9️⃣': '9',
+    // 5. Emoji Replacements (no boundaries needed)
+    const emojiMap = {
+      '0️⃣': '0', '1️⃣': '1', '2️⃣': '2', '3️⃣': '3', '4️⃣': '4', '5️⃣': '5', '6️⃣': '6', '7️⃣': '7', '8️⃣': '8', '9️⃣': '9'
+    };
+    for (const [key, value] of Object.entries(emojiMap)) {
+      clean = clean.replace(new RegExp(key, 'g'), value);
+    }
+
+    // 5b. Word numbers (English & Hindi) - using strict word boundaries to avoid partial/false matching
+    const wordNumbers = {
       'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4', 'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9',
       'niner': '9', 'fife': '5',
       // Devanagari Hindi spelling
       'शून्य': '0', 'एक': '1', 'दो': '2', 'तीन': '3', 'चार': '4', 'पाँच': '5', 'छह': '6', 'सात': '7', 'आठ': '8', 'नौ': '9',
-      'shunya': '0', 'ek': '1', 'do': '2', 'teen': '3', 'chaar': '4', 'paanch': '5', 'chhe': '6', 'saat': '7', 'aath': '8', 'nau': '9',
-      'shoonya': '0', 'char': '4',
-      // Roman numerals for single digits
-      'viii': '8', 'vii': '7', 'iii': '3', 'viii': '8', 'ii': '2', 'iv': '4', 'vi': '6', 'ix': '9', 'i': '1', 'v': '5', 'x': '0'
+      // Transliterated Hindi words (avoiding common English verbs/pronouns like 'do' or 'i')
+      'shunya': '0', 'ek': '1', 'teen': '3', 'chaar': '4', 'paanch': '5', 'chhe': '6', 'saat': '7', 'aath': '8', 'nau': '9',
+      'shoonya': '0', 'char': '4'
     };
-    for (const [key, value] of Object.entries(emojiDigits)) {
-      clean = clean.replace(new RegExp(key, 'g'), value);
+    for (const [word, digit] of Object.entries(wordNumbers)) {
+      clean = clean.replace(new RegExp(`\\b${word}\\b`, 'g'), digit);
     }
 
     // 6. Repeated digits parser: "double nine" -> "99", "triple five" -> "555"
