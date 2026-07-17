@@ -115,14 +115,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/zodiac"
-              element={
-                <ProtectedRoute>
-                  <ZodiacSigns />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/zodiac" element={<ZodiacSigns />} />
             <Route
               path="/kundali"
               element={
