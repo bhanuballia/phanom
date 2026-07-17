@@ -32,7 +32,8 @@ import {
   Sparkles,
   Star,
   Sun,
-  Users
+  Users,
+  X
 } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import { useAuth } from '../context/AuthContext';
@@ -265,8 +266,8 @@ const trustBadges = [
 ];
 
 const consultationSlogans = [
-  'मेष-मीन, वर्ष 2026 भविष्यफल',
-  'मेष - मीन, फ़रवरी 2026 भविष्यफल',
+  'सावन में राशि के अनुसार पूजा कैसे करे',
+  'सावन में प्रतिदिन पूजा कैसे करे',
   'सितारों के राज खोलें!',
   'ब्रह्मांड के संकेत पहचानें!',
   'भविष्य की राह चुनें!',
@@ -295,6 +296,30 @@ const Home = () => {
   });
   const [sloganIndex, setSloganIndex] = useState(0);
   const [activeSideAnimation, setActiveSideAnimation] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [modalLine, setModalLine] = useState('');
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const videos = useMemo(() => ['/images/sawan.mp4', '/images/home2.mp4'], []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentVideoIndex((prev) => (prev === 0 ? 1 : 0));
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const posterLines = [
+      "ग्रहों की बदलती चाल आपके जीवन को कैसे प्रभावित करेगी? अपनी कुंडली के सटीक विश्लेषण और सही समाधान के लिए आज ही संपर्क करें।",
+      "क्या आपकी किस्मत में है कोई नया बदलाव? ग्रहों के गोचर (चाल) का अपने करियर, धन और स्वास्थ्य पर असर जानने के लिए संपर्क करें।",
+      "समय के साथ ग्रहों की स्थिति बदलती है। आपकी राशि पर इसका क्या प्रभाव होगा? जानिए हमारे विशेषज्ञ ज्योतिषी से, संपर्क करने के लिए क्लिक करें।",
+      "ग्रहों का परिवर्तन लाता है जीवन में नए अवसर। आपकी कुंडली के अनुसार आपका भाग्य क्या कहता है? जानने के लिए संपर्क करें।",
+      "सितारों की चाल से तय होते हैं जीवन के रास्ते। आपकी सफलता, विवाह या व्यापार का भविष्य जानने के लिए संपर्क करें।"
+    ];
+    const randomIndex = Math.floor(Math.random() * posterLines.length);
+    setModalLine(posterLines[randomIndex]);
+    setShowModal(true);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -494,6 +519,7 @@ const Home = () => {
               <div className="relative w-full lg:flex-[1.9]">
                 <div className="relative w-full">
                   <video
+                    key={currentVideoIndex}
                     autoPlay
                     loop
                     muted
@@ -501,7 +527,7 @@ const Home = () => {
                     className="w-full rounded-2xl object-cover shadow-2xl"
                     style={{ height: '280px', objectFit: 'cover' }}
                   >
-                    <source src="/images/home2.mp4" type="video/mp4" />
+                    <source src={videos[currentVideoIndex]} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                   <div className="absolute inset-0 bg-gradient-to-b from-slate-950/0 via-slate-950/20 to-slate-950/60 pointer-events-none rounded-2xl" />
@@ -1159,6 +1185,107 @@ const Home = () => {
         </main>
       </div>
 
+      {showModal && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-visible text-slate-900 animate-in fade-in zoom-in-95 duration-200">
+            {/* Top yellow header */}
+            <div className="bg-gradient-to-b from-amber-400 to-yellow-500 rounded-t-3xl pt-14 pb-6 px-6 relative text-center">
+              {/* Close Button */}
+              <button
+                onClick={() => setShowModal(false)}
+                className="absolute top-4 right-4 text-white hover:text-amber-100 transition-colors bg-black/25 hover:bg-black/40 p-1.5 rounded-full"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5" />
+              </button>
+
+              {/* Overlapping Ganesha Image Circle */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 rounded-full border-4 border-amber-400 bg-white overflow-hidden shadow-lg flex items-center justify-center">
+                <img
+                  src="/images/ganeshji.jpg"
+                  alt="Lord Ganesha"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/images/AstroIcon.jpg";
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* White Body Content */}
+            <div className="px-6 pb-8 pt-6 text-center flex flex-col items-center">
+              {/* Main Slogan text */}
+              <p className="text-lg md:text-xl font-bold text-amber-600 leading-relaxed mb-6">
+                {modalLine}
+              </p>
+
+              {/* Astrologers Section */}
+              <div className="w-full border-t border-slate-100 pt-4 mb-6">
+                <div className="flex justify-center gap-3 mb-3">
+                  {availableAstrologers.slice(0, 3).map((astrologer, idx) => {
+                    const rawImage =
+                      astrologer.profilePicture ||
+                      astrologer.image ||
+                      astrologer.imageUrl ||
+                      astrologer.photo;
+                    const imageSrc = rawImage ? buildAssetUrl(rawImage) : null;
+                    return (
+                      <div key={idx} className="relative w-14 h-14 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md">
+                        {imageSrc ? (
+                          <img src={imageSrc} alt={astrologer.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-amber-400 to-pink-500 flex items-center justify-center text-slate-900 font-bold text-lg">
+                            {astrologer.name?.charAt(0) || 'A'}
+                          </div>
+                        )}
+                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                      </div>
+                    );
+                  })}
+                  {availableAstrologers.length === 0 && (
+                    <>
+                      <div className="relative w-14 h-14 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md flex items-center justify-center font-bold text-lg text-slate-600">
+                        A
+                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                      </div>
+                      <div className="relative w-14 h-14 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md flex items-center justify-center font-bold text-lg text-slate-600">
+                        B
+                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                      </div>
+                      <div className="relative w-14 h-14 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md flex items-center justify-center font-bold text-lg text-slate-600">
+                        C
+                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                      </div>
+                    </>
+                  )}
+                </div>
+                <h4 className="text-sm font-extrabold text-slate-700 tracking-wide uppercase">
+                  Consult Expert Astrologers
+                </h4>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 w-full">
+                <Link
+                  to="/booking"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-center text-sm shadow-md transition-all active:scale-[0.98]"
+                >
+                  Call Now
+                </Link>
+                <Link
+                  to="/booking"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-center text-sm shadow-md transition-all active:scale-[0.98]"
+                >
+                  Chat Now
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
