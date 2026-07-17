@@ -18,7 +18,8 @@ import {
   MapPin,
   Clock,
   LayoutGrid,
-  Star
+  Star,
+  Sun
 } from 'lucide-react';
 import { VEDIC_ASTROLOGY_BASE_URL } from '../services/api';
 
@@ -57,6 +58,8 @@ const KundaliHub = () => {
       targetParams = `oracle=${value}`;
     } else if (type === 'simple') {
       targetParams = `${value}=true`;
+    } else if (type === 'deep_horoscope') {
+      targetParams = `deep_horoscope=${value}`;
     }
 
     // Build common parameters
@@ -83,6 +86,12 @@ const KundaliHub = () => {
 
     window.open(redirectUrl, '_blank');
   };
+
+  const deepHoroscopes = [
+    { key: 'daily', name: 'Daily Horoscope', desc: 'Hour-by-hour insights & predictions', icon: Sun, color: 'from-yellow-50 to-amber-50 border-yellow-200 text-yellow-700' },
+    { key: 'monthly', name: 'Monthly Horoscope', desc: 'Detailed transit forecasts & lunar cycles', icon: Calendar, color: 'from-blue-50 to-indigo-50 border-blue-200 text-indigo-700' },
+    { key: 'yearly', name: 'Yearly Horoscope', desc: 'Solar return & major yearly trends', icon: Globe, color: 'from-purple-50 to-pink-50 border-purple-200 text-pink-700' }
+  ];
 
   const vargaCharts = [
     { code: 'd1', name: 'D1 Rasi', desc: 'Rasi / Natal chart' },
@@ -249,6 +258,40 @@ const KundaliHub = () => {
                     </span>
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Detailed Horoscope Section */}
+            <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-black/10 shadow-xl p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2.5 bg-yellow-100 text-yellow-700 rounded-xl">
+                  <Sun className="h-6 w-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-cinzel font-bold text-slate-800">Detailed Horoscope Insights</h2>
+                  <p className="text-xs text-slate-500">Access in-depth personalized reports for daily, monthly, and yearly timeframes.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {deepHoroscopes.map((horo) => {
+                  const IconComponent = horo.icon;
+                  return (
+                    <button
+                      key={horo.key}
+                      onClick={() => handleRedirect('deep_horoscope', horo.key)}
+                      className={`flex items-start gap-3.5 p-4 rounded-2xl border bg-gradient-to-br ${horo.color} hover:shadow-md transition-all duration-200 text-left`}
+                    >
+                      <div className="p-2 bg-white rounded-xl shadow-sm mt-0.5">
+                        <IconComponent className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-sm font-cinzel text-slate-800">{horo.name}</div>
+                        <div className="text-xs text-slate-500 mt-0.5 leading-snug">{horo.desc}</div>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
