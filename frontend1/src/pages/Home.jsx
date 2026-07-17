@@ -52,7 +52,7 @@ const quickActions = [
     title: "Today's Horoscope",
     description: 'Personalized daily love, career & finance guidance.',
     action: 'View Horoscope',
-    link: '/daily-horoscope',
+    link: '/zodiac',
     icon: Sun,
     accent: 'from-blue-500 to-indigo-500'
   },
