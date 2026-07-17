@@ -234,8 +234,6 @@ router.get('/dakshina-status/:astrologerId', protect, async (req, res) => {
 
         const payment = await LiveChatPayment.findOne({
             chatId,
-            user: userId,
-            astrologer: astrologerId,
             paymentStatus: 'completed'
         });
 
@@ -255,8 +253,6 @@ router.post('/dakshina-payment', protect, async (req, res) => {
         // Check if there is already a completed payment
         const existingPayment = await LiveChatPayment.findOne({
             chatId,
-            user: userId,
-            astrologer: astrologerId,
             paymentStatus: 'completed'
         });
 
