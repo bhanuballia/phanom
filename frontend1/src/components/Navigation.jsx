@@ -309,8 +309,8 @@ const Navigation = () => {
                       to={item.path}
                       onClick={() => setIsOpen(false)}
                       className={`flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${isActivePath(item.path)
-                          ? 'bg-gradient-to-r from-yellow-400/20 to-purple-400/20 text-yellow-400 border border-yellow-400/30'
-                          : 'text-gray-300 hover:text-white hover:bg-white/10'
+                        ? 'bg-gradient-to-r from-yellow-400/20 to-purple-400/20 text-yellow-400 border border-yellow-400/30'
+                        : 'text-gray-300 hover:text-white hover:bg-white/10'
                         }`}
                     >
                       <Icon className="h-5 w-5" />

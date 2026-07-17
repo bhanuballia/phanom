@@ -871,41 +871,44 @@ const Kundali = () => {
                       className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
                     />
                   </div>
+                  {generationMode !== 'quick' && (
+                    <>
+                      {/* Time of Birth - Always show */}
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-3 flex items-center">
+                          <Clock className="h-4 w-4 mr-2 text-astro-gold" />
+                          जन्म समय (Time of Birth)
+                        </label>
+                        <input
+                          type="time"
+                          name="timeOfBirth"
+                          value={formData.timeOfBirth}
+                          onChange={handleInputChange}
+                          className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
+                        />
+                        <p className="text-xs text-black/60 mt-2">
+                          यदि समय पता नहीं है तो 12:00 दोपहर माना जाएगा (Defaults to 12:00 PM)
+                        </p>
+                      </div>
 
-                  {/* Time of Birth - Always show */}
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                      <Clock className="h-4 w-4 mr-2 text-astro-gold" />
-                      जन्म समय (Time of Birth)
-                    </label>
-                    <input
-                      type="time"
-                      name="timeOfBirth"
-                      value={formData.timeOfBirth}
-                      onChange={handleInputChange}
-                      className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                    />
-                    <p className="text-xs text-black/60 mt-2">
-                      यदि समय पता नहीं है तो 12:00 दोपहर माना जाएगा (Defaults to 12:00 PM)
-                    </p>
-                  </div>
-
-                  {/* Place of Birth - Always show */}
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                      <MapPin className="h-4 w-4 mr-2 text-astro-gold" />
-                      जन्म स्थान (Place of Birth) <span className="text-red-500 ml-1">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="placeOfBirth"
-                      value={formData.placeOfBirth}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                      placeholder="शहर का नाम (e.g. New Delhi)"
-                    />
-                  </div>
+                      {/* Place of Birth - Always show */}
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-3 flex items-center">
+                          <MapPin className="h-4 w-4 mr-2 text-astro-gold" />
+                          जन्म स्थान (Place of Birth) <span className="text-red-500 ml-1">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="placeOfBirth"
+                          value={formData.placeOfBirth}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
+                          placeholder="शहर का नाम (e.g. New Delhi)"
+                        />
+                      </div>
+                    </>
+                  )}
 
                   {generationMode === 'accurate' && (
                     <>
