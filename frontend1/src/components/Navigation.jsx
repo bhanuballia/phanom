@@ -107,7 +107,7 @@ const Navigation = () => {
         key: 'free-consult',
         element: (
           <Link
-            to="/astrologers"
+            to="/booking"
             className={`${actionButtonBase} text-slate-900 bg-gradient-to-r from-amber-300 via-pink-400 to-purple-500 border-transparent shadow-lg shadow-amber-400/30`}
           >
             <MessageCircle className="h-4 w-4 mb-1" />
@@ -194,7 +194,7 @@ const Navigation = () => {
         key: 'free-consult',
         element: (
           <Link
-            to="/astrologers"
+            to="/booking"
             className={`${actionButtonBase} text-slate-900 bg-gradient-to-r from-amber-300 via-pink-400 to-purple-500 border-transparent shadow-lg shadow-amber-400/30`}
           >
             <MessageCircle className="h-4 w-4 mb-1" />
