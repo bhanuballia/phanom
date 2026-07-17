@@ -128,30 +128,105 @@ connectDB();
 const validateChatMessage = async (message) => {
   const lowerMessage = message.toLowerCase();
 
-  // Helper: Convert number words (English/Hindi) to digits and remove non-digits
-  const cleanObfuscatedNumbers = (text) => {
-    let clean = text.toLowerCase();
-    const englishNumbers = {
-      'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4',
-      'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9'
-    };
-    const hindiNumbers = {
-      'shunya': '0', 'ek': '1', 'do': '2', 'teen': '3', 'chaar': '4',
-      'paanch': '5', 'chhe': '6', 'saat': '7', 'aath': '8', 'nau': '9',
-      'shoonya': '0', 'char': '4'
-    };
-    
-    // Replace word equivalents
-    for (const [word, digit] of Object.entries(englishNumbers)) {
-      clean = clean.replace(new RegExp(word, 'g'), digit);
+  // Helper: Comprehensive contact info decoder
+  const decodeObfuscatedText = (text) => {
+    let clean = text.toLowerCase().trim();
+
+    // 1. Base64 Decoder
+    const base64Regex = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+    if (clean.length >= 8 && base64Regex.test(clean)) {
+      try {
+        const decoded = Buffer.from(clean, 'base64').toString('utf8');
+        if (decoded && decoded !== clean) {
+          clean += " " + decoded.toLowerCase();
+        }
+      } catch (e) {}
     }
-    for (const [word, digit] of Object.entries(hindiNumbers)) {
-      clean = clean.replace(new RegExp(word, 'g'), digit);
+
+    // 2. Hex Decoder
+    const hexClean = clean.replace(/0x/g, '').replace(/[\s,]+/g, '');
+    if (/^[0-9a-f]{10,}$/i.test(hexClean) && hexClean.length % 2 === 0) {
+      try {
+        const decoded = Buffer.from(hexClean, 'hex').toString('utf8');
+        if (decoded) {
+          clean += " " + decoded.toLowerCase();
+        }
+      } catch (e) {}
+    }
+
+    // 3. Binary Decoder
+    const binaryWords = clean.split(/[\s,.-]+/);
+    if (binaryWords.length >= 5 && binaryWords.every(w => /^[01]{1,8}$/.test(w))) {
+      try {
+        const decoded = binaryWords.map(w => String.fromCharCode(parseInt(w, 2))).join('');
+        if (decoded) {
+          clean += " " + decoded.toLowerCase();
+        }
+      } catch (e) {}
+    }
+
+    // 4. Morse Code Decoder
+    const morseMap = {
+      '-----': '0', '.----': '1', '..---': '2', '...--': '3', '....-': '4',
+      '.....': '5', '-....': '6', '--...': '7', '---..': '8', '----.': '9'
+    };
+    const morseWords = clean.split(/[\s/]+/);
+    if (morseWords.length >= 5 && morseWords.every(w => w in morseMap || w === '')) {
+      const decoded = morseWords.map(w => morseMap[w] || '').join('');
+      if (decoded.length >= 5) {
+        clean += " " + decoded;
+      }
+    }
+
+    // 5. Emoji & Word Numbers & Devanagari Hindi & NATO phonetic alphabet
+    const emojiDigits = {
+      '0️⃣': '0', '1️⃣': '1', '2️⃣': '2', '3️⃣': '3', '4️⃣': '4', '5️⃣': '5', '6️⃣': '6', '7️⃣': '7', '8️⃣': '8', '9️⃣': '9',
+      'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4', 'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9',
+      'niner': '9', 'fife': '5',
+      // Devanagari Hindi spelling
+      'शून्य': '0', 'एक': '1', 'दो': '2', 'तीन': '3', 'चार': '4', 'पाँच': '5', 'छह': '6', 'सात': '7', 'आठ': '8', 'नौ': '9',
+      'shunya': '0', 'ek': '1', 'do': '2', 'teen': '3', 'chaar': '4', 'paanch': '5', 'chhe': '6', 'saat': '7', 'aath': '8', 'nau': '9',
+      'shoonya': '0', 'char': '4',
+      // Roman numerals for single digits
+      'viii': '8', 'vii': '7', 'iii': '3', 'viii': '8', 'ii': '2', 'iv': '4', 'vi': '6', 'ix': '9', 'i': '1', 'v': '5', 'x': '0'
+    };
+    for (const [key, value] of Object.entries(emojiDigits)) {
+      clean = clean.replace(new RegExp(key, 'g'), value);
+    }
+
+    // 6. Repeated digits parser: "double nine" -> "99", "triple five" -> "555"
+    const repeatWords = {
+      'double': 2, 'triple': 3, 'quadruple': 4,
+      'doobla': 2, 'tripla': 3
+    };
+    for (const [rep, count] of Object.entries(repeatWords)) {
+      const regex = new RegExp(`\\b${rep}\\s*(\\d)`, 'g');
+      clean = clean.replace(regex, (_, digit) => digit.repeat(count));
+    }
+
+    // 7. Vanity Keypad Letters translation
+    const keypad = {
+      'a': '2', 'b': '2', 'c': '2', 'd': '3', 'e': '3', 'f': '3',
+      'g': '4', 'h': '4', 'i': '4', 'j': '5', 'k': '5', 'l': '5',
+      'm': '6', 'n': '6', 'o': '6', 'p': '7', 'q': '7', 'r': '7', 's': '7',
+      't': '8', 'u': '8', 'v': '8', 'w': '9', 'x': '9', 'y': '9', 'z': '9'
+    };
+    let keypadText = '';
+    for (let i = 0; i < clean.length; i++) {
+      const char = clean[i];
+      if (keypad[char]) {
+        keypadText += keypad[char];
+      } else if (/\d/.test(char)) {
+        keypadText += char;
+      } else {
+        keypadText += char;
+      }
     }
     
-    // Strip non-digit characters to check for continuous numeric length
-    const digitsOnly = clean.replace(/\D/g, '');
-    return digitsOnly;
+    const normalDigits = clean.replace(/\D/g, '');
+    const keypadDigits = keypadText.replace(/\D/g, '');
+
+    return { clean, normalDigits, keypadDigits };
   };
 
   // 1. Phone number check (standard + obfuscated sequences)
@@ -170,8 +245,8 @@ const validateChatMessage = async (message) => {
   }
 
   // Check digit sequence after translation of words & stripping layout spaces/dashes
-  const digitsOnly = cleanObfuscatedNumbers(message);
-  if (digitsOnly.length >= 10) {
+  const { normalDigits, keypadDigits } = decodeObfuscatedText(message);
+  if (normalDigits.length >= 10 || keypadDigits.length >= 10) {
     return { isValid: false, violationType: 'phone number' };
   }
 
