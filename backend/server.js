@@ -205,26 +205,37 @@ const validateChatMessage = async (message) => {
     }
 
     // 7. Vanity Keypad Letters translation
-    const keypad = {
-      'a': '2', 'b': '2', 'c': '2', 'd': '3', 'e': '3', 'f': '3',
-      'g': '4', 'h': '4', 'i': '4', 'j': '5', 'k': '5', 'l': '5',
-      'm': '6', 'n': '6', 'o': '6', 'p': '7', 'q': '7', 'r': '7', 's': '7',
-      't': '8', 'u': '8', 'v': '8', 'w': '9', 'x': '9', 'y': '9', 'z': '9'
-    };
-    let keypadText = '';
-    for (let i = 0; i < clean.length; i++) {
-      const char = clean[i];
-      if (keypad[char]) {
-        keypadText += keypad[char];
-      } else if (/\d/.test(char)) {
-        keypadText += char;
-      } else {
-        keypadText += char;
-      }
+    const hasContactKeyword = /\b(phone|call|number|mobile|contact|dial|wa|whatsapp|telegram|insta|fb|ig)\b/i.test(clean);
+    const hasAnyDigit = /\d/.test(clean);
+    
+    let keypadDigits = '';
+    if (hasContactKeyword || hasAnyDigit) {
+      const keypad = {
+        'a': '2', 'b': '2', 'c': '2', 'd': '3', 'e': '3', 'f': '3',
+        'g': '4', 'h': '4', 'i': '4', 'j': '5', 'k': '5', 'l': '5',
+        'm': '6', 'n': '6', 'o': '6', 'p': '7', 'q': '7', 'r': '7', 's': '7',
+        't': '8', 'u': '8', 'v': '8', 'w': '9', 'x': '9', 'y': '9', 'z': '9'
+      };
+      
+      const tokens = clean.split(/[\s\-().,]+/);
+      let wordsSinceKeyword = 999;
+      
+      const translatedTokens = tokens.map(token => {
+        if (/\b(phone|call|number|mobile|contact|dial|wa|whatsapp|telegram|insta|fb|ig)\b/i.test(token)) {
+          wordsSinceKeyword = 0;
+          return token;
+        }
+        wordsSinceKeyword++;
+        if (/\d/.test(token) || wordsSinceKeyword <= 3) {
+          return token.split('').map(char => keypad[char] || char).join('');
+        }
+        return token;
+      });
+      
+      keypadDigits = translatedTokens.join('').replace(/\D/g, '');
     }
     
     const normalDigits = clean.replace(/\D/g, '');
-    const keypadDigits = keypadText.replace(/\D/g, '');
 
     return { clean, normalDigits, keypadDigits };
   };
