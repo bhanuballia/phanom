@@ -3,6 +3,8 @@ const router = express.Router();
 const LiveChatMessage = require('../models/LiveChatMessage');
 const User = require('../models/User');
 const LiveChatPayment = require('../models/LiveChatPayment');
+const DisabledChat = require('../models/DisabledChat');
+
 
 const { protect } = require('../middleware/auth');
 const multer = require('multer');
@@ -51,7 +53,12 @@ router.get('/history/:astrologerId', protect, async (req, res) => {
             .populate('sender', 'name profilePicture')
             .populate('receiver', 'name profilePicture');
 
-        res.json(messages);
+        const isDisabled = await DisabledChat.findOne({ chatId });
+
+        res.json({
+            messages,
+            isDisabled: !!isDisabled
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

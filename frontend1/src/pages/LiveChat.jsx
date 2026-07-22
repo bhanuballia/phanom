@@ -430,6 +430,9 @@ const LiveChat = () => {
     const [socket, setSocket] = useState(null);
     const [violation, setViolation] = useState(null);
     const [attachment, setAttachment] = useState(null);
+    const [isChatDisabled, setIsChatDisabled] = useState(false);
+    const [warningInfo, setWarningInfo] = useState(null);
+
     const [showAstroCard, setShowAstroCard] = useState(false);
     const [astroReport, setAstroReport] = useState(null);
     const [reportLoading, setReportLoading] = useState(false);
@@ -603,7 +606,13 @@ const LiveChat = () => {
             try {
                 setChatLoading(true);
                 const response = await liveChatAPI.getChatHistory(selectedAstrologer._id);
-                setMessages(response.data);
+                if (response.data && Array.isArray(response.data.messages)) {
+                    setMessages(response.data.messages);
+                    setIsChatDisabled(!!response.data.isDisabled);
+                } else {
+                    setMessages(response.data);
+                    setIsChatDisabled(false);
+                }
             } catch (error) {
                 console.error('Error fetching history:', error);
             } finally {
@@ -667,10 +676,24 @@ const LiveChat = () => {
             setTimeout(() => setViolation(null), 5000);
         });
 
+        // Listen for warnings
+        socket.on('live-chat-warning', (data) => {
+            setWarningInfo(data);
+            setTimeout(() => setWarningInfo(null), 8000);
+        });
+
+        // Listen for chat disabled event
+        socket.on('live-chat-disabled', (data) => {
+            setIsChatDisabled(true);
+            setWarningInfo(null);
+        });
+
         return () => {
             socket.off('receive-live-message');
             socket.off('live-chat-signaling', handleSignaling);
             socket.off('live-chat-violation');
+            socket.off('live-chat-warning');
+            socket.off('live-chat-disabled');
             cleanupAudioConnection();
         };
     }, [selectedAstrologer, socket, user]);
@@ -683,6 +706,7 @@ const LiveChat = () => {
 
     const handleSendMessage = (e) => {
         e.preventDefault();
+        if (isChatDisabled) return;
         if ((!newMessage.trim() && !attachment) || !selectedAstrologer || !socket) return;
 
         // Check if Guru Dakshina is required
@@ -1210,6 +1234,28 @@ const LiveChat = () => {
                                         </div>
                                     </div>
                                 )}
+                                {warningInfo && (
+                                    <div className="mb-4 bg-amber-950/80 border border-amber-500/50 rounded-2xl p-4 flex items-start gap-3 text-amber-200 animate-pulse">
+                                        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-amber-400" />
+                                        <div>
+                                            <h4 className="font-extrabold uppercase text-xs tracking-wider text-amber-400">Warning ({warningInfo.count}/{warningInfo.max})</h4>
+                                            <p className="text-xs mt-1 text-amber-300/90 leading-relaxed">
+                                                Your message contained content that violates our community guidelines (detected: {warningInfo.violationType}). Repeating this {warningInfo.max - warningInfo.count} more time(s) will automatically terminate the chat.
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                                {isChatDisabled && (
+                                    <div className="mb-4 bg-red-950/80 border border-red-500/50 rounded-2xl p-4 flex items-start gap-3 text-red-200">
+                                        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-400" />
+                                        <div>
+                                            <h4 className="font-extrabold uppercase text-xs tracking-wider text-red-400">Chat Terminated</h4>
+                                            <p className="text-xs mt-1 text-red-300/90 leading-relaxed">
+                                                This chat session has been automatically disabled due to multiple moderation policy violations. No further messages can be sent.
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
                                 <form onSubmit={handleSendMessage} className="flex gap-3">
                                     <input
                                         type="file"
@@ -1217,12 +1263,13 @@ const LiveChat = () => {
                                         onChange={handleFileSelect}
                                         className="hidden"
                                         accept="image/*,.pdf"
+                                        disabled={isChatDisabled}
                                     />
                                     <button
                                         type="button"
-                                        disabled={uploading}
+                                        disabled={uploading || isChatDisabled}
                                         onClick={() => fileInputRef.current?.click()}
-                                        className={`p-4 rounded-2xl flex items-center justify-center transition-all ${uploading ? 'bg-slate-800 text-slate-600' : 'bg-white/5 hover:bg-white/10 text-slate-400 border border-white/10'
+                                        className={`p-4 rounded-2xl flex items-center justify-center transition-all ${uploading || isChatDisabled ? 'bg-slate-850 text-slate-600 border border-white/5' : 'bg-white/5 hover:bg-white/10 text-slate-400 border border-white/10'
                                             }`}
                                     >
                                         {uploading ? (
@@ -1233,6 +1280,7 @@ const LiveChat = () => {
                                     </button>
                                     <button
                                         type="button"
+                                        disabled={isChatDisabled}
                                         onClick={() => {
                                             if (!isDakshinaPaid) {
                                                 setShowDakshinaModal(true);
@@ -1240,7 +1288,7 @@ const LiveChat = () => {
                                                 setShowQuickQuestions(prev => !prev);
                                             }
                                         }}
-                                        className={`p-4 rounded-2xl flex items-center justify-center border transition-all ${showQuickQuestions
+                                        className={`p-4 rounded-2xl flex items-center justify-center border transition-all ${isChatDisabled ? 'bg-slate-850 text-slate-600 border-white/5' : showQuickQuestions
                                             ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-md animate-pulse'
                                             : 'bg-white/5 hover:bg-white/10 text-slate-400 border-white/10'
                                             }`}
@@ -1251,14 +1299,15 @@ const LiveChat = () => {
 
                                     <input
                                         type="text"
-                                        placeholder="Type your spiritual query..."
-                                        className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-amber-500/50 transition-all shadow-inner"
+                                        placeholder={isChatDisabled ? "Chat disabled due to policy violations." : "Type your spiritual query..."}
+                                        className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-amber-500/50 transition-all shadow-inner disabled:opacity-50"
                                         value={newMessage}
                                         onChange={(e) => setNewMessage(e.target.value)}
+                                        disabled={isChatDisabled}
                                     />
                                     <button
                                         type="submit"
-                                        disabled={(!newMessage.trim() && !attachment) || uploading}
+                                        disabled={(!newMessage.trim() && !attachment) || uploading || isChatDisabled}
                                         className="bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:hover:bg-amber-500 text-slate-950 p-4 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
                                     >
                                         <Send className="w-6 h-6" />

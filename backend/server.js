@@ -33,6 +33,8 @@ const auditRoutes = require('./routes/audit');
 const LiveChatMessage = require('./models/LiveChatMessage');
 const axios = require('axios');
 const moderationService = require('./services/moderationService');
+const DisabledChat = require('./models/DisabledChat');
+
 
 
 // Initialize Express app
@@ -430,6 +432,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Static folder is already covered by global CORS middleware at the top level
 
+// Track live chat violations in-memory (strikes per user/room)
+const chatViolationCounters = {};
+
 // Socket.io for video chat (only if initialized)
 if (io) {
   io.on('connection', (socket) => {
@@ -525,17 +530,59 @@ if (io) {
     socket.on('send-live-message', async (data) => {
       const { senderId, receiverId, text, chatId, attachments } = data;
 
-      // Validate message content if text is present
-      if (text) {
-        const validationResult = await validateChatMessage(text);
-        if (!validationResult.isValid) {
-          socket.emit('live-chat-violation', {
-            violationType: validationResult.violationType,
-            originalMessage: text
-          });
+      try {
+        // Check if chat is already disabled in DB
+        const isDisabled = await DisabledChat.findOne({ chatId });
+        if (isDisabled) {
+          socket.emit('live-chat-disabled', { chatId, reason: 'Chat has been disabled due to policy violations.' });
           return;
         }
+
+        // Validate message content if text is present
+        if (text) {
+          const validationResult = await validateChatMessage(text);
+          if (!validationResult.isValid) {
+            const trackingKey = `${chatId}_${senderId}`;
+            chatViolationCounters[trackingKey] = (chatViolationCounters[trackingKey] || 0) + 1;
+            const currentCount = chatViolationCounters[trackingKey];
+
+            if (currentCount >= 3) {
+              // Disable chat in DB
+              await DisabledChat.findOneAndUpdate(
+                { chatId },
+                { chatId, disabledAt: new Date(), reason: 'three_strikes_policy_violation' },
+                { upsert: true, new: true }
+              );
+
+              // Create system warning message in DB
+              const systemMsg = new LiveChatMessage({
+                sender: senderId,
+                receiver: receiverId,
+                chatId: chatId,
+                message: '[System: This chat has been disabled due to multiple safety policy violations.]'
+              });
+              const savedSystemMsg = await systemMsg.save();
+              const populatedSystemMsg = await LiveChatMessage.findById(savedSystemMsg._id)
+                .populate('sender', 'name profilePicture');
+
+              // Broadcast termination to room
+              io.to(chatId).emit('receive-live-message', populatedSystemMsg);
+              io.to(chatId).emit('live-chat-disabled', { chatId, reason: 'policy_violation' });
+            } else {
+              socket.emit('live-chat-warning', {
+                violationType: validationResult.violationType,
+                originalMessage: text,
+                count: currentCount,
+                max: 3
+              });
+            }
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Error handling send-live-message pre-check:', err);
       }
+
 
       try {
         // 1. Save to Database for history & admin access

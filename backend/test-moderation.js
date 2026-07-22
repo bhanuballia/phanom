@@ -35,7 +35,12 @@ const testCases = [
   // 8. Romance/scam/threats
   { text: "be my girlfriend", expectedValid: false, expectedViolation: "contact information request" },
   { text: "I'll kill you if you lie", expectedValid: false, expectedViolation: "threat / abusive language" },
-  { text: "Send me money via UPI", expectedValid: false, expectedViolation: "scam / financial request" }
+  { text: "Send me money via UPI", expectedValid: false, expectedViolation: "scam / financial request" },
+
+  // 9. Fuzzy matching / Misspelled variants
+  { text: "when i bhosarike", expectedValid: false, expectedViolation: "profanity / abusive language" },
+  { text: "this is fukc", expectedValid: false, expectedViolation: "profanity / abusive language" },
+  { text: "you lazy b1tch", expectedValid: false, expectedViolation: "profanity / abusive language" }
 ];
 
 console.log("=== RUNNING CONTENT MODERATION TESTS ===");

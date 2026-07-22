@@ -77,6 +77,82 @@ const normalizeWord = (word) => {
   return normalized;
 };
 
+// Calculate Levenshtein distance between two strings
+const getLevenshteinDistance = (a, b) => {
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+
+  const matrix = [];
+
+  // Increment along the first column of each row
+  for (let i = 0; i <= b.length; i++) {
+    matrix[i] = [i];
+  }
+
+  // Increment each column in the first row
+  for (let j = 0; j <= a.length; j++) {
+    matrix[0][j] = j;
+  }
+
+  // Fill in the rest of the matrix
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1, // substitution
+          Math.min(
+            matrix[i][j - 1] + 1, // insertion
+            matrix[i - 1][j] + 1  // deletion
+          )
+        );
+      }
+    }
+  }
+
+  return matrix[b.length][a.length];
+};
+
+// Check if two words match fuzzy constraints
+const isFuzzyMatch = (word, dictWord) => {
+  // Ignore short words of length less than 4
+  if (word.length < 4) return false;
+
+  // Filter comparisons of vastly different lengths to keep calculations fast
+  if (Math.abs(word.length - dictWord.length) > 1) return false;
+
+  // Specific false-positive whitelist protection using normalized word forms
+  const falsePositives = [
+    { w: 'helo', d: 'hel' },
+    { w: 'helo', d: 'helno' },
+    { w: 'want', d: 'wank' },
+    { w: 'carer', d: 'cares' },
+    { w: 'clas', d: 'as' },
+    { w: 'glas', d: 'as' },
+    { w: 'pas', d: 'as' },
+    { w: 'gras', d: 'as' }
+  ];
+
+  if (falsePositives.some(item => 
+    (word === item.w && dictWord === item.d) || 
+    (word === item.d && dictWord === item.w)
+  )) {
+    return false;
+  }
+
+  const distance = getLevenshteinDistance(word, dictWord);
+
+  // Constraints:
+  // - Length 4-6: allow max 1 change (covers "fukc" -> "fuck")
+  // - Length 7+: allow max 2 changes (covers "bhosarike" -> "bhosdike")
+  if (word.length >= 7) {
+    return distance <= 2;
+  }
+  return distance <= 1;
+};
+
+
 // Main normalization of full text
 const normalizeText = (text) => {
   // 1. Convert to lowercase
@@ -157,10 +233,17 @@ const validateMessage = (messageText) => {
 
     const normalizedWord = normalizeWord(word);
     
-    // Check if the normalized word matches any of our bad words
+    // Check if the normalized word matches any of our bad words (exact & fuzzy matching)
     for (const badWord of allProfanityAndAbuse) {
       const normalizedBad = normalizeWord(badWord);
+      
+      // 1. Exact match check
       if (normalizedWord === normalizedBad || word.toLowerCase() === badWord.toLowerCase()) {
+        return { isValid: false, violationType: 'profanity / abusive language' };
+      }
+
+      // 2. Fuzzy match check
+      if (isFuzzyMatch(normalizedWord, normalizedBad)) {
         return { isValid: false, violationType: 'profanity / abusive language' };
       }
     }
