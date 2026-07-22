@@ -606,13 +606,13 @@ const LiveChat = () => {
             try {
                 setChatLoading(true);
                 const response = await liveChatAPI.getChatHistory(selectedAstrologer._id);
-                if (response.data && Array.isArray(response.data.messages)) {
-                    setMessages(response.data.messages);
-                    setIsChatDisabled(!!response.data.isDisabled);
-                } else {
-                    setMessages(response.data);
-                    setIsChatDisabled(false);
-                }
+                const messagesData = Array.isArray(response.data)
+                    ? response.data
+                    : (response.data?.messages || []);
+                setMessages(messagesData);
+
+                const disabledHeader = response.headers && (response.headers['x-chat-disabled'] || response.headers['X-Chat-Disabled']);
+                setIsChatDisabled(disabledHeader === 'true' || (response.data && !!response.data.isDisabled));
             } catch (error) {
                 console.error('Error fetching history:', error);
             } finally {

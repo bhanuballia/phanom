@@ -55,10 +55,8 @@ router.get('/history/:astrologerId', protect, async (req, res) => {
 
         const isDisabled = await DisabledChat.findOne({ chatId });
 
-        res.json({
-            messages,
-            isDisabled: !!isDisabled
-        });
+        res.set('X-Chat-Disabled', isDisabled ? 'true' : 'false');
+        res.json(messages);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
