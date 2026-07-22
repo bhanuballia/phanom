@@ -920,12 +920,11 @@ const LiveChat = () => {
                                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                                             </span>
                                             <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Voice Live</span>
-                                            
+
                                             <button
                                                 onClick={toggleLocalMute}
-                                                className={`p-1 rounded-full transition-colors ${
-                                                    isUserMuted ? 'bg-red-500 text-white' : 'hover:bg-white/10 text-emerald-400'
-                                                }`}
+                                                className={`p-1 rounded-full transition-colors ${isUserMuted ? 'bg-red-500 text-white' : 'hover:bg-white/10 text-emerald-400'
+                                                    }`}
                                                 title={isUserMuted ? "Unmute Audio" : "Mute Audio"}
                                             >
                                                 {isUserMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -1285,7 +1284,7 @@ const LiveChat = () => {
                         >
                             <X className="w-4 h-4" />
                         </button>
-                        
+
                         <div className="text-center mt-3 mb-6">
                             <span className="text-2xl">🌸</span>
                             <h3 className="text-lg font-black uppercase tracking-wider text-white mt-2">Offer Guru Dakshina</h3>
@@ -1302,12 +1301,18 @@ const LiveChat = () => {
                                     onClick={async () => {
                                         try {
                                             const response = await liveChatAPI.createDakshinaPayment(selectedAstrologer._id, amount);
-                                            const payment = response.data;
+                                            const paymentData = response.data;
+                                            const payment = paymentData.payment || paymentData;
+
+                                            if (!payment || !payment._id) {
+                                                throw new Error('No payment ID returned from gateway.');
+                                            }
+
                                             // Redirect to mock payment page
                                             navigate(`/payment?paymentId=${payment._id}&amount=${amount}&astroName=${encodeURIComponent(selectedAstrologer.name)}&astrologerId=${selectedAstrologer._id}`);
                                         } catch (err) {
                                             console.error('Error creating payment:', err);
-                                            alert('Failed to initialize payment.');
+                                            alert(err.message || 'Failed to initialize payment.');
                                         }
                                     }}
                                     className="bg-white/5 hover:bg-amber-500 hover:text-slate-950 border border-white/5 rounded-2xl py-3 text-sm font-extrabold text-white transition-all duration-200 active:scale-95 flex flex-col items-center justify-center gap-0.5"

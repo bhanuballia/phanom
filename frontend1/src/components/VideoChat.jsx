@@ -52,6 +52,7 @@ const VideoChat = () => {
   const [isChatDisabled, setIsChatDisabled] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null); // time in seconds
   const [showTimeLimitModal, setShowTimeLimitModal] = useState(false);
+  const [showSilenceWarning, setShowSilenceWarning] = useState(false);
 
   // WebRTC configuration
   const servers = {
@@ -192,6 +193,8 @@ const VideoChat = () => {
         if (event.results[i].isFinal) {
           const transcript = event.results[i][0].transcript;
           console.log('Spoken text detected:', transcript);
+          
+          // Validate locally for PII/Contact Info
           const validation = validateMessage(transcript);
           if (!validation.isValid) {
             handleViolation(validation.violationType);
@@ -208,6 +211,11 @@ const VideoChat = () => {
                 }
               });
             }
+          }
+
+          // Send transcript to server for profanity and abuse validation against moderation files
+          if (socketRef.current) {
+            socketRef.current.emit('validate-spoken-text', { text: transcript });
           }
         }
       }
@@ -286,6 +294,84 @@ const VideoChat = () => {
 
     return () => clearInterval(interval);
   }, [connectionStatus, appointment]);
+
+  // Web Audio based Suspicious Silence Detection
+  useEffect(() => {
+    if (connectionStatus !== 'connected' || !appointment || !localStreamRef.current) return;
+
+    let audioContext = null;
+    let analyser = null;
+    let source = null;
+    let dataArray = null;
+
+    try {
+      const audioTracks = localStreamRef.current.getAudioTracks();
+      if (audioTracks.length > 0) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source = audioContext.createMediaStreamSource(localStreamRef.current);
+        source.connect(analyser);
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+      }
+    } catch (err) {
+      console.warn('Web Audio API failed to initialize:', err);
+    }
+
+    let silenceSeconds = 0;
+    const interval = setInterval(() => {
+      // We only flag silence if their video (camera) is active
+      if (!isVideoEnabled) {
+        silenceSeconds = 0;
+        setShowSilenceWarning(false);
+        return;
+      }
+
+      let isSilent = false;
+
+      if (!isAudioEnabled) {
+        // If mic is explicitly muted via UI, they are silent
+        isSilent = true;
+      } else if (analyser && dataArray) {
+        // Measure real-time mic volume level
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += dataArray[i];
+        }
+        const averageVolume = sum / dataArray.length;
+        isSilent = averageVolume < 8; // Threshold of 8 for silence (range is 0-255)
+      } else {
+        // Fallback: if analyzer failed, do not flag silence to avoid false positives
+        isSilent = false;
+      }
+
+      if (isSilent) {
+        silenceSeconds += 1;
+        if (silenceSeconds >= 8) {
+          setShowSilenceWarning(true);
+          
+          // Emit suspicious silence warning to backend for logging
+          if (socketRef.current) {
+            socketRef.current.emit('suspicious-silence', {
+              roomId: appointment.roomId,
+              userId: user._id
+            });
+          }
+        }
+      } else {
+        silenceSeconds = 0;
+        setShowSilenceWarning(false);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      if (audioContext && audioContext.state !== 'closed') {
+        audioContext.close().catch(e => console.error('Error closing AudioContext:', e));
+      }
+    };
+  }, [connectionStatus, appointment, isVideoEnabled, isAudioEnabled]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -412,6 +498,26 @@ const VideoChat = () => {
     socketRef.current.on('chat-violation', (data) => {
       console.log('Chat violation detected by server:', data);
       handleViolation(data.violationType);
+    });
+
+    // Handle spoken violations from server
+    socketRef.current.on('spoken-violation', (data) => {
+      console.log('Spoken violation detected by server:', data);
+      handleViolation(`${data.violationType} (spoken)`);
+      
+      // Notify other peer via socket about the spoken violation
+      if (socketRef.current) {
+        socketRef.current.emit('chat-message', {
+          roomId: appointment.roomId,
+          message: {
+            text: `[System: Spoken violation detected - user spoke ${data.violationType}]`,
+            sender: 'System',
+            senderId: 'system',
+            timestamp: new Date().toISOString(),
+            isSystem: true
+          }
+        });
+      }
     });
   };
 
@@ -736,6 +842,15 @@ const VideoChat = () => {
             playsInline
             className="w-full h-full object-cover bg-gray-800"
           />
+
+          {/* Suspicious Silence Warning Banner */}
+          {showSilenceWarning && (
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-600/95 text-white px-6 py-3 rounded-lg shadow-lg border border-red-500 max-w-md text-center z-10 animate-pulse">
+              <p className="font-semibold text-sm">
+                ⚠️ We notice you are silent. Please speak clearly. Silent gesturing is against policy and may lead to session termination.
+              </p>
+            </div>
+          )}
 
           {/* Local Video */}
           <div className="absolute bottom-4 right-4 w-48 h-36 bg-gray-800 rounded-lg overflow-hidden border-2 border-gray-600">

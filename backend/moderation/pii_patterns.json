@@ -1,0 +1,33 @@
+{
+  "phone": [
+    "\\b\\d{10}\\b",
+    "\\b\\d{3}[-.\\s]?\\d{3}[-.\\s]?\\d{4}\\b",
+    "\\b\\+?\\d{1,4}[-.\\s]+\\d{1,4}[-.\\s]+\\d{1,4}[-.\\s]+\\d{1,9}\\b",
+    "\\b\\d{5}[-.\\s]?\\d{5}\\b",
+    "\\b(phone|call|number|mobile|contact)[\\s:]*\\d"
+  ],
+  "email": [
+    "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b",
+    "\\b(email|mail|gmail|yahoo|hotmail|outlook)[\\s:]*[A-Za-z0-9._%+-]*@?[A-Za-z0-9.-]*\\b",
+    "[A-Za-z0-9._%+-]+\\s*([@]|\\[at\\]|\\(at\\)|\\bat\\b)\\s*[A-Za-z0-9.-]+\\s*([.]|\\[dot\\]|\\(dot\\)|\\bdot\\b)\\s*[A-Za-z]{2,}"
+  ],
+  "whatsapp": [
+    "\\b(whatsapp|whats app|wa|watsapp)\\b",
+    "\\b(whatsapp|whats app|wa)[\\s:]*\\+?\\d"
+  ],
+  "instagram": [
+    "\\b(instagram|insta|ig)\\b",
+    "\\b@[A-Za-z0-9._]+\\b",
+    "\\b(instagram|insta|ig)[\\s:]*[A-Za-z0-9._]"
+  ],
+  "facebook": [
+    "\\b(facebook|fb|face book)\\b",
+    "\\bfacebook\\.com\\b",
+    "\\b(facebook|fb)[\\s:]*[A-Za-z0-9._]"
+  ],
+  "telegram": [
+    "\\b(telegram|tele|tg|discord|dc)\\b",
+    "\\b(t\\s*\\.\\s*me|t\\(dot\\)me|telegram\\.me)\\b",
+    "\\b(telegram|tele|tg|discord|dc)[\\s:]*[A-Za-z0-9._]"
+  ]
+}

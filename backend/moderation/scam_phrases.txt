@@ -1,0 +1,9 @@
+UPI
+Paytm
+Google Pay
+PhonePe
+bank account
+IFSC
+OTP
+credit card
+debit card

@@ -32,6 +32,7 @@ const geoRoutes = require('./routes/geo');
 const auditRoutes = require('./routes/audit');
 const LiveChatMessage = require('./models/LiveChatMessage');
 const axios = require('axios');
+const moderationService = require('./services/moderationService');
 
 
 // Initialize Express app
@@ -126,6 +127,12 @@ connectDB();
 
 // Validation function for chat messages
 const validateChatMessage = async (message) => {
+  // First, check with the new moderationService dictionaries and normalization rules
+  const moderationResult = moderationService.validateMessage(message);
+  if (!moderationResult.isValid) {
+    return moderationResult;
+  }
+
   const lowerMessage = message.toLowerCase();
 
   // Helper: Comprehensive contact info decoder
@@ -476,6 +483,27 @@ if (io) {
 
       // If message is valid, broadcast to all users in room
       io.to(roomId).emit('chat-message', message);
+    });
+
+    // Handle real-time speech validation
+    socket.on('validate-spoken-text', async (data) => {
+      const { text } = data;
+      if (!text || typeof text !== 'string') return;
+
+      const validationResult = await validateChatMessage(text);
+      if (!validationResult.isValid) {
+        // Send speech violation warning back to the speaker
+        socket.emit('spoken-violation', {
+          violationType: validationResult.violationType,
+          originalMessage: text
+        });
+      }
+    });
+
+    // Handle suspicious silence flags
+    socket.on('suspicious-silence', (data) => {
+      const { roomId, userId } = data;
+      console.warn(`[AUDIT FLAG] Suspicious Silence detected in room ${roomId} by user ${userId} (Video ON, Audio silent for >8s).`);
     });
 
     // --- LIVE CHAT (REAL PERSON) CHANNELS ---
