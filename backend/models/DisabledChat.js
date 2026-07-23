@@ -18,4 +18,7 @@ const disabledChatSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Automatically delete the document 24 hours (86400 seconds) after disabledAt
+disabledChatSchema.index({ disabledAt: 1 }, { expireAfterSeconds: 86400 });
+
 module.exports = mongoose.model('DisabledChat', disabledChatSchema);
