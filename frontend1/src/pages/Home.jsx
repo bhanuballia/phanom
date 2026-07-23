@@ -620,7 +620,7 @@ const Home = () => {
         <div style={{ height: `${64 + heroShortcutHeight}px` }} />
 
         {/* Hero Video Section - Animation starts from bottom of flexbox */}
-        <div className="pt-0">
+        <div className="pt-2">
           <section
             ref={heroVideoRef}
             className="relative w-full overflow-hidden py-0 flex items-end justify-center"
@@ -633,7 +633,7 @@ const Home = () => {
             }}
           >
             <div className="relative flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-2 gap-2 items-start -translate-x-.5 lg:-translate-x-0">
-              <div className="relative w-full lg:flex-[2.5]">
+              <div className="relative w-full lg:flex-[2.1]">
                 <div className="relative w-full">
                   <video
                     key={currentVideoIndex}
@@ -642,7 +642,7 @@ const Home = () => {
                     muted
                     playsInline
                     className="w-full rounded-2xl object-cover shadow-2xl"
-                    style={{ height: '320px', objectFit: 'cover' }}
+                    style={{ height: '450px', objectFit: 'cover' }}
                   >
                     <source src={videos[currentVideoIndex]} type="video/mp4" />
                     Your browser does not support the video tag.
@@ -656,7 +656,7 @@ const Home = () => {
 
                 <div className="relative w-full bg-gradient-to-br from-amber-500/20 via-purple-500/20 to-pink-500/20 border border-white/20 rounded-2xl p-6 backdrop-blur-xl shadow-2xl shadow-black/30">
                   <div className="text-center space-y-4">
-                    <h3 className="text-xl md:text-2xl font-bold text-white leading-tight min-h-[8.1rem] flex items-center justify-center animate-fadeIn">
+                    <h3 className="text-xl md:text-2xl font-bold text-white leading-tight min-h-[16.5rem] flex items-center justify-center animate-fadeIn">
                       {consultationSlogans[sloganIndex]}
                     </h3>
                     <h3 className="text-xl md:text-2xl font-bold text-white leading-tight min-h-[3rem] flex items-center justify-center animate-fadeIn">
