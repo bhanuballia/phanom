@@ -131,7 +131,9 @@ const isFuzzyMatch = (word, dictWord) => {
     { w: 'clas', d: 'as' },
     { w: 'glas', d: 'as' },
     { w: 'pas', d: 'as' },
-    { w: 'gras', d: 'as' }
+    { w: 'gras', d: 'as' },
+    { w: 'love', d: 'lovey' },
+    { w: 'love', d: 'loveu' }
   ];
 
   if (falsePositives.some(item => 
