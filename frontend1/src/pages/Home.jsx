@@ -144,6 +144,10 @@ const knowledgeCards = [
   {
     tag: 'Remedies',
     title: 'Top 7 fixes for retrograde Saturn in 10th house'
+  },
+  {
+    tag: 'Gochar Ratna',
+    title: 'Which gemstone should be worn according to the planets'
   }
 ];
 
@@ -165,6 +169,11 @@ const heroShortcutItems = [
     accent: 'from-blue-400 to-indigo-500'
   },
   {
+    label: 'Gaj Kesari Yog',
+    path: '/booking',
+    accent: 'from-yellow-400 to-amber-500'
+  },
+  {
     label: 'Rahu Dosh',
     path: '/booking',
     accent: 'from-emerald-400 to-teal-500'
@@ -176,6 +185,16 @@ const heroShortcutItems = [
   },
   {
     label: 'Pitra Dosh',
+    path: '/booking',
+    accent: 'from-green-400 to-teal-500',
+  },
+  {
+    label: 'Sadesati Dosh',
+    path: '/booking',
+    accent: 'from-rose-400 to-orange-500',
+  },
+  {
+    label: 'Kalsarp Dosh',
     path: '/booking',
     accent: 'from-green-400 to-teal-500',
   }
@@ -309,6 +328,47 @@ const Home = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const braceletImages = useMemo(() => [
+    '/bracelet/bracelet1.png',
+    '/bracelet/bracelet2.png',
+    '/bracelet/braclet3.png',
+    '/bracelet/bracelet4.png',
+    '/bracelet/bracelet5.png',
+    '/bracelet/bracelet6.png',
+    '/bracelet/bracelet7.png',
+    '/bracelet/bracelet8.png',
+    '/bracelet/bracelet9.png'
+  ], []);
+  const [currentBraceletIndex, setCurrentBraceletIndex] = useState(0);
+
+  const heroMediaItems = useMemo(() => [
+    { type: 'video', src: '/images/gem1.mp4' },
+    { type: 'image', src: '/dosha/D1.png' },
+    { type: 'image', src: '/dosha/D2.png' },
+    { type: 'image', src: '/dosha/D3.png' },
+    { type: 'image', src: '/dosha/D4.png' },
+    { type: 'image', src: '/dosha/D5.png' },
+    { type: 'image', src: '/dosha/D6.png' },
+    { type: 'image', src: '/dosha/D7.png' },
+    { type: 'image', src: '/dosha/D8.png' }
+  ], []);
+
+  const [heroMediaIndex, setHeroMediaIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroMediaIndex((prev) => (prev + 1) % heroMediaItems.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [heroMediaItems.length]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentBraceletIndex((prev) => (prev + 1) % braceletImages.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [braceletImages.length]);
+
   useEffect(() => {
     const posterLines = [
       "ग्रहों की बदलती चाल आपके जीवन को कैसे प्रभावित करेगी? अपनी कुंडली के सटीक विश्लेषण और सही समाधान के लिए आज ही संपर्क करें।",
@@ -418,13 +478,69 @@ const Home = () => {
       try {
         setIsAstrologerLoading(true);
         const response = await authAPI.getAstrologers();
-        const available = (response.data?.astrologers || []).filter(
+        const allAstrologers = response.data?.astrologers || [];
+        let available = allAstrologers.filter(
           (astrologer) => astrologer.isAvailable !== false
         );
+
+        // Pad with other astrologers in the system if available count is less than 3
+        if (available.length < 3) {
+          const offlineAstrologers = allAstrologers.filter(
+            (astrologer) => !available.some((a) => a._id === astrologer._id)
+          );
+          available = [...available, ...offlineAstrologers];
+        }
+
+        // Pad with static mock experts if still less than 3
+        if (available.length < 3) {
+          const mockExperts = [
+            {
+              _id: 'mock-1',
+              name: 'Hony Singh K...',
+              languages: ['Hindi', 'English'],
+              specialization: ['Vedic Expert']
+            },
+            {
+              _id: 'mock-2',
+              name: 'Sarika',
+              languages: ['Hindi', 'English'],
+              specialization: ['Vedic Expert']
+            },
+            {
+              _id: 'mock-3',
+              name: 'Sonakshi',
+              languages: ['Hindi', 'English'],
+              specialization: ['Vedic Expert']
+            }
+          ];
+          const needed = 3 - available.length;
+          available = [...available, ...mockExperts.slice(0, needed)];
+        }
+
         setAvailableAstrologers(available);
       } catch (err) {
         console.error('Failed to fetch available astrologers', err);
-        setAvailableAstrologers([]);
+        // Fallback entirely to mock experts if API fails
+        setAvailableAstrologers([
+          {
+            _id: 'mock-1',
+            name: 'Hony Singh K...',
+            languages: ['Hindi', 'English'],
+            specialization: ['Vedic Expert']
+          },
+          {
+            _id: 'mock-2',
+            name: 'Sarika',
+            languages: ['Hindi', 'English'],
+            specialization: ['Vedic Expert']
+          },
+          {
+            _id: 'mock-3',
+            name: 'Sonakshi',
+            languages: ['Hindi', 'English'],
+            specialization: ['Vedic Expert']
+          }
+        ]);
       } finally {
         setIsAstrologerLoading(false);
       }
@@ -471,7 +587,7 @@ const Home = () => {
           ref={heroShortcutRef}
           className="fixed top-[64px] left-0 right-0 z-40 px-3 sm:px-4 lg:px-5 pointer-events-none"
         >
-          <section className="w-full max-w-5xl mx-auto bg-white/5 border border-white/10 rounded-2xl px-3 py-2.5 backdrop-blur-md shadow-md shadow-black/20 pointer-events-auto">
+          <section className="w-full max-w-6xl mx-auto bg-white/5 border border-white/10 rounded-2xl px-3 py-2.5 backdrop-blur-md shadow-md shadow-black/20 pointer-events-auto">
             <div className="flex flex-nowrap items-center gap-2 overflow-x-auto scrollbar-hide">
               {heroShortcutItems.map((item) => {
                 if (item.isExternal) {
@@ -509,15 +625,15 @@ const Home = () => {
             ref={heroVideoRef}
             className="relative w-full overflow-hidden py-0 flex items-end justify-center"
             style={{
-              minHeight: '280px',
+              minHeight: '290px',
               marginTop: 0,
               animation: 'slideUpFromBottom 0.8s ease-out forwards',
               animationDelay: '0.1s',
               opacity: 0
             }}
           >
-            <div className="relative flex flex-col lg:flex-row w-full max-w-6xl mx-auto px-2 gap-2 items-start -translate-x-.5 lg:-translate-x-14">
-              <div className="relative w-full lg:flex-[1.9]">
+            <div className="relative flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-2 gap-2 items-start -translate-x-.5 lg:-translate-x-0">
+              <div className="relative w-full lg:flex-[2.5]">
                 <div className="relative w-full">
                   <video
                     key={currentVideoIndex}
@@ -526,7 +642,7 @@ const Home = () => {
                     muted
                     playsInline
                     className="w-full rounded-2xl object-cover shadow-2xl"
-                    style={{ height: '280px', objectFit: 'cover' }}
+                    style={{ height: '320px', objectFit: 'cover' }}
                   >
                     <source src={videos[currentVideoIndex]} type="video/mp4" />
                     Your browser does not support the video tag.
@@ -536,10 +652,11 @@ const Home = () => {
               </div>
 
               {/* Consultation Card */}
-              <div className="relative w-full lg:flex-[1.2] flex items-center justify-center">
+              <div className="relative w-full lg:flex-[1] flex flex-col gap-3 items-center justify-center">
+
                 <div className="relative w-full bg-gradient-to-br from-amber-500/20 via-purple-500/20 to-pink-500/20 border border-white/20 rounded-2xl p-6 backdrop-blur-xl shadow-2xl shadow-black/30">
                   <div className="text-center space-y-4">
-                    <h3 className="text-xl md:text-2xl font-bold text-white leading-tight min-h-[5rem] flex items-center justify-center animate-fadeIn">
+                    <h3 className="text-xl md:text-2xl font-bold text-white leading-tight min-h-[8.1rem] flex items-center justify-center animate-fadeIn">
                       {consultationSlogans[sloganIndex]}
                     </h3>
                     <h3 className="text-xl md:text-2xl font-bold text-white leading-tight min-h-[3rem] flex items-center justify-center animate-fadeIn">
@@ -555,25 +672,6 @@ const Home = () => {
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-purple-500/5 to-pink-500/5 pointer-events-none rounded-2xl"></div>
                 </div>
-              </div>
-
-              <div className="relative w-full lg:flex-[1.2] flex flex-col gap-4 justify-center lg:justify-start">
-                {/* Alternating side animations */}
-                <Link to="/shop" className="relative w-full translate-x-2 lg:translate-x-8 transition-opacity duration-500 block hover:opacity-95 cursor-pointer">
-                  <video
-                    key={activeSideAnimation}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full rounded-2xl object-cover shadow-2xl border border-white/10 transition-transform duration-300 hover:scale-[1.02]"
-                    style={{ height: '280px', objectFit: 'cover' }}
-                  >
-                    <source src={activeSideAnimation === 0 ? "/images/gem1.mp4" : "/images/rudra5.mp4"} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                  <div className="absolute inset-0 bg-gradient-to-b from-slate-950/0 via-slate-950/20 to-slate-950/60 pointer-events-none rounded-2xl" />
-                </Link>
               </div>
             </div>
           </section>
@@ -594,13 +692,85 @@ const Home = () => {
 
 
               <div className="relative z-10">
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white  mb-2">
-                    Explore Our Services
-                  </h2>
-                  <p className="text-slate-300 text-lg">
-                    Discover all the features and services we offer
-                  </p>
+                {/* Restructured Header Wrapper */}
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8 w-full">
+                  {/* 1. Left Side Buttons */}
+                  <div className="grid grid-cols-2 gap-3 order-2 md:order-1">
+                    <Link
+                      to="/booking"
+                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      GajKesari Yog
+                    </Link>
+                    <Link
+                      to="/booking"
+                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      Raj Yog
+                    </Link>
+                    <Link
+                      to="/booking"
+                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      Dhan Yog
+                    </Link>
+                    <Link
+                      to="/booking"
+                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      Panch Mahapurush Yog
+                    </Link>
+                    <Link
+                      to="/booking"
+                      className="col-span-2 text-center px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      Malvaya Yog
+                    </Link>
+                  </div>
+
+                  {/* 2. Centered Header Text */}
+                  <div className="text-center order-1 md:order-2">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                      Explore Our Services
+                    </h2>
+                    <p className="text-slate-300 text-sm">
+                      Discover all the features and services we offer
+                    </p>
+                  </div>
+
+                  {/* 3. Right Side Buttons */}
+                  <div className="grid grid-cols-2 gap-3 order-3">
+                    <Link
+                      to="/booking"
+                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      Marriage
+                    </Link>
+                    <Link
+                      to="/booking"
+                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      Carrier
+                    </Link>
+                    <Link
+                      to="/booking"
+                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      Finance
+                    </Link>
+                    <Link
+                      to="/booking"
+                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      Health
+                    </Link>
+                    <Link
+                      to="/booking"
+                      className="col-span-2 text-center px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                    >
+                      Study Abroad
+                    </Link>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                   {exploreServices.map((item) => {
@@ -684,12 +854,35 @@ const Home = () => {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(251,191,36,0.1),_transparent_50%)] pointer-events-none"></div>
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(168,85,247,0.1),_transparent_50%)] pointer-events-none"></div>
 
-              <div className="relative z-10 grid lg:grid-cols-2 gap-10">
-                <div className="space-y-8">
+              <div className="relative z-10 grid lg:grid-cols-12 gap-12">
+                <div className="lg:col-span-6 space-y-8">
+                  <div className="relative w-full overflow-hidden rounded-3xl border border-white/15 shadow-xl mb-6 h-70">
+                    {heroMediaItems[heroMediaIndex]?.type === 'video' ? (
+                      <video
+                        key={heroMediaItems[heroMediaIndex].src}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                      >
+                        <source src={heroMediaItems[heroMediaIndex].src} type="video/mp4" />
+                      </video>
+                    ) : (
+                      <img
+                        key={heroMediaItems[heroMediaIndex]?.src}
+                        src={heroMediaItems[heroMediaIndex]?.src}
+                        alt="Hero rotating media"
+                        className="w-full h-full object-cover animate-fadeIn"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-950/40 pointer-events-none" />
+                  </div>
+
                   <div className="inline-flex items-center space-x-3 bg-white/10 border border-white/20 rounded-full px-5 py-2">
                     <Sparkles className="h-4 w-4 text-amber-300" />
                     <span className="text-xs uppercase tracking-[0.4em] text-amber-200">
-                      Inspired by Experinced  Astrologers
+                      Inspired by Experienced Astrologers
                     </span>
                   </div>
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-white">
@@ -727,7 +920,7 @@ const Home = () => {
                   </div>
                 </div>
 
-                <div className="space-y-5">
+                <div className="lg:col-span-6 space-y-5">
                   <div className="bg-white/5 border border-white/15 rounded-3xl p-4 lg:p-5 backdrop-blur-xl shadow-2xl shadow-black/30">
                     <div className="flex items-center justify-between mb-4">
                       <div>
@@ -792,7 +985,7 @@ const Home = () => {
                                 <Link
                                   key={`${astrologer._id || astrologer.name}-${index}`}
                                   to="/booking"
-                                  className="min-w-[135px] max-w-[135px] bg-white/10 border border-white/10 rounded-2xl p-3 flex flex-col items-center text-center text-white hover:border-white/30 hover:bg-white/15 transition-all duration-200 shadow-md shadow-black/20"
+                                  className="flex-1 min-w-[115px] max-w-[135px] bg-white/10 border border-white/10 rounded-2xl p-2.5 flex flex-col items-center text-center text-white hover:border-white/30 hover:bg-white/15 transition-all duration-200 shadow-md shadow-black/20"
                                 >
                                   <div className="relative w-20 h-20 rounded-2xl overflow-hidden border border-white/20 mb-2">
                                     {imageSrc ? (
@@ -856,6 +1049,17 @@ const Home = () => {
                       </p>
                     </form>
                   </div>
+
+                  <Link
+                    to="/shop"
+                    className="bg-white/5 border border-white/15 rounded-3xl p-4 backdrop-blur-xl overflow-hidden flex flex-col items-center cursor-pointer hover:border-white/30 transition-all duration-300 block"
+                  >
+                    <img
+                      src={braceletImages[currentBraceletIndex]}
+                      alt="Inspired Astrology Bracelet"
+                      className="w-full h-auto max-h-[250px] object-cover rounded-2xl transition-transform duration-300 hover:scale-[1.02]"
+                    />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -982,6 +1186,22 @@ const Home = () => {
 
           <section className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
             <div className="rounded-[32px] bg-gradient-to-br from-purple-700/80 to-slate-900 border border-white/10 p-8 space-y-4">
+              {/* Askarsan Yantra Image */}
+              <Link
+                to="/shop"
+                className="relative w-full rounded-2xl overflow-hidden border border-white/15 shadow-xl block cursor-pointer group"
+              >
+                <img
+                  src="/yantra/Askarsan%20Yantra.jpg"
+                  alt="Askarsan Yantra"
+                  className="w-full h-70 object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/10 via-slate-950/20 to-transparent p-4 flex justify-between items-end">
+                  <span className="text-sm md:text-base font-bold text-white uppercase tracking-wider  px-3 py-1 rounded-lg">
+                    Askarsan Yantra (FOR MORE YANTRA CLICK ON IMAGE)
+                  </span>
+                </div>
+              </Link>
               <p className="text-xs uppercase tracking-[0.4em] text-purple-200">Consultations</p>
               <h2 className="text-3xl font-bold">Talk to India&apos;s leading astrologers 24/7</h2>
               <p className="text-slate-200">
@@ -1048,7 +1268,15 @@ const Home = () => {
               </div>
             </div>
 
-            <div className="rounded-[32px] bg-gradient-to-br from-amber-500/80 via-pink-500/50 to-purple-600/60 border border-white/10 p-8">
+            <div className="rounded-[32px] bg-gradient-to-br from-amber-500/80 via-pink-500/50 to-purple-600/60 border border-white/10 p-8 space-y-4">
+              {/* Rudrakash Image */}
+              <div className="w-full rounded-2xl overflow-hidden border border-white/15 shadow-xl">
+                <img
+                  src="/images/Rudrakash.png"
+                  alt="Rudraksha"
+                  className="w-full h-70 object-cover"
+                />
+              </div>
               <p className="text-xs uppercase tracking-[0.4em] text-amber-200">Astro shop</p>
               <h2 className="text-3xl font-bold mt-2">Sacred store curated by experts</h2>
               <p className="text-slate-200 mt-4">
@@ -1151,7 +1379,7 @@ const Home = () => {
             <div>
               <p className="text-xs uppercase tracking-[0.4em] text-slate-500">Ready?</p>
               <h2 className="text-4xl font-black mt-3">
-                Bring AstroSage-level depth into your journey
+                Bring Brihat Prashar Shastra-level depth into your journey
               </h2>
               <p className="text-base text-slate-600 mt-4">
                 Free forever Kundli, premium consultations, secure remedies, modern UI.
@@ -1183,8 +1411,8 @@ const Home = () => {
               )}
             </div>
           </section>
-        </main>
-      </div>
+        </main >
+      </div >
 
       {showModal && (
         <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
@@ -1287,7 +1515,7 @@ const Home = () => {
           </div>
         </div>
       )}
-    </div>
+    </div >
   );
 };
 
