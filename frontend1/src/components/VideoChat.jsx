@@ -53,6 +53,7 @@ const VideoChat = () => {
   const [timeLeft, setTimeLeft] = useState(null); // time in seconds
   const [showTimeLimitModal, setShowTimeLimitModal] = useState(false);
   const [showSilenceWarning, setShowSilenceWarning] = useState(false);
+  const [hasAcceptedConduct, setHasAcceptedConduct] = useState(false);
 
   // WebRTC configuration
   const servers = {
@@ -105,7 +106,7 @@ const VideoChat = () => {
   }, [appointmentId]);
 
   useEffect(() => {
-    if (!appointment) return;
+    if (!appointment || !hasAcceptedConduct) return;
 
     // Initialize socket connection
     const socketUrl = import.meta.env.VITE_API_BASE_URL
@@ -125,7 +126,7 @@ const VideoChat = () => {
     return () => {
       cleanupResources();
     };
-  }, [appointment, user._id]);
+  }, [appointment, user._id, hasAcceptedConduct]);
 
   // Handle 10-minute timer for first-time bookings
   useEffect(() => {
@@ -796,6 +797,45 @@ const VideoChat = () => {
         <div className="text-white">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p>Loading appointment details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hasAcceptedConduct) {
+    console.log('VideoChat: Waiting for user to accept code of conduct...');
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+        <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-2xl">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <span>🛡️</span> Video Call Safety & Conduct Rules
+          </h2>
+          
+          <p className="text-gray-600 mb-6 text-sm">
+            Before joining the session, you must read and agree to our Video Call Code of Conduct. We maintain a zero-tolerance policy to protect both clients and astrologers.
+          </p>
+
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 h-48 overflow-y-auto mb-6 text-sm text-gray-700 space-y-3">
+            <p className="font-semibold text-red-600">🚨 Zero-Tolerance Actions:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Any form of nudity, stripping, or exposing clothing undergarments.</li>
+              <li>Inappropriate postures or sexual gestures.</li>
+              <li>Abusive, offensive, or harassing language.</li>
+              <li>Sharing personal contact numbers, social handles, or request for direct payments.</li>
+            </ul>
+
+            <p className="font-semibold text-blue-600">🔒 Session Monitoring & Privacy:</p>
+            <p>
+              For safety and quality assurance, this call uses automated moderation systems to flag visual and audio policy violations in real-time. Repeated violations will result in instant account bans.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setHasAcceptedConduct(true)}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-md"
+          >
+            I Agree, Join Call
+          </button>
         </div>
       </div>
     );

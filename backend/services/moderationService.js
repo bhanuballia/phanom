@@ -12,7 +12,7 @@ const loadTxtFile = (fileName) => {
     return fs.readFileSync(filePath, 'utf8')
       .split('\n')
       .map(line => line.trim())
-      .filter(line => line.length > 0 && !line.startsWith('#'));
+      .filter(line => line.length > 0 && !line.startsWith('#') && !/[|\\\[\]()+\-*]/.test(line));
   } catch (err) {
     console.error(`Error loading moderation file ${fileName}:`, err);
     return [];
@@ -55,21 +55,127 @@ const allProfanityAndAbuse = [
   ...sexualTerms
 ];
 
-// Helper to normalize a single word
-const normalizeWord = (word) => {
-  let normalized = word.toLowerCase();
+// Unified 20-step text normalization pipeline
+const applyPipeline = (text) => {
+  if (!text) return "";
+  let processed = text;
 
-  // Apply symbol substitutions
-  if (normalizationRules.substitutions) {
-    for (const [symbol, replacement] of Object.entries(normalizationRules.substitutions)) {
-      // Escape special characters in symbol just in case
-      const escapedSymbol = symbol.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-      normalized = normalized.replace(new RegExp(escapedSymbol, 'g'), replacement);
-    }
+  // 1. Lowercase
+  processed = processed.toLowerCase();
+
+  // 2. Unicode Normalization
+  processed = processed.normalize("NFKC");
+
+  // 3. Remove Zero-width Characters
+  processed = processed.replace(/[\u200B-\u200D\uFEFF]/g, "");
+
+  // 13. Remove Emoji
+  processed = processed.replace(/\p{Extended_Pictographic}/gu, " ");
+
+  // 15. Normalize URLs (before converting leetspeak or removing decorative symbols)
+  processed = processed.replace(/https?:\/\/\S+/gi, " URL ");
+
+  // 16. Normalize Emails (before converting @)
+  processed = processed.replace(/\S+@\S+\.\S+/g, " EMAIL ");
+
+  // 17. Normalize Phone Numbers
+  processed = processed.replace(/(?:\+91|91)?[\s-]?[6-9]\d{9}/g, " PHONE ");
+
+  // 18. Normalize UPI IDs (before converting @)
+  processed = processed.replace(/\b[a-z0-9._-]{2,}@[a-z]{2,}\b/gi, " UPI ");
+
+  // 19. Normalize User Mentions (before converting @)
+  processed = processed.replace(/@[a-z0-9_.]+/gi, " USER ");
+
+  // 4. Convert Leetspeak
+  const leetMap = {
+    "0": "o", "1": "i", "!": "i", "|": "i", "3": "e", "4": "a",
+    "@": "a", "$": "s", "5": "s", "7": "t", "8": "b", "9": "g", "+": "t"
+  };
+  processed = processed.replace(/[01345789@$!|+]/g, c => leetMap[c] || c);
+
+  // 5. Remove Decorative Symbols
+  processed = processed.replace(/[^\p{L}\p{N}\s]/gu, " ");
+
+  // 8. Remove Spaces Between Letters (e.g. "h e l l o" -> "hello")
+  processed = processed.replace(/\b(?:[a-z]\s+){2,}[a-z]\b/gi, m => m.replace(/\s+/g, ""));
+
+  // 9. Normalize Mixed Separators
+  processed = processed.replace(/[._\-]+/g, "");
+
+  // 10. Normalize Numbers Used as Separators
+  processed = processed.replace(/([a-z])[0-9]+([a-z])/gi, "$1$2");
+
+  // 11. Transliteration Mapping (Roman Hindi)
+  const variants = [
+    [/kh/g, "k"],
+    [/ph/g, "f"],
+    [/bh/g, "b"],
+    [/dh/g, "d"],
+    [/th/g, "t"],
+    [/chh/g, "ch"],
+    [/sh/g, "s"]
+  ];
+  for (const [r, v] of variants) {
+    processed = processed.replace(r, v);
   }
 
-  // Remove non-alphanumeric/non-unicode characters (allow letters and digits)
+  // 12. Normalize Long Vowels
+  processed = processed
+    .replace(/aa/g, "a")
+    .replace(/ee/g, "i")
+    .replace(/ii/g, "i")
+    .replace(/oo/g, "u")
+    .replace(/uu/g, "u");
+
+  // 7. Collapse Repeated Letters (Limit long stretches to 2 occurrences)
+  processed = processed.replace(/([a-z])\1{2,}/g, "$1$1");
+
+  // 14. Remove Repeated Punctuation
+  processed = processed.replace(/[!?.,]{2,}/g, " ");
+
+  // 6. Collapse Multiple Spaces & 20. Final Cleanup
+  processed = processed.replace(/\s+/g, " ").trim();
+
+  return processed;
+};
+
+// Helper to normalize a single word
+const normalizeWord = (word) => {
+  if (!word) return "";
+  let normalized = word.toLowerCase();
+
+  // Convert Leetspeak mapping
+  const leetMap = {
+    "0": "o", "1": "i", "!": "i", "|": "i", "3": "e", "4": "a",
+    "@": "a", "$": "s", "5": "s", "7": "t", "8": "b", "9": "g", "+": "t"
+  };
+  normalized = normalized.replace(/[01345789@$!|+]/g, c => leetMap[c] || c);
+
+  // Remove non-alphanumeric/non-unicode
   normalized = normalized.replace(/[^\p{L}\p{N}]/gu, '');
+
+  // Transliteration variants
+  const variants = [
+    [/kh/g, "k"],
+    [/ph/g, "f"],
+    [/bh/g, "b"],
+    [/dh/g, "d"],
+    [/th/g, "t"],
+    [/chh/g, "ch"],
+    [/sh/g, "s"]
+  ];
+  for (const [r, v] of variants) {
+    normalized = normalized.replace(r, v);
+  }
+
+  // Long vowels
+  normalized = normalized
+    .replace(/aa/g, "a")
+    .replace(/ee/g, "i")
+    .replace(/ii/g, "i")
+    .replace(/oo/g, "u")
+    .replace(/uu/g, "u");
 
   // Collapse repeated characters: e.g. "chutiyaaaaa" -> "chutiya"
   normalized = normalized.replace(/(.)\1+/g, '$1');
@@ -77,41 +183,38 @@ const normalizeWord = (word) => {
   return normalized;
 };
 
-// Calculate Levenshtein distance between two strings
+// Calculate Damerau-Levenshtein distance between two strings (allowing transposition)
 const getLevenshteinDistance = (a, b) => {
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
 
-  const matrix = [];
-
-  // Increment along the first column of each row
-  for (let i = 0; i <= b.length; i++) {
-    matrix[i] = [i];
+  const d = [];
+  for (let i = 0; i <= a.length; i++) {
+    d[i] = [];
+    d[i][0] = i;
+  }
+  for (let j = 0; j <= b.length; j++) {
+    d[0][j] = j;
   }
 
-  // Increment each column in the first row
-  for (let j = 0; j <= a.length; j++) {
-    matrix[0][j] = j;
-  }
-
-  // Fill in the rest of the matrix
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
-      } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1, // substitution
-          Math.min(
-            matrix[i][j - 1] + 1, // insertion
-            matrix[i - 1][j] + 1  // deletion
-          )
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+      d[i][j] = Math.min(
+        d[i - 1][j] + 1,       // deletion
+        d[i][j - 1] + 1,       // insertion
+        d[i - 1][j - 1] + cost // substitution
+      );
+      if (i > 1 && j > 1 && a.charAt(i - 1) === b.charAt(j - 2) && a.charAt(i - 2) === b.charAt(j - 1)) {
+        d[i][j] = Math.min(
+          d[i][j],
+          d[i - 2][j - 2] + cost // transposition
         );
       }
     }
   }
 
-  return matrix[b.length][a.length];
+  return d[a.length][b.length];
 };
 
 // Check if two words match fuzzy constraints
@@ -133,7 +236,9 @@ const isFuzzyMatch = (word, dictWord) => {
     { w: 'pas', d: 'as' },
     { w: 'gras', d: 'as' },
     { w: 'love', d: 'lovey' },
-    { w: 'love', d: 'loveu' }
+    { w: 'love', d: 'loveu' },
+    { w: 'carir', d: 'sarir' },
+    { w: 'carer', d: 'sarir' }
   ];
 
   if (falsePositives.some(item => 
@@ -157,17 +262,7 @@ const isFuzzyMatch = (word, dictWord) => {
 
 // Main normalization of full text
 const normalizeText = (text) => {
-  // 1. Convert to lowercase
-  let cleaned = text.toLowerCase();
-
-  // 2. Remove standard spaces/punctuation to check for spaces-between-letters trick (e.g. "c h u t i y a")
-  // First normalize individual characters
-  if (normalizationRules.substitutions) {
-    for (const [symbol, replacement] of Object.entries(normalizationRules.substitutions)) {
-      const escapedSymbol = symbol.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-      cleaned = cleaned.replace(new RegExp(escapedSymbol, 'g'), replacement);
-    }
-  }
+  const cleaned = applyPipeline(text);
 
   // Remove non-word characters and spaces entirely
   const condensed = cleaned.replace(/[^\p{L}\p{N}]/gu, '');

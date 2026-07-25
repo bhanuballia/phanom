@@ -71,6 +71,72 @@ gaandu
 gaand ka andha
 gaandu dimag
 gandmasti
+sari utahao
+sarri uthaao
+sari uthao
+sari hatao
+saari hatao
+saari utaroo
+saari utaro
+sari nikal lo
+peticot uthao
+peticot nikalo
+inner uthao
+petikot khol do
+peticot utaar
+blauz kholo 
+blauz dikhao
+bra kholo
+bra utaro
+salwar kholo
+salwar utaro
+kameez utao
+choli utaro
+chudai
+chudai karunga
+chudai karo
+mara lu
+mara lu ga
+le lu ga
+mar lu
+le lu
+chod dunga
+chod dungi
+chod dungi
+chod dunga
+chod du
+chod dunga
+choli ke oiche kya hai 
+chunari ke niche kya hai 
+leke luga
+phod du
+le lunga
+chod doonga
+chod dungi
+phod dungi
+pussy ko le lungi
+pussy ko le lunga
+pussy ko ragad dungi
+pussy ko ragad dunga
+gand faad dunga
+gand faad dungi
+gand faad du
+gand faad lu
+chodo behenchod
+chodo harami
+chodo kutte
+lu ga behenchod
+lu ga harami
+lu ga kutte
+lu ga kutta
+mar lu behenchod
+mar lu harami
+mar lu kutte
+mar lu kutta
+chod du behenchod
+chod du harami
+chod du kutte
+chod du kutta
 gand faila raha
 jhalla
 jhalli
@@ -16186,3 +16252,1947 @@ jaan meri pyari
 jaanu meri pyari
 babu meri pyari
 baby meri pyari
+remove your jacket
+take off your coat
+remove your hoodie
+take off your sweater
+remove your scarf
+remove your cap
+take off your hat
+remove your mask
+take off your gloves
+remove your sunglasses
+change your outfit
+change your clothes
+wear something else
+show your outfit
+show today's outfit
+show your dress
+show your shirt
+show your kurta
+show your saree
+show your sari
+show your dupatta
+adjust your dupatta
+move your dupatta
+remove the shawl
+remove the stole
+change into casual clothes
+wear a different dress
+wear something lighter
+show your full outfit
+stand up for the camera
+step back for the camera
+turn around slowly
+show your side profile
+show your back profile
+raise your hands
+move a little closer
+move a little back
+show yourself properly
+show your appearance
+let me see your outfit
+let me see your look
+give me a full view
+show your complete look
+change your look
+show your fashion
+try another outfit
+wear that dress again
+show me your style
+show your traditional dress
+show your western outfit
+show your party dress
+what are you wearing
+what did you wear today
+show your clothing
+show your attire
+show your costume
+show your uniform
+change your jacket
+remove the outer layer
+sari dikhao
+saree dikhao
+apni saree dikhao
+apni sari dikhao
+dupatta hatao
+dupatta side karo
+dupatta adjust karo
+shawl hatao
+stole hatao
+jacket utaaro
+coat utaaro
+hoodie utaaro
+sweater utaaro
+cap hatao
+mask hatao
+chashma utaaro
+dress dikhao
+outfit dikhao
+aaj ka outfit dikhao
+kapde dikhao
+kapde badlo
+dress badlo
+outfit badlo
+dusra outfit pehno
+alag dress pehno
+traditional dress dikhao
+western dress dikhao
+kurta dikhao
+shirt dikhao
+tshirt dikhao
+jeans dikhao
+lehenga dikhao
+suit dikhao
+salwar suit dikhao
+poora outfit dikhao
+poora look dikhao
+seedhe khade ho
+camera se door jao
+camera ke paas aao
+poora frame dikhao
+room ki light on karo
+clear view do
+full view dikhao
+look change karo
+fashion dikhao
+style dikhao
+mirror ke saamne khade ho
+mirror selfie lo
+camera seedha rakho
+ulta mat rakho
+face clear dikhao
+poora chehra dikhao
+haath upar karo
+thoda ghoom jao
+peeche mudho
+seedha dekho
+left side dikhao
+right side dikhao
+full body view
+standing photo
+standing pose
+full length photo
+outfit reveal
+fashion reveal
+wardrobe change
+quick outfit change
+change before camera
+wear your favorite outfit
+wear the red dress
+wear the blue dress
+wear traditional clothes
+wear festive clothes
+wear party clothes
+wear formal clothes
+wear casual clothes
+show matching accessories
+show your jewelry
+show your bangles
+show your necklace
+show your earrings
+show your footwear
+show your sandals
+show your shoes
+show your handbag
+show your purse
+change into another saree
+change into another suit
+change into another dress
+wear a brighter outfit
+try another color
+show your complete attire
+give a full outfit tour
+show your clothing style
+fashion check
+outfit check
+style check
+camera outfit check
+live outfit check
+today's look check
+appearance check
+clothing check
+dress inspection
+outfit inspection
+show the front view
+show the back view
+show both sides
+turn slowly
+face the camera
+look straight
+stand naturally
+keep your hands visible
+show your sleeves
+show your collar
+adjust your scarf
+fix your dupatta
+straighten your saree
+straighten your dress
+arrange your outfit
+fix your look
+show your complete appearance
+halo bhabhi 
+hello bhabi 
+hello bhaiya 
+hello chacha
+hello chachi
+hello dada
+hello dadi
+hello nani
+hello nana
+hello aunty
+hello uncle
+hello didi
+hello didu
+hello bhai
+hello nanu
+hello dada ji
+hello dadi ji
+hello nani ji
+hello nana ji
+hello aunty ji
+hello uncle ji
+hello didi ji
+hello didu ji
+hello bhai ji
+hello nanu ji
+hello jija 
+hello jija ji 
+# Character normalization
+[a@4]
+[b8]
+[c(]
+[d]
+[e3]
+[f]
+[g69]
+[h#]
+[i1!|l]
+[j]
+[k]
+[l1|]
+[m]
+[n]
+[o0]
+[p]
+[q]
+[r]
+[s5$]
+[t7+]
+[uuv]
+[vu]
+[wvv]
+[x]
+[y]
+[z2]
+
+# Ignore separators
+[\s._\-,:;'"`~!@#$%^&*()+=|\\/]*
+
+# Repeated letters
+a+
+e+
+i+
+o+
+u+
+h+
+r+
+s+
+n+
+m+
+
+# Roman Hindi vowels
+aa|a
+ee|i
+ii|i
+oo|u
+uu|u
+ai|e
+au|o
+
+# Common Hinglish normalization
+kh|k
+ph|f
+bh|b
+dh|d
+th|t
+chh|ch
+sh|s
+z|j
+
+# Word boundaries
+\b
+\B
+
+# Optional spaces
+\s*
+
+# Duplicate characters
+([a-z])\1{1,}
+
+# Mixed separators
+[\W_]*
+
+# Garment requests
+\b(?:shirt|kurta|dress|saree|sari|dupatta|shawl|coat|jacket)\b
+\b(?:hatao|utao|utaro|remove|take\s*off|nikalo)\b
+
+# Clothing detection
+\b(?:kapde|dress|clothes|outfit|poshak)\b
+
+# Camera requests
+\b(?:camera|cam|video|webcam)\b
+\b(?:on|open|start|chalu|karo|dikhao)\b
+
+# Photo requests
+\b(?:photo|pic|picture|selfie|image|snap)\b
+\b(?:bhejo|send|share|dikhao)\b
+
+# Video requests
+\b(?:video|clip|recording|live)\b
+
+# Meet requests
+\b(?:milo|milte|meet|date|coffee|dinner|hotel|room)\b
+
+# Contact sharing
+\b(?:whatsapp|telegram|insta|instagram|snapchat|signal)\b
+
+# Phone numbers
+(?:\+91|91)?[\s\-]?[6-9]\d{9}
+
+# Email
+[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}
+
+# UPI
+[A-Za-z0-9._-]{2,}@[a-z]{2,}
+
+# URLs
+https?:\/\/[^\s]+
+
+# Emoji separators
+[\p{So}\p{Sk}]*
+
+# Unicode Hindi letters
+[\u0900-\u097F]+
+
+# Hindi + English mixed token
+(?:[\u0900-\u097F]+|[A-Za-z]+)
+
+# Repeated punctuation
+[!?.,]{2,}
+
+# Excessive spaces
+\s{2,}
+
+# Obfuscation
+[a-z][^a-zA-Z0-9]{0,2}[a-z]
+
+# Leetspeak
+[0-9@$!|]+
+
+# Stretching
+([aeiou])\1{2,}
+
+# Common abuse root detection
+\b(?:madar|behen|bc|mc|lund|chut|gand|randi)\w*\b
+
+# Scam keywords
+\b(?:fraud|scam|thag|loot|cheat|fake)\w*\b
+
+# Threat keywords
+\b(?:maar|kill|murder|dekh\s*lunga|threat)\b
+
+# Harassment keywords
+\b(?:touch|kiss|hug|follow|stalk)\w*\b
+
+# Solicitation
+\b(?:hookup|fwb|date|alone|private|hotel)\b
+
+# Social IDs
+@[A-Za-z0-9_.]{3,}
+
+# Currency requests
+(?:₹|rs|rupees?)
+
+# OTP
+\b(?:otp|verification\s*code)\b
+
+# Bank details
+\b(?:account|ifsc|upi|paytm|gpay|phonepe)\b
+dayan
+daayan
+dayan aurat
+dayan hai
+dayan lagti ho
+dayan jaisi
+dayan nikli
+dayan kahin ki
+dayan chehra
+dayan shakal
+chudail
+chudel
+chaudail
+chaudel
+chudail hai
+chudail lagti ho
+chudail jaisi
+chudail aurat
+chudail kahin ki
+chudail chehra
+bhootni
+bhootani
+bhootni hai
+bhootni lagti ho
+bhootni jaisi
+bhootni kahin ki
+bhootni chehra
+bhootni shakal
+pretni
+pretni jaisi
+pretni lagti ho
+pretni hai
+pishachini
+pishachini hai
+pishachini jaisi
+rakshasi
+rakshasi hai
+rakshasi jaisi
+rakshasi aurat
+dayan ki aulaad
+chudail ki aulaad
+bhootni ki aulaad
+dayan ki tarah
+chudail ki tarah
+bhootni ki tarah
+kaali dayan
+kaali chudail
+kaali bhootni
+khooni dayan
+darawni chudail
+darawni bhootni
+bhoot
+bhoot hai
+bhoot lagte ho
+bhoot jaisa
+pret
+pret jaisa
+pret lagte ho
+pretatma
+atma bhatak rahi hai
+bhatakti atma
+shaitaan
+shaitan
+shaitaan hai
+shaitan lagte ho
+shaitaan ki aulaad
+shaitani soch
+shaitani chehra
+shaitani harkat
+raakshas
+rakshas
+raakshas hai
+rakshas jaisa
+rakshas ki aulaad
+danav
+danav hai
+danav jaisa
+asur
+asur hai
+asur jaisa
+pisach
+pishaach
+pisach hai
+pishaach jaisa
+khooni atma
+buri atma
+ashubh atma
+manhoos
+manhoos aurat
+manhoos aadmi
+manhoos chehra
+manhoos shakal
+manhoos insaan
+apshagun
+apshaguni
+apshaguni aurat
+apshaguni insaan
+kalmuh
+kalmuhi
+kalmuhi aurat
+kalmuh chehra
+kalmuh shakal
+kaali zubaan
+buri nazar
+nazar lagane wali
+nazar lagane wala
+tona karne wali
+totka karne wali
+jadu tona
+kala jadu
+kala jadugar
+kali jadugarni
+jadugarni
+jadugarni hai
+jadugarni lagti ho
+tonhi
+tonhi aurat
+tonhi hai
+dakini
+dakini hai
+dakini jaisi
+yogini buri
+mohini dayan
+mayavi aurat
+mayavi insaan
+mayaavi chehra
+buri shakti
+ashubh shakti
+buri rooh
+kali rooh
+darawni rooh
+haunted insaan
+bhoot jaisi shakal
+pret jaisa chehra
+dayan ki hansi
+chudail ki hansi
+bhootni ki hansi
+rakshasi hansi
+shaitani hansi
+dayan wali shakal
+chudail wali shakal
+bhootni wali shakal
+bhoot bangla wali
+kabristan ki chudail
+kabristan ka bhoot
+jungle ki dayan
+raat ki chudail
+raat ka bhoot
+darawna chehra
+darawni shakal
+horror face
+ghost face
+witch face
+evil face
+evil woman
+evil person
+haunted face
+haunted soul
+dark soul
+cursed soul
+cursed person
+cursed woman
+bad omen
+evil spirit
+restless spirit
+possessed person
+possessed woman
+possessed soul
+creepy woman
+creepy person
+scary woman
+scary person
+monster woman
+monster face
+monster jaisi
+buri pari
+kali pari
+andheri shakti
+andheri rooh
+narak ki dayan
+narak ki chudail
+narak ka bhoot
+yamdoot jaisa
+mrityu ka saya
+maut ki pari
+vinash ki devi
+vinash ka roop
+bhayanak aurat
+bhayanak insaan
+khaufnaak chehra
+khaufnaak shakal
+dar ka roop
+dard
+dayan number one
+asli dayan
+pakki dayan
+khatarnak dayan
+zehreeli dayan
+jungli dayan
+buddhi dayan
+budhiya dayan
+hasmukh chudail
+pagal chudail
+khatarnak chudail
+jungli chudail
+uddti chudail
+raat wali chudail
+purani chudail
+nakli chudail
+ghar ki chudail
+mohalle ki chudail
+office ki chudail
+mobile wali chudail
+bhootni number one
+asli bhootni
+pagal bhootni
+jungli bhootni
+darawni bhootni
+ajeeb bhootni
+purani bhootni
+nakli bhootni
+khaufnaak bhootni
+hansati bhootni
+pretni number one
+pagal pretni
+darawni pretni
+khaufnaak pretni
+asli pretni
+nakli pretni
+jungli pretni
+kali pretni
+uddti pretni
+bhatakti pretni
+dakini aurat
+dakini jaisi
+dakini lagti ho
+dakini shakal
+dakini chehra
+tonhi jaisi
+tonhi lagti ho
+tonhi aurat
+tonhi chehra
+tonhi shakal
+jadugarni jaisi
+jadugarni lagti ho
+jadugarni aurat
+kali jadugarni
+buri jadugarni
+mayavi jadugarni
+maya ki rani
+maya wali aurat
+jadu wali aurat
+totke wali aurat
+kala jadu wali
+tona wali
+totka wali
+buri nazar wali
+nazar wali aurat
+shraapit aurat
+shraapit insaan
+abhishapt aurat
+abhishapt chehra
+abhishapt rooh
+haunted aurat
+haunted insaan
+ghost woman
+ghost lady
+ghost wali
+witch woman
+witch lady
+evil witch
+black witch
+dark witch
+forest witch
+old witch
+crazy witch
+angry witch
+evil soul
+dark soul
+evil spirit
+dark spirit
+restless spirit
+wandering spirit
+haunted soul
+cursed soul
+evil entity
+dark entity
+rakshasi chehra
+rakshasi shakal
+rakshasi roop
+rakshasi hansi
+rakshasi nazar
+rakshasi soch
+asuri soch
+asuri roop
+danavi aurat
+danavi shakal
+pisachini chehra
+pisachini roop
+pisachini hansi
+shaitani aurat
+shaitani roop
+shaitani nazar
+shaitani dimag
+buri rooh wali
+andheri rooh
+kaali parchhai
+bhoot ka saya
+pret ka saya
+chudail ka saya
+dayan ka saya
+manhoos chehra
+manhoos shakal
+manhoos roop
+apshaguni chehra
+apshaguni shakal
+darawna roop
+bhayanak chehra
+bhayanak shakal
+khaufnaak roop
+horror wali
+scary face
+creepy face
+creepy lady
+creepy woman
+monster lady
+monster woman
+bhoot jaisi hansi
+chudail jaisi hansi
+dayan jaisi hansi
+pretni jaisi hansi
+shaitan ki behen
+dayan ki rani
+chudail ki rani
+bhootni ki rani
+pretni ki rani
+jungle ki chudail
+pahad ki chudail
+purane mahal ki chudail
+kabristan wali chudail
+raat ki bhootni
+andhere ki rani
+kali shakti wali
+buri shakti wali
+tantrik aurat
+tantra wali
+mantra wali
+jadu tona wali
+bhayanak nazar
+darawni aankhen
+khaufnaak aankhen
+bhoot jaisi aankhen
+chudail jaisi aankhen
+dayan jaisi aankhen
+pret jaisi aankhen
+shaitani aankhen
+rakshasi aankhen
+kali aankhon wali
+darawni muskaan
+khaufnaak muskaan
+ajeeb hansi
+darawni awaaz
+bhoot wali awaaz
+chudail wali awaaz
+dayan wali awaaz
+pret wali awaaz
+shaitani awaaz
+manhoos awaaz
+buri parchhai
+kali parchhai wali
+rahasyamayi aurat
+rahasyamayi chehra
+ajeeb aurat
+ajeeb shakal
+khauf ki murat
+dar ka chehra
+andhere ka saya
+vinash ka roop
+dayan ki bachchi
+chudail ki bachchi
+bhootni ki bachchi
+pretni ki bachchi
+dakini ki bachchi
+dayan ka roop
+chudail ka roop
+bhootni ka roop
+pretni ka roop
+dakini ka roop
+dayan wali harkat
+chudail wali harkat
+bhootni wali harkat
+pretni wali harkat
+dakini wali harkat
+dayan wali soch
+chudail wali soch
+bhootni wali soch
+pretni wali soch
+dakini wali soch
+dayan ki tarah bolti ho
+chudail ki tarah bolti ho
+bhootni ki tarah bolti ho
+pretni ki tarah bolti ho
+dakini ki tarah bolti ho
+dayan si lagti ho
+chudail si lagti ho
+bhootni si lagti ho
+pretni si lagti ho
+dakini si lagti ho
+ekdum dayan
+ekdum chudail
+ekdum bhootni
+ekdum pretni
+ekdum dakini
+puri ki puri dayan
+puri ki puri chudail
+puri ki puri bhootni
+bilkul dayan
+bilkul chudail
+bilkul bhootni
+bilkul pretni
+bilkul dakini
+number one dayan
+number one chudail
+number one bhootni
+number one pretni
+number one dakini
+maha dayan
+maha chudail
+maha bhootni
+maha pretni
+maha dakini
+super dayan
+super chudail
+super bhootni
+ultimate dayan
+ultimate chudail
+ultimate bhootni
+dangerous dayan
+dangerous chudail
+dangerous bhootni
+evil dayan
+evil chudail
+evil bhootni
+haunted woman
+haunted lady
+ghost wali aurat
+ghost jaisi
+witch jaisi
+witch wali
+black magic wali
+kala jadu karne wali
+jadu tona karne wali
+totka wali aurat
+tantrik aurat
+tantra mantra wali
+ashubh aurat
+ashubh chehra
+ashubh shakal
+ashubh roop
+ashubh parchhai
+manhoos surat
+manhoos roop
+manhoos hansi
+manhoos nazar
+buri parchhai wali
+buri atma wali
+buri rooh wali
+kaali rooh wali
+kaali shakti wali
+andheri shakti wali
+shaitan ki parchhai
+pret ka saya
+bhoot ka saya
+chudail ka saya
+dayan ka saya
+kabristan ki bhootni
+kabristan wali bhootni
+smashan ki chudail
+smashan wali dayan
+raat ki dayan
+aadhi raat ki chudail
+andhere ki chudail
+andhere ki bhootni
+jungle wali dayan
+jungle wali chudail
+purani haveli ki chudail
+haveli wali bhootni
+darawni aurat
+darawna insaan
+khaufnaak aurat
+khaufnaak insaan
+bhayanak aurat
+bhayanak shakal
+darawna chehra
+darawni muskaan
+darawni hansi
+darawni awaaz
+khaufnaak awaaz
+khaufnaak nazar
+bhoot jaisi awaaz
+chudail jaisi awaaz
+dayan jaisi awaaz
+pretni jaisi awaaz
+bhoot jaisi hansi
+dayan jaisi muskaan
+chudail jaisi muskaan
+rakshasi aurat
+rakshasi chehra
+rakshasi shakal
+rakshasi roop
+danavi aurat
+danavi chehra
+asuri aurat
+asuri roop
+pisachini aurat
+pisachini roop
+pisachini chehra
+pretatma jaisi
+bhatakti rooh
+bhatakti atma
+baddua wali
+baddua dene wali
+shraapit aurat
+shraapit rooh
+abhishapt aurat
+abhishapt rooh
+rahasyamayi aurat
+rahasyamayi shakal
+ajeeb aurat
+ajeeb chehra
+ajeeb shakal
+creepy aurat
+creepy lady
+creepy insaan
+scary woman
+ghost queen
+witch queen
+dark queen
+evil queen
+shadow woman
+shadow lady
+night witch
+night ghost
+night spirit
+black spirit
+dark spirit
+evil spirit
+wandering spirit
+restless spirit
+cursed woman
+cursed lady
+cursed soul
+possessed woman
+possessed lady
+possessed soul
+haunted soul
+haunted face
+ghost face
+witch face
+monster woman
+monster lady
+monster face
+jao tumhe shraap deta hoon
+tumhe mera shraap lage
+mera shraap tumhe lagega
+bhagwan tumhe saza de
+uparwala sab dekh raha hai
+tumhara bura hoga
+tumhara anjaam bura hoga
+tum kabhi khush nahi rahoge
+tum kabhi safal nahi hoge
+tumhe chain nahi milega
+tumhe sukoon nahi milega
+tumhara sab kuch chala jayega
+tumhari kismat kharab ho
+tumhari zindagi barbaad ho
+tumhara ghar ujhad jaye
+tum par vipatti aaye
+tum par sankat aaye
+tum par museebat aaye
+tumhara nuksan ho
+tumhara bura waqt aaye
+tumhare bure din shuru hon
+tumhara bhagya doob jaye
+tumhara kaam kabhi na bane
+tumhari mehnat bekar jaye
+tumhe kabhi safalta na mile
+tumhara sapna toot jaye
+tumhari umeed toot jaye
+tumhara sab kuch khatam ho
+tum barbaad ho jao
+barbaad ho jao
+jahannum mein jao
+narak mein jao
+doob maro
+kahin ke na raho
+tum par baddua hai
+meri baddua lagegi
+meri baddua tumhare saath hai
+baddua deta hoon
+baddua deti hoon
+meri haay lagegi
+meri haay tumhe lage
+meri aah lagegi
+meri aah tumhe lage
+tum kabhi khush na raho
+tum hamesha rote raho
+tumhe dukh hi mile
+tumhe sirf takleef mile
+tumhe kabhi sukh na mile
+tumhara din bura ho
+tumhari raat buri ho
+tumhari zindagi narak bane
+tumhe pachtana padega
+tum bahut pachtoge
+ek din pachtoge
+bahut bura hoga tumhare saath
+bhagwan sab dekhega
+bhagwan insaaf karega
+bhagwan tumhe dekhega
+ishwar tumhe saza de
+uparwala hisaab lega
+karma tumhe chodega nahi
+karma wapas aayega
+karma sab dekh raha hai
+tum apne karm bhugtoge
+apne karmon ka phal milega
+tumhe saza zarur milegi
+tum bach nahi paoge
+tumhara hisaab hoga
+tumhara waqt aayega
+tumhari baari aayegi
+tumhari galti ki saza milegi
+tum par afsos hai
+tum par laanat
+tum par laanat ho
+laanat hai tum par
+dhikkar hai tum par
+sharm karo
+tum sharm ke layak ho
+tum kabhi maaf nahi hoge
+tum maafi ke layak nahi
+tumhara ant bura hoga
+tumhara naam doobega
+tumhari izzat chali jayegi
+tum badnaam ho jaoge
+tumhari haar hogi
+tum hamesha haaroge
+tum kabhi jeet nahi paoge
+tumhe kabhi shanti na mile
+tumhe kabhi rahat na mile
+tum akela reh jaoge
+sab tumhe chhod denge
+koi tumhara saath nahi dega
+tum tanha reh jaoge
+tumhe rona padega
+tum aansu bahaoge
+tum tadapoge
+tum dard sahoge
+tum musibat mein padoge
+tumhari musibat badhegi
+tumhari pareshani badhegi
+tumhara har kaam bigde
+tumhara har plan fail ho
+tumhara har prayas asafal ho
+tum kabhi tarakki na karo
+tumhara naseeb kharab ho
+tumhara sitara doob jaye
+tumhari kismat so jaye
+tumhare liye bura sochta hoon
+tumhara bura chahta hoon
+tumhe kabhi maaf na kiya jaye
+tum par prakriti ka prakop ho
+tum par vipda aaye
+tumhe shanti na mile
+tum chain se na jee pao
+tum kabhi muskura na pao
+tum hamesha dukhi raho
+tumhari khushiyan chhin jaye
+tumhari dua kabool na ho
+tumhari har koshish nakaam ho
+tumhare raste band ho jaye
+tumhare liye sab ulta ho
+tumhara din kabhi achha na ho
+tumhare saath achha na ho
+tumhari duniya ujad jaye
+tumhe insaaf milega
+waqt jawab dega
+waqt sab sikha dega
+samay sab dekh raha hai
+uparwala sabka hisaab karta hai
+tum apni galti bhugtoge
+tumhe iska phal milega
+tumhe iska anjaam milega
+tum bachkar nahi jaoge
+tumhe iska nateeja milega
+tumhari buri niyat ka phal milega
+tumhe meri baddua lage
+meri baddua kabhi khali nahi jayegi
+meri baddua yaad rakhna
+meri haay lagegi
+meri haay tumhe satayegi
+bhagwan tumhe maaf na kare
+ishwar tumhe saza de
+uparwala tumse hisaab lega
+tum apne karmon ka phal paoge
+karma tumhara peecha karega
+waqt tumhe jawab dega
+waqt sabka hisaab leta hai
+ek din tum pachtoge
+tum bahut pachtane wale ho
+tumhari khushi chhin jaye
+tumhara sukoon chala jaye
+tumhe chain na mile
+tumhe aaram na mile
+tumhari neend ud jaye
+tumhara din bura guzre
+tumhari raat buri guzre
+tumhara har kaam bigde
+tumhara har plan fail ho
+tumhara har prayas asafal ho
+tum kabhi safal na ho
+tum kabhi aage na badho
+tumhari tarakki ruk jaye
+tumhara naseeb saath na de
+tumhari kismat rooth jaye
+tumhari umeed toot jaye
+tumhara hausla toot jaye
+tumhari khushiyan chali jaye
+tum akela pad jao
+sab tumhara saath chhod dein
+koi tum par bharosa na kare
+koi tumhari madad na kare
+tum musibat mein pado
+tum par museebat aaye
+tum par vipatti aaye
+tumhari pareshani badhe
+tumhara nuksan ho
+tumhari haar ho
+tum hamesha haaro
+tum kabhi jeet na pao
+tumhara naam kharab ho
+tumhari badnami ho
+tumhari izzat chali jaye
+tumhe sharm aani chahiye
+tumhare saath bura ho
+tumhe sabak mile
+tumhe sab yaad rahega
+tum bhugatoge
+tum sab bhugatoge
+tum bach nahi paoge
+tumhara hisaab hoga
+uparwala insaaf karega
+bhagwan insaaf karega
+sach ki jeet hogi
+jhooth ki haar hogi
+tumhari chaal ulat jayegi
+tumhari saazish fail hogi
+tumhari buri niyat ka phal milega
+tumhara jhoot pakda jayega
+tumhari pol khul jayegi
+tumhari asliyat saamne aayegi
+tumhari chaalaki nahi chalegi
+tumhara ghamand tootega
+tumhara ahankar tootega
+tum neeche aa jaoge
+tumhe sabak sikhaya jayega
+tumhari galti mehngi padegi
+tumhari galti ka anjaam milega
+tumhari harkat yaad rakhi jayegi
+tumhara waqt kharab aayega
+bura waqt tumhare darwaze par hai
+tumhare din badalne wale hain
+tumhare bure din shuru honge
+tumhara sitara doob jaye
+tumhara bhagya saath na de
+tumhara naseeb palat jaye
+tumhe kabhi sukoon na mile
+tumhe kabhi rahat na mile
+tumhe kabhi khushi na mile
+tumhe kabhi santosh na mile
+tum hamesha pareshan raho
+tum hamesha dukhi raho
+tum hamesha pareshaan raho
+tum aansu bahao
+tum rote raho
+tum tadapte raho
+tum dard mehsoos karo
+tumhari mehnat bekaar jaye
+tumhari kamai ruk jaye
+tumhara sapna toot jaye
+tumhari ichchha adhoori rahe
+tumhari dua kabool na ho
+tumhara iraada fail ho
+tumhara har kadam ulta pade
+tum galat sabit ho
+tumhari har baat jhooth nikle
+tumhari har chaal nakaam ho
+tumhara bharosa toot jaye
+tumhari umeedein bikhar jaye
+tum kabhi sambhal na pao
+tumhari khushhali chali jaye
+tumhare raste band ho jaye
+tumhe har mod par haar mile
+tumhara bhala na ho
+tumhara bura hi bura ho
+tumhari buri soch tum par hi laut aaye
+jo karoge wahi bharoge
+jaisi karni waisi bharni
+uparwala sab dekh raha hai
+bhagwan sab dekh rahe hain
+kudrat kabhi maaf nahi karti
+insaaf zarur hoga
+sach ek din saamne aayega
+tumhari chaal nahi chalegi
+tumhari niyat ka pata chal jayega
+tumhara jhoot zyada din nahi chalega
+tumhari khair nahi
+ab tum bachne wale nahi
+tumhari baari aayegi
+waqt tumhe sab sikha dega
+tumhe apni galti samajh aayegi
+tumhe apne kiye ka ehsaas hoga
+tumhare liye mushkil waqt aayega
+tumhari har khushi adhoori rahe
+tumhara ghamand mitti mein mil jaye
+tumhe kabhi sukh na mile
+tumhare din kabhi na phiren
+tumhare liye achha waqt na aaye
+tumhare baap ko meri baddua lage
+tumhare baap ko shraap lage
+tumhare pita ko shraap lage
+tumhare papa ko baddua lage
+tumhare ghar ko shraap lage
+tumhare parivaar ko baddua lage
+tumhare khandaan ko shraap lage
+tumhare ghar par vipatti aaye
+tumhare ghar par museebat aaye
+tumhare ghar ki khushiyan chali jaye
+tumhare baap ka bura ho
+tumhare pita ka bura ho
+tumhare papa ka bura ho
+tumhari maa ko baddua lage
+tumhari maa ko shraap lage
+tumhari mummy ko shraap lage
+tumhari amma ko baddua lage
+tumhare mata pita ko baddua lage
+tumhare maa baap ko shraap lage
+tumhare poore ghar ko shraap lage
+tumhare ghar mein sukoon na rahe
+tumhare ghar mein chain na rahe
+tumhare ghar mein dukh aaye
+tumhare ghar mein pareshani aaye
+tumhare ghar par andhera chhaye
+tumhare ghar ka bhala na ho
+tumhare ghar ki barkat chali jaye
+tumhare ghar ka sukh chala jaye
+tumhare parivaar ka nuksan ho
+tumhare parivaar par sankat aaye
+tumhare khandaan ka bura ho
+tumhare vansh ka bura ho
+tumhare kul ko baddua lage
+tumhare kul par shraap ho
+tumhare ghar ki tarakki ruk jaye
+tumhare ghar ka naseeb kharab ho
+tumhare ghar mein ashanti rahe
+tumhare pita kabhi khush na rahein
+tumhari maa kabhi khush na rahe
+tumhare maa baap pareshan rahein
+tumhare ghar mein kabhi sukh na aaye
+tumhare ghar mein kabhi chain na aaye
+meri baddua tumhare ghar tak jayegi
+meri baddua tumhare parivaar ko lagegi
+meri haay tumhare ghar lagegi
+meri aah tumhare ghar lagegi
+bhagwan tumhare ghar ka hisaab lega
+uparwala tumhare ghar ko dekhega
+karma tumhare ghar tak pahunchega
+tumhara poora ghar bhugtega
+tumhare ghar ko saza mile
+tumhare ghar par bura waqt aaye
+tumhare pita bhugatenge
+tumhari maa bhugtegi
+tumhare maa baap bhugtenge
+tumhare ghar wale bhugtenge
+tumhare apne bhugtenge
+tumhare rishtedaar bhugtenge
+tumhare ghar ka anjaam bura ho
+tumhare ghar ki khushhali khatam ho
+tumhare ghar ki muskaan chali jaye
+tumhare ghar ki barkat uth jaye
+tumhare pita ka naseeb kharab ho
+tumhari maa ka naseeb kharab ho
+tumhare ghar ki dua kabool na ho
+tumhare ghar mein sirf pareshani ho
+tumhare ghar ki har khushi chhin jaye
+tumhare ghar ki har umeed toot jaye
+tumhare ghar ki har koshish nakaam ho
+tumhare pita ko sukoon na mile
+tumhari maa ko sukoon na mile
+tumhare ghar ko kabhi rahat na mile
+tumhare parivaar ko chain na mile
+tumhare ghar mein har din pareshani ho
+tumhare ghar mein har din tanav ho
+tumhare ghar par bura saya ho
+tumhare ghar par buri nazar ho
+tumhare ghar par vipda aaye
+tumhare ghar par kasht aaye
+tumhare ghar ki hansi chhin jaye
+tumhare ghar ki roshni chali jaye
+tumhare ghar ka waqt kharab ho
+tumhare pita ka waqt kharab ho
+tumhari maa ka waqt kharab ho
+tumhare ghar ki umeed khatam ho
+tumhare ghar mein rona dhona ho
+tumhare ghar mein dukh hi dukh ho
+tumhare ghar ka har kaam bigde
+tumhare pita ka har kaam bigde
+tumhari maa ka har kaam bigde
+tumhare ghar ka har plan fail ho
+tumhare ghar ki tarakki ruk jaye
+tumhare ghar ka naam doob jaye
+tumhare ghar ki izzat chali jaye
+tumhare ghar ki badnami ho
+tumhare ghar ka ghamand toot jaye
+tumhare pita ko pachtana pade
+tumhari maa ko pachtana pade
+tumhare ghar ko sabak mile
+tumhare ghar ko insaaf mile
+tumhare ghar ko karmon ka phal mile
+tumhare ghar ka hisaab hoga
+tumhare ghar ko uparwala dekhega
+tumhare ghar par laanat ho
+tumhare ghar par dhikkar ho
+tumhare ghar ka bhala kabhi na ho
+tumhare ghar ki har dua adhoori rahe
+tumhare ghar ka har sapna toot jaye
+tumhare pita ki mehnat bekaar jaye
+tumhari maa ki mehnat bekaar jaye
+tumhare ghar ka sukh chhin jaye
+tumhare ghar mein kabhi shanti na aaye
+tumhare ghar ka bhagya saath na de
+tumhare ghar ka sitara doob jaye
+tumhare ghar ki kismat rooth jaye
+tumhare ghar ka har din bura ho
+tumhare ghar ki har raat mushkil ho
+tumhare ghar mein sirf takleef ho
+tumhare pita ko dukh mile
+tumhari maa ko dukh mile
+tumhare ghar ko dukh mile
+tumhare ghar ka har prayas asafal ho
+tumhare ghar ka har iraada toot jaye
+tumhare parivaar par buri ghadi aaye
+tumhare ghar ki khushiyan laut kar na aaye
+tumhare pita ko meri haay lage
+tumhari maa ko meri haay lage
+tumhare ghar ko meri baddua lage
+tumhare ghar par meri baddua rahe
+tumhari behen ko baddua lage
+tumhari behen ko shraap lage
+tumhari behan ko meri haay lage
+tumhari behen ka bura ho
+tumhari behen kabhi khush na rahe
+tumhari behen ko chain na mile
+tumhari behen ko sukoon na mile
+tumhari behen par museebat aaye
+tumhari behen par vipatti aaye
+tumhari behen ka naseeb kharab ho
+tumhari behen ki khushiyan chhin jaye
+tumhari behen ki tarakki ruk jaye
+tumhari behen ko dukh mile
+tumhari behen ki dua kabool na ho
+tumhari behen ka har kaam bigde
+tumhari behen ka sapna toot jaye
+tumhari behen ko pachtana pade
+tumhari behen par laanat ho
+tumhari behen ka waqt bura ho
+tumhari behen ko meri baddua lage
+tumhare bhai ko baddua lage
+tumhare bhai ko shraap lage
+tumhare bhai ka bura ho
+tumhare bhai ko chain na mile
+tumhare bhai ko sukoon na mile
+tumhare bhai par museebat aaye
+tumhare bhai par vipatti aaye
+tumhare bhai ki tarakki ruk jaye
+tumhare bhai ka naseeb kharab ho
+tumhare bhai ki khushiyan chhin jaye
+tumhare bhai ko dukh mile
+tumhare bhai ka har kaam bigde
+tumhare bhai ki dua kabool na ho
+tumhare bhai ka sapna toot jaye
+tumhare bhai ko pachtana pade
+tumhare bhai par laanat ho
+tumhare bhai ka waqt bura ho
+tumhare bhai ko meri haay lage
+tumhare bhai ko meri baddua lage
+tumhare bhai ka anjaam bura ho
+tumhari family ko baddua lage
+tumhare parivaar ko shraap lage
+tumhare gharwalon ko baddua lage
+tumhare apnon ko baddua lage
+tumhare rishtedaron ko baddua lage
+tumhare khandaan ko baddua lage
+tumhare vansh ko shraap lage
+tumhare ghar ko baddua lage
+tumhare ghar par bura waqt aaye
+tumhare ghar par museebat aaye
+tumhare ghar par vipda aaye
+tumhare ghar ki barkat chali jaye
+tumhare ghar ki khushiyan chali jaye
+tumhare ghar ki shanti chali jaye
+tumhare ghar mein ashanti rahe
+tumhare ghar mein dukh hi dukh ho
+tumhare ghar mein sukoon na rahe
+tumhare ghar mein chain na rahe
+tumhare ghar ka har kaam bigde
+tumhare ghar ki har umeed toot jaye
+tumhare ghar ka naseeb saath na de
+tumhare ghar ka sitara doob jaye
+tumhare ghar ki tarakki ruk jaye
+tumhare ghar ka naam kharab ho
+tumhare ghar ki badnami ho
+tumhare ghar ki izzat chali jaye
+meri baddua tumhare ghar lage
+meri haay tumhare ghar lage
+meri aah tumhare ghar lage
+bhagwan tumhare ghar ka hisaab le
+karma tumhare ghar tak pahunche
+uparwala tumhare ghar ko dekhe
+tumhara poora ghar bhugte
+tumhara poora parivaar bhugte
+tumhare apne bhugten
+tumhare rishtedar bhugten
+tumhare ghar ka bura ho
+tumhare ghar ka bhagya kharab ho
+tumhare ghar ki roshni chali jaye
+tumhare ghar ka sukh chala jaye
+tumhare ghar ka har din bura ho
+tumhare ghar ki har raat mushkil ho
+tumhare ghar ko kabhi rahat na mile
+tumhare ghar ko kabhi khushi na mile
+tumhare ghar par buri ghadi aaye
+tumhare ghar ko sabak mile
+tumhare ghar ka hisaab hoga
+tumhare ghar ko karmon ka phal mile
+tumhare ghar par laanat ho
+tumhare ghar par dhikkar ho
+tumhare apnon ka bura ho
+tumhare kareebi log pareshan rahein
+tumhare ghar mein har roz pareshani ho
+tumhare ghar ki mehnat bekaar jaye
+tumhare ghar ka har iraada toot jaye
+tumhare ghar ka har prayas asafal ho
+tumhare ghar ki dua adhoori rahe
+tumhare ghar ka sapna toot jaye
+tumhare parivaar ka waqt kharab ho
+tumhare ghar ki khushhali khatam ho
+tumhare ghar ko kabhi sukoon na mile
+tumhare apnon ka chain chhin jaye
+tumhare ghar mein sirf takleef ho
+tumhare ghar ka har kadam ulta pade
+tumhare ghar ki umeedein bikhar jaye
+tumhare ghar par andhera chhaye
+tumhare ghar ka har din mushkil ho
+tumhare ghar ko meri haay lage
+tumhare parivaar ko meri baddua lage
+tumhare khandaan ko meri baddua lage
+tumhare ghar par meri baddua rahe
+tumhare bhai behen ko baddua lage
+tumhare saare gharwalon ko shraap lage
+tumhare apno ko kabhi sukh na mile
+tumhare rishton mein daraar aaye
+tumhare ghar mein hamesha tanav rahe
+tumhare ghar mein kabhi shanti na aaye
+tumhare ghar ka har kaam ruk jaye
+tumhare ghar ki har khushi adhuri rahe
+tumhare ghar ko kabhi barkat na mile
+tumhare parivaar ka bhala na ho
+tumhare apno ka naseeb rooth jaye
+tumhare dada ko baddua lage
+tumhare dada ko shraap lage
+tumhare dada ka bura ho
+tumhare dada ko chain na mile
+tumhare dada ko sukoon na mile
+tumhare dada ka waqt bura ho
+tumhare dada ka naseeb kharab ho
+tumhare dada ki dua kabool na ho
+tumhare dada ka har kaam bigde
+tumhare dada ko meri baddua lage
+tumhare dada ko meri haay lage
+tumhare dada par museebat aaye
+tumhare dada par vipatti aaye
+tumhare dada ko dukh mile
+tumhare dada ko pachtana pade
+tumhare dada par laanat ho
+tumhare dadi ko baddua lage
+tumhare dadi ko shraap lage
+tumhari dadi ka bura ho
+tumhari dadi ko chain na mile
+tumhari dadi ko sukoon na mile
+tumhari dadi ka waqt bura ho
+tumhari dadi ka naseeb kharab ho
+tumhari dadi ki dua kabool na ho
+tumhari dadi ka har kaam bigde
+tumhari dadi ko meri baddua lage
+tumhari dadi ko meri haay lage
+tumhari dadi par museebat aaye
+tumhari dadi par vipatti aaye
+tumhari dadi ko dukh mile
+tumhari dadi ko pachtana pade
+tumhari dadi par laanat ho
+tumhare nana ko baddua lage
+tumhare nana ko shraap lage
+tumhare nana ka bura ho
+tumhare nana ko chain na mile
+tumhare nana ko sukoon na mile
+tumhare nana ka waqt bura ho
+tumhare nana ka naseeb kharab ho
+tumhare nana ka har kaam bigde
+tumhare nana ko meri baddua lage
+tumhare nana ko meri haay lage
+tumhare nana par museebat aaye
+tumhare nana ko dukh mile
+tumhare nana ko pachtana pade
+tumhare nana par laanat ho
+tumhari nani ko baddua lage
+tumhari nani ko shraap lage
+tumhari nani ka bura ho
+tumhari nani ko chain na mile
+tumhari nani ko sukoon na mile
+tumhari nani ka waqt bura ho
+tumhari nani ka naseeb kharab ho
+tumhari nani ka har kaam bigde
+tumhari nani ko meri baddua lage
+tumhari nani ko meri haay lage
+tumhari nani par museebat aaye
+tumhari nani ko dukh mile
+tumhari nani ko pachtana pade
+tumhari nani par laanat ho
+tumhare chacha ko baddua lage
+tumhare chacha ko shraap lage
+tumhare chacha ka bura ho
+tumhare chacha ko meri baddua lage
+tumhare chacha par museebat aaye
+tumhare chacha ko dukh mile
+tumhare chacha par laanat ho
+tumhari chachi ko baddua lage
+tumhari chachi ko shraap lage
+tumhari chachi ka bura ho
+tumhari chachi ko meri baddua lage
+tumhari chachi par museebat aaye
+tumhari chachi ko dukh mile
+tumhari chachi par laanat ho
+tumhare tau ko baddua lage
+tumhare tau ko shraap lage
+tumhare tau ka bura ho
+tumhare tau ko meri baddua lage
+tumhare tau par museebat aaye
+tumhare tau ko dukh mile
+tumhare tau par laanat ho
+tumhari tai ko baddua lage
+tumhari tai ko shraap lage
+tumhari tai ka bura ho
+tumhari tai ko meri baddua lage
+tumhari tai par museebat aaye
+tumhari tai ko dukh mile
+tumhari tai par laanat ho
+tumhare mama ko baddua lage
+tumhare mama ko shraap lage
+tumhare mama ka bura ho
+tumhare mama ko meri baddua lage
+tumhare mama par museebat aaye
+tumhare mama ko dukh mile
+tumhare mama par laanat ho
+tumhari mami ko baddua lage
+tumhari mami ko shraap lage
+tumhari mami ka bura ho
+tumhari mami ko meri baddua lage
+tumhari mami par museebat aaye
+tumhari mami ko dukh mile
+tumhari mami par laanat ho
+tumhare fufa ko baddua lage
+tumhare fufa ko shraap lage
+tumhare fufa ka bura ho
+tumhare fufa ko meri baddua lage
+tumhare fufa par museebat aaye
+tumhare fufa ko dukh mile
+tumhare fufa par laanat ho
+tumhari bua ko baddua lage
+tumhari bua ko shraap lage
+tumhari bua ka bura ho
+tumhari bua ko meri baddua lage
+tumhari bua par museebat aaye
+tumhari bua ko dukh mile
+tumhari bua par laanat ho
+tumhare sasur ko baddua lage
+tumhare sasur ko shraap lage
+tumhare sasur ka bura ho
+tumhare sasur ko meri baddua lage
+tumhari saas ko baddua lage
+tumhari saas ko shraap lage
+tumhari saas ka bura ho
+tumhari saas ko meri baddua lage
+tumhare devar ko baddua lage
+tumhare jeth ko baddua lage
+tumhari nanad ko baddua lage
+tumhari bhabhi ko baddua lage
+tumhare jija ko baddua lage
+tumhari sali ko baddua lage
+tumhare sala ko baddua lage
+tumhare poore khandaan ko baddua lage
+tumhare poore parivaar ko shraap lage
+tumhare purkhon ko shraap lage
+tumhare vansh ko baddua lage
+tumhare gharane ko baddua lage
+tumhare kul ko shraap lage
+kalmuhi
+kalmuha
+kalmuhi
+kalmuhaa
+kalmuh
+kalmuhhi
+kalmunhi
+kalmuha aurat
+kalmuha aadmi
+kalmuhi ladki
+kalmuha insaan
+karamjali
+karamjala
+karam jali
+karam jala
+karamjali aurat
+karamjala aadmi
+karamjali ladki
+karamjala insaan
+abhagan
+abhagini
+abhaga
+abhagi
+manhoos
+manhoosi
+manhoos aurat
+manhoos aadmi
+manhoos chehra
+manhoos shakal
+apshaguni
+apshagun
+apshaguni aurat
+apshaguni insaan
+badnaseeb
+badnaseebi
+badkismat
+badkismati
+badbakht
+badbakhti
+baddua wali
+baddua ka maara
+abhishapt
+shraapit
+naspiti
+naspeeti
+nikammi
+nikamma
+nalayak
+nalayika
+nafarmaan
+behaya
+behaya aurat
+behaya aadmi
+besharam
+besharm
+beghairat
+begairat
+beizzat
+beizzati ki wajah
+giri hui
+gira hua
+gandi soch
+ganda insaan
+ghatiya
+ghatiya aadmi
+ghatiya aurat
+ghatiya insaan
+ghatiya soch
+ghatiya harkat
+neech
+neech aadmi
+neech aurat
+neech soch
+nichle darje ka
+do kaudi ka
+do take ka
+bekaar
+bekar insaan
+bekaar aadmi
+bekaar aurat
+faltu
+faltu insaan
+faltu aadmi
+faltu aurat
+bekaar shakal
+manhus surat
+kalank
+ghar ka kalank
+parivaar ka kalank
+samaj ka kalank
+bojh
+ghar ka bojh
+zameen par bojh
+bojh jaisa insaan
+bekaar bojh
+buri kismat
+buri kismat wala
+buri kismat wali
+ashubh
+ashubh insaan
+ashubh aurat
+ashubh chehra
+ashubh shakal
+buri parchhai
+buri nishani
+bad omen
+ashubh sanket
+badsoorat
+badsurat
+badsoorat chehra
+badsoorat shakal
+kurup
+kurupi
+kurup chehra
+karwi zubaan
+zehreeli zubaan
+zehreela insaan
+zehreeli aurat
+zehreeli soch
+dil ka bura
+dil ki buri
+pathar dil
+sangdil
+beraham
+nirdayi
+kathor dil
+badtameez
+badtameezi ki had
+badtareen insaan
+ghamandi
+ghamandi aurat
+ghamandi aadmi
+ahankari
+akaddu
+akadbaaz
+jhagralu
+jhagrali
+kaleshi
+fitrati
+chalbaaz
+makkar
+dhokebaaz
+farebi
+jhootha
+jhoothi
+kapti
+dohre chehre wala
+dohre chehre wali
+do mukha
+dogla
+dogli
+lafanga
+lafangi
+awara
+awargi wala
+nakara
+naakabil
+anpadh
+jahil
+jahil insaan
+murkh
+moorkh
+bewakoof
+buddhu
+pagal
+sanki
+uljha hua
+ulta dimag
+tedhi soch
+kharab niyat
+buri fitrat
+maili soch
+kachra soch
+gandi fitrat
+beimaan
+imaan bechne wala
+izzat ke layak nahi
+sharmnaak
+dhikkar yogya
+laanat ke layak
+afsos ki baat
+kalmuhi kahin ki
+kalmuha kahin ka
+kalmuhi aurat
+kalmuha aadmi
+kalmuhi shakal
+kalmuha chehra
+kalmuhi surat
+kalmuha insaan
+karamjali kahin ki
+karamjala kahin ka
+karamjali aurat
+karamjala aadmi
+karamjali shakal
+karamjala chehra
+karamjali surat
+karamjala insaan
+abhagan kahin ki
+abhaga kahin ka
+abhagini aurat
+abhaga aadmi
+manhoos kahin ka
+manhoos kahin ki
+manhoosiyat failane wala
+manhoosiyat failane wali
+manhoos rooh
+manhoos kismat
+manhoos janam
+badnaseeb kahin ka
+badnaseeb kahin ki
+badkismat kahin ka
+badkismat kahin ki
+badbakht kahin ka
+badbakht kahin ki
+naspeeta kahin ka
+naspeeti kahin ki
+nikamma kahin ka
+nikammi kahin ki
+nalayak kahin ka
+nalayak kahin ki
+besharam kahin ka
+besharam kahin ki
+behaya kahin ka
+behaya kahin ki
+beghairat kahin ka
+beghairat kahin ki
+ghatiya kahin ka
+ghatiya kahin ki
+ghatiya aadmi
+ghatiya aurat
+ghatiya soch wala
+ghatiya soch wali
+neech kahin ka
+neech kahin ki
+neech insaan
+neech soch
+nichle darje ka insaan
+do kaudi ka aadmi
+do kaudi ki aurat
+do take ka insaan
+bekaar kahin ka
+bekaar kahin ki
+faltu kahin ka
+faltu kahin ki
+bekaar aadmi
+bekaar aurat
+bojh kahin ka
+ghar ka bojh
+samaj par bojh
+zameen par bojh
+chalti firti museebat
+chalta firta apshagun
+kalank kahin ka
+kalank kahin ki
+ghar ka kalank
+parivaar ka kalank
+samaj ka kalank
+ashubh insaan
+ashubh aurat
+ashubh chehra
+ashubh surat
+ashubh parchhai
+badsoorat kahin ka
+badsoorat kahin ki
+kurup kahin ka
+kurupi kahin ki
+karwi zubaan wali
+zehreeli zubaan wala
+zehreeli soch wali
+zehreela insaan
+maili soch wala
+maili soch wali
+gandi fitrat wala
+gandi fitrat wali
+dil ka kala
+dil ki kaali
+pathar dil insaan
+sangdil aadmi
+sangdil aurat
+beraham insaan
+nirdayi aadmi
+nirdayi aurat
+kathor dil wala
+akaddu insaan
+akadbaaz aadmi
+ghamandi kahin ka
+ghamandi kahin ki
+ahankari insaan
+jhagralu aadmi
+jhagrali aurat
+kaleshi aadmi
+kaleshi aurat
+fitrati insaan
+chalbaaz kahin ka
+chalbaaz kahin ki
+makkar kahin ka
+makkar kahin ki
+farebi insaan
+dhokebaaz kahin ka
+dhokebaaz kahin ki
+jhootha kahin ka
+jhoothi kahin ki
+kapti insaan
+dogla kahin ka
+dogli kahin ki
+dohre chehre wala
+dohre chehre wali
+lafanga kahin ka
+lafangi kahin ki
+awara kahin ka
+awara kahin ki
+nakara insaan
+naakabil aadmi
+naakabil aurat
+jahil kahin ka
+jahil kahin ki
+murkh kahin ka
+murkh kahin ki
+bewakoof kahin ka
+bewakoof kahin ki
+buddhu kahin ka
+buddhu kahin ki
+sanki kahin ka
+sanki kahin ki
+ulta dimag wala
+tedhi soch wala
+tedhi soch wali
+kharab niyat wala
+kharab niyat wali
+buri fitrat wala
+buri fitrat wali
+beimaan kahin ka
+beimaan kahin ki
+izzat ke layak nahi
+sharmnaak insaan
+dhikkar ke layak
+laanat ke layak
+afsos ka vishay
+badtameez kahin ka
+badtameez kahin ki
+badzubaan aadmi
+badzubaan aurat
+kadwa insaan
+kadwi aurat
+naashukra insaan
+ehsaan faramosh
+ehsaan faramosh insaan
+kamina fitrat wala
+kamini fitrat wali
+matlabi aadmi
+matlabi aurat
+swarthi insaan
+ghrina ke layak
+tuchh insaan
+heen soch wala
+heen soch wali
+
+
+
+
