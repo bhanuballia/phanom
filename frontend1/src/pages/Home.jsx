@@ -293,7 +293,15 @@ const consultationSlogans = [
   'भविष्य की राह चुनें!',
   'अपनी किस्मत आज बदलें',
   'ग्रहों की चाल जानें!',
-  'भाग्य का सटीक दर्पण!'
+  'भाग्य का सटीक दर्पण!',
+  'Talk To Our Astrologer For Free',
+  'Find out what your Nakshatras Say For Today For Free',
+  'Know your Horoscope For Free',
+  'Create Your Kundali For Free',
+  'Match Kundali for Marriage For Free',
+  'Kundli Matching For Free',
+  'Kundli Matching For Marriage',
+  'Find out your Horoscope For Free'
 ];
 
 const Home = () => {
@@ -467,7 +475,7 @@ const Home = () => {
 
   useEffect(() => {
     const timer = setInterval(
-      () => setSloganIndex((prev) => (prev + 2) % consultationSlogans.length),
+      () => setSloganIndex((prev) => (prev + 4) % consultationSlogans.length),
       5000
     );
     return () => clearInterval(timer);
@@ -656,17 +664,39 @@ const Home = () => {
 
                 <div className="relative w-full bg-gradient-to-br from-amber-500/20 via-purple-500/20 to-pink-500/20 border border-white/20 rounded-2xl p-6 backdrop-blur-xl shadow-2xl shadow-black/30">
                   <div className="text-center space-y-4">
-                    <h3 className="text-xl md:text-2xl font-bold text-white leading-tight min-h-[16.5rem] flex items-center justify-center animate-fadeIn">
-                      {consultationSlogans[sloganIndex]}
-                    </h3>
-                    <h3 className="text-xl md:text-2xl font-bold text-white leading-tight min-h-[3rem] flex items-center justify-center animate-fadeIn">
-                      {consultationSlogans[(sloganIndex + 1) % consultationSlogans.length]}
-                    </h3>
+                    <div className="min-h-[11.5rem] flex flex-col justify-center gap-4 py-2">
+                      <h3 className="text-[20px] md:text-[20px] font-bold text-yellow-500 leading-tight animate-fadeIn">
+                        {consultationSlogans[sloganIndex]}
+                      </h3>
+                      <h3 className="text-[20px] md:text-[20px] font-bold text-orange-500 leading-tight animate-fadeIn">
+                        {consultationSlogans[(sloganIndex + 1) % consultationSlogans.length]}
+                      </h3>
+                    </div>
+
+                    <Link
+                      to="/live-chat"
+                      className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-slate-950 text-slate-950 font-semibold shadow-lg shadow-teal-400/40 hover:opacity-90 transition-all duration-300 transform hover:scale-105 mb-2"
+                    >
+                      Live Chat with Astrologers Now For Free
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                    <button
+                      onClick={() => {
+                        const element = document.getElementById('explore-our-services-section');
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-teal-400 to-emerald-500 text-slate-950 font-semibold shadow-lg shadow-teal-400/40 hover:opacity-90 transition-all duration-300 transform hover:scale-105 mb-2"
+                    >
+                      Explore Our Services For Free
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </button>
                     <Link
                       to="/booking"
                       className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-slate-950 font-semibold shadow-lg shadow-amber-400/40 hover:opacity-90 transition-all duration-300 transform hover:scale-105"
                     >
-                      Chat with Astrologers Now
+                      Chat with Astrologers Now For Free
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </div>
@@ -678,6 +708,7 @@ const Home = () => {
         </div>
         {/* Navigation Cards Section - Animation starts from bottom of Hero Video Section */}
         <section
+          id="explore-our-services-section"
           className="relative z-10 px-4 sm:px-6 lg:px-8 pt-0 pb-12"
           style={{
             marginTop: 0,
