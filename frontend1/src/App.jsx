@@ -45,6 +45,7 @@ import PaymentPage from './pages/PaymentPage';
 import LiveChatHistory from './Admin/LiveChatHistory';
 import AuditReport from './Admin/AuditReport';
 import KundaliHub from './pages/KundaliHub';
+import TarotReading from './pages/TarotReading';
 
 
 
@@ -210,6 +211,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PaymentPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tarot-reading"
+              element={
+                <ProtectedRoute>
+                  <TarotReading />
                 </ProtectedRoute>
               }
             />

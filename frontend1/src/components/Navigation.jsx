@@ -61,6 +61,7 @@ const Navigation = () => {
     { name: 'Kundali Matching', path: '/kundali-matching', icon: Heart },
     { name: 'Lal Kitab Remedies', path: '/lal-kitab', icon: Sparkles },
     { name: 'Advanced Numerology', path: '/numerology', icon: Calculator },
+    { name: 'Tarot Card Reading', path: '/tarot-reading', icon: Sparkles },
     { name: 'Community Videos', path: '/community-videos', icon: MessageCircle },
     { name: 'Contact & Support', path: '/contact', icon: Phone }
   ];

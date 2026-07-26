@@ -208,6 +208,7 @@ const exploreServices = [
   { name: 'Kundali', path: '/kundali', icon: ScrollText, color: 'from-amber-400 to-yellow-500' },
   { name: 'Kundali Matching', path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true`, icon: HeartHandshake, color: 'from-pink-400 to-rose-500', isExternal: true },
   { name: 'Love Calculator', path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true`, icon: Heart, color: 'from-red-400 to-rose-500', isExternal: true },
+  { name: 'Relationship Horoscope', path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true&calculator=weekly-relationship`, icon: HeartHandshake, color: 'from-rose-400 to-pink-500', isExternal: true },
   { name: 'Advanced Muhurt', path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_muhurt=true`, icon: Calendar, color: 'from-orange-400 to-amber-500', isExternal: true },
   { name: 'Ask Prashna', path: `${VEDIC_ASTROLOGY_BASE_URL}/?prashna=true`, icon: MessageCircle, color: 'from-purple-400 to-indigo-500', isExternal: true },
   { name: 'Ashtamangala Prasna', path: `${VEDIC_ASTROLOGY_BASE_URL}/?ashtamangala=true`, icon: Sparkles, color: 'from-amber-500 to-red-500', isExternal: true },
@@ -220,6 +221,7 @@ const exploreServices = [
   { name: 'Adv. Nakshatra', path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_nakshatra=true&only_planetary=true`, icon: Star, color: 'from-amber-400 to-yellow-500', isExternal: true },
   { name: 'Lal Kitab', path: '/lal-kitab', icon: BookOpen, color: 'from-red-400 to-orange-500' },
   { name: 'Numerology', path: '/numerology', icon: Calculator, color: 'from-teal-400 to-cyan-500' },
+  { name: 'Tarot Reading', path: '/tarot-reading', icon: Sparkles, color: 'from-purple-500 to-indigo-500' },
   { name: 'Palmistry', path: '/palmistry', icon: Hand, color: 'from-fuchsia-400 to-purple-500' },
   { name: 'Vastu Shastra', path: '/vastu-shastra', icon: Building2, color: 'from-orange-400 to-amber-500' },
   { name: 'Zodiac Signs', path: '/zodiac', icon: MoonStar, color: 'from-violet-400 to-purple-500' },
@@ -304,6 +306,69 @@ const consultationSlogans = [
   'Find out your Horoscope For Free'
 ];
 
+const consultationButtons = [
+  {
+    type: 'external',
+    path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true`,
+    label: 'गुण मिलने के बाद भी शादी में दोष क्यों ?'
+  },
+  {
+    type: 'external',
+    path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true&calculator=weekly-relationship`,
+    label: 'Weekly Relationship Horoscope For Free'
+  },
+  {
+    type: 'internal',
+    path: '/numerology',
+    label: 'Unlock Your Future With Numerology For Free'
+  },
+  {
+    type: 'internal',
+    path: '/booking',
+    label: 'महादशा और अंतर्दशा का समय-चक्र और भविष्य'
+  },
+  {
+    type: 'internal',
+    path: '/vastu-shastra',
+    label: 'Check Vastu For Free'
+  },
+  {
+    type: 'internal',
+    path: '/zodiac',
+    label: 'Check Horoscope For Free'
+  },
+  {
+    type: 'external',
+    path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true`,
+    label: 'Check Your Love Compatibility!'
+  },
+  {
+    type: 'external',
+    path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true`,
+    label: 'Match Kundali For Free'
+  },
+  {
+    type: 'internal',
+    path: '/tarot-reading',
+    label: 'Ask Tarot For Free'
+  },
+  {
+    type: 'internal',
+    path: '/live-chat',
+    label: 'Live Chat with Astrologers Now For Free'
+  },
+  {
+    type: 'action',
+    actionName: 'scrollToServices',
+    label: 'Explore Our Services For Free'
+  },
+  {
+    type: 'internal',
+    path: '/booking',
+    label: 'Chat with Astrologers Now For Free'
+  }
+];
+
 const Home = () => {
   const { isAuthenticated } = useAuth();
   const [backgroundImage, setBackgroundImage] = useState(null);
@@ -327,7 +392,16 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalLine, setModalLine] = useState('');
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const videos = useMemo(() => ['/images/sawan.mp4', '/images/home2.mp4'], []);
+  const videos = useMemo(() => ['/images/sapt.mp4', '/images/home2.mp4'], []);
+
+  const [activeButtonGroup, setActiveButtonGroup] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveButtonGroup((prev) => (prev === 0 ? 1 : 0));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -663,42 +737,56 @@ const Home = () => {
               <div className="relative w-full lg:flex-[1] flex flex-col gap-3 items-center justify-center">
 
                 <div className="relative w-full bg-gradient-to-br from-amber-500/20 via-purple-500/20 to-pink-500/20 border border-white/20 rounded-2xl p-6 backdrop-blur-xl shadow-2xl shadow-black/30">
-                  <div className="text-center space-y-4">
-                    <div className="min-h-[11.5rem] flex flex-col justify-center gap-4 py-2">
-                      <h3 className="text-[20px] md:text-[20px] font-bold text-yellow-500 leading-tight animate-fadeIn">
-                        {consultationSlogans[sloganIndex]}
-                      </h3>
-                      <h3 className="text-[20px] md:text-[20px] font-bold text-orange-500 leading-tight animate-fadeIn">
-                        {consultationSlogans[(sloganIndex + 1) % consultationSlogans.length]}
-                      </h3>
-                    </div>
+                  <div className="text-center space-y-1">
 
-                    <Link
-                      to="/live-chat"
-                      className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-slate-950 text-slate-950 font-semibold shadow-lg shadow-teal-400/40 hover:opacity-90 transition-all duration-300 transform hover:scale-105 mb-2"
-                    >
-                      Live Chat with Astrologers Now For Free
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                    <button
-                      onClick={() => {
-                        const element = document.getElementById('explore-our-services-section');
-                        if (element) {
-                          element.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }}
-                      className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-teal-400 to-emerald-500 text-slate-950 font-semibold shadow-lg shadow-teal-400/40 hover:opacity-90 transition-all duration-300 transform hover:scale-105 mb-2"
-                    >
-                      Explore Our Services For Free
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </button>
-                    <Link
-                      to="/booking"
-                      className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-slate-950 font-semibold shadow-lg shadow-amber-400/40 hover:opacity-90 transition-all duration-300 transform hover:scale-105"
-                    >
-                      Chat with Astrologers Now For Free
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
+                    {consultationButtons.slice(activeButtonGroup * 6, (activeButtonGroup + 1) * 6).map((btn, idx) => {
+                      if (btn.type === 'action') {
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => {
+                              if (btn.actionName === 'scrollToServices') {
+                                const element = document.getElementById('explore-our-services-section');
+                                if (element) {
+                                  element.scrollIntoView({ behavior: 'smooth' });
+                                }
+                              }
+                            }}
+                            className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-teal-400 to-emerald-500 text-slate-950 font-semibold shadow-lg shadow-teal-400/40 hover:opacity-90 transition-all duration-300 transform hover:scale-105 mb-2 animate-fadeIn"
+                          >
+                            {btn.label}
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                          </button>
+                        );
+                      }
+
+                      const commonClasses = "w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-slate-950 font-semibold shadow-lg shadow-teal-400/40 hover:opacity-90 transition-all duration-300 transform hover:scale-105 mb-2 animate-fadeIn";
+                      if (btn.type === 'external') {
+                        return (
+                          <a
+                            key={idx}
+                            href={btn.path}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={commonClasses}
+                          >
+                            {btn.label}
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                          </a>
+                        );
+                      } else {
+                        return (
+                          <Link
+                            key={idx}
+                            to={btn.path}
+                            className={commonClasses}
+                          >
+                            {btn.label}
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                          </Link>
+                        );
+                      }
+                    })}
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-purple-500/5 to-pink-500/5 pointer-events-none rounded-2xl"></div>
                 </div>
