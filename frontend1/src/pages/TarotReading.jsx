@@ -22,42 +22,58 @@ import {
 } from 'lucide-react';
 import { TAROT_DECK } from '../data/tarotDeck';
 import { TAROT_QUESTIONS } from '../data/tarotQuestions';
+import { TAROT_TRANSLATIONS_HINDI } from '../data/tarotTranslationsHindi';
 
 const SPREADS = [
   {
     id: "single",
     name: "Daily Draw",
+    nameHindi: "दैनिक संदेश (Daily Draw)",
     cardsNeeded: 1,
     description: "Draw one card for today's overall guidance, focal theme, and immediate action.",
-    positions: ["Today's Guidance"]
+    descriptionHindi: "आज के समग्र मार्गदर्शन, मुख्य विषय और त्वरित कार्रवाई के लिए एक कार्ड चुनें।",
+    positions: ["Today's Guidance"],
+    positionsHindi: ["आज का मार्गदर्शन"]
   },
   {
     id: "three",
     name: "Timeline (Past, Present, Future)",
+    nameHindi: "समयरेखा (Past, Present, Future)",
     cardsNeeded: 3,
     description: "A comprehensive look at what you've left behind, where you are now, and the path ahead.",
-    positions: ["Past (The Roots)", "Present (The Current Challenge)", "Future (The Final Outcome)"]
+    descriptionHindi: "आप अतीत में क्या छोड़ चुके हैं, वर्तमान में कहाँ हैं और आगे का मार्ग क्या है, इसका एक विस्तृत विश्लेषण।",
+    positions: ["Past (The Roots)", "Present (The Current Challenge)", "Future (The Final Outcome)"],
+    positionsHindi: ["अतीत (Past)", "वर्तमान (Present)", "भविष्य (Future)"]
   },
   {
     id: "decision",
     name: "Decision Path (Choice / Outcome)",
+    nameHindi: "निर्णय मार्ग (Choice / Outcome)",
     cardsNeeded: 2,
     description: "Weighing options. Card 1 represents the Pros/Option A. Card 2 represents the Cons/Option B.",
-    positions: ["Option A (Path of Action)", "Option B (Path of Contemplation)"]
+    descriptionHindi: "विकल्पों का आकलन। कार्ड 1 विकल्प A के पक्ष को दर्शाता है। कार्ड 2 विकल्प B के विपक्ष को दर्शाता है।",
+    positions: ["Option A (Path of Action)", "Option B (Path of Contemplation)"],
+    positionsHindi: ["विकल्प A (Path of Action)", "विकल्प B (Path of Contemplation)"]
   },
   {
     id: "crossroads",
     name: "Spiritual Crossroads",
+    nameHindi: "आध्यात्मिक चौराहा (Spiritual Crossroads)",
     cardsNeeded: 4,
     description: "Understand a crucial transition point. Assess the situation, core obstacle, your strength, and the ultimate outcome.",
-    positions: ["Current Situation", "Core Obstacle", "Your Hidden Strength", "Final Outcome"]
+    descriptionHindi: "एक महत्वपूर्ण संक्रमण बिंदु को समझें। स्थिति, मुख्य बाधा, आपकी आंतरिक शक्ति और अंतिम परिणाम का आकलन करें।",
+    positions: ["Current Situation", "Core Obstacle", "Your Hidden Strength", "Final Outcome"],
+    positionsHindi: ["वर्तमान स्थिति", "मुख्य बाधा", "आपकी गुप्त शक्ति", "अंतिम परिणाम"]
   },
   {
     id: "harmony",
     name: "Relationship Harmony",
+    nameHindi: "रिश्तों में सद्भाव (Relationship Harmony)",
     cardsNeeded: 5,
     description: "Deep dive into your connection with another. Understand your energy, their energy, the connection, the challenge, and potential.",
-    positions: ["Your Energy", "Their Energy", "The Core Connection", "The Main Challenge", "Relationship Potential"]
+    descriptionHindi: "किसी अन्य व्यक्ति के साथ आपके संबंध की गहराई को जानें। अपनी ऊर्जा, उनकी ऊर्जा, मुख्य संबंध, चुनौती और क्षमता को समझें।",
+    positions: ["Your Energy", "Their Energy", "The Core Connection", "The Main Challenge", "Relationship Potential"],
+    positionsHindi: ["आपकी ऊर्जा", "उनकी ऊर्जा", "मुख्य संबंध", "मुख्य चुनौती", "रिश्ते की क्षमता"]
   }
 ];
 
@@ -178,6 +194,7 @@ const playAmbient = () => {
 };
 
 const stopAmbient = () => {
+  if (ambientOscs.length === 0) return;
   ambientOscs.forEach(osc => {
     try { osc.stop(); } catch (e) { }
   });
@@ -186,6 +203,28 @@ const stopAmbient = () => {
     try { ambientGain.disconnect(); } catch (e) { }
     ambientGain = null;
   }
+};
+
+const playRevealSound = () => {
+  initAudio();
+  if (!audioCtx) return;
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  try {
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.5);
+
+    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
+  } catch (e) { }
 };
 
 const playFlipSound = () => {
@@ -245,6 +284,15 @@ const playShuffleSound = () => {
 };
 
 const TarotReading = () => {
+  const [language, setLanguage] = useState('EN'); // 'EN' or 'HI'
+  const t = (enText, hiText) => language === 'EN' ? enText : hiText;
+  const getCardTranslation = (cardId, field, defaultVal) => {
+    if (language === 'EN') return defaultVal;
+    const item = TAROT_TRANSLATIONS_HINDI[cardId];
+    if (!item) return defaultVal;
+    if (field === 'keywords') return item.keywords || defaultVal;
+    return item[field] || defaultVal;
+  };
   const [profile, setProfile] = useState({ name: '', dob: '' });
   const [zodiacInfo, setZodiacInfo] = useState({ sign: '', element: '' });
   const [selectedSpread, setSelectedSpread] = useState(SPREADS[0]);
@@ -330,6 +378,7 @@ const TarotReading = () => {
       cardData: pickedCard,
       deckIndex,
       positionName,
+      positionIndex: currentPosIndex,
       isReversed: pickedCard.isReversed
     }];
 
@@ -471,8 +520,15 @@ const TarotReading = () => {
         <div className="absolute top-10 left-10 w-96 h-96 bg-purple-900/10 rounded-full blur-3xl pointer-events-none no-print"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-900/10 rounded-full blur-3xl pointer-events-none no-print"></div>
 
-        {/* Audio Toggle button */}
-        <div className="absolute top-4 right-4 z-50 no-print">
+        {/* Controls Panel */}
+        <div className="absolute top-4 right-4 z-50 flex items-center space-x-2 no-print">
+          <button
+            onClick={() => setLanguage(language === 'EN' ? 'HI' : 'EN')}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 border border-purple-500/30 text-purple-300 hover:text-white transition-all text-xs font-semibold backdrop-blur"
+          >
+            <span>🌐</span>
+            <span>{language === 'EN' ? 'हिंदी में पढ़ें' : 'Read in English'}</span>
+          </button>
           <button
             onClick={handleAudioToggle}
             className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-purple-500/30 text-purple-300 hover:text-white transition-all text-xs font-semibold backdrop-blur"
@@ -495,23 +551,38 @@ const TarotReading = () => {
         <div className="text-center max-w-3xl mx-auto mb-12 relative z-10 print-container">
           <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-sm font-semibold mb-4 no-print">
             <Sparkles className="h-4 w-4 text-purple-400 animate-pulse" />
-            <span>Interactive Divination Sanctuary</span>
+            <span>{language === 'EN' ? 'Interactive Divination Sanctuary' : 'इंटरैक्टिव दिव्य साधना स्थल'}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-amber-200 via-purple-300 to-indigo-200 bg-clip-text text-transparent mb-4">
-            {profile.name ? `Welcome, ${profile.name}` : 'Cosmic Tarot Card Reading'}
+            {profile.name 
+              ? (language === 'EN' ? `Welcome, ${profile.name}` : `स्वागत है, ${profile.name}`) 
+              : (language === 'EN' ? 'Cosmic Tarot Card Reading' : 'ब्रह्मांडीय टैरो कार्ड रीडिंग')}
           </h1>
 
           {zodiacInfo.sign ? (
             <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-indigo-950/60 border border-indigo-500/30 text-indigo-200 text-sm mb-4">
-              <span className="font-semibold text-[20px] text-orange-400">{zodiacInfo.sign}</span>
+              <span className="font-semibold text-[20px] text-orange-400">
+                {language === 'EN' ? zodiacInfo.sign : {
+                  'Aries': 'मेष', 'Taurus': 'वृषभ', 'Gemini': 'मिथुन', 'Cancer': 'कर्क',
+                  'Leo': 'सिंह', 'Virgo': 'कन्या', 'Libra': 'तुला', 'Scorpio': 'वृश्चिक',
+                  'Sagittarius': 'धनु', 'Capricorn': 'मकर', 'Aquarius': 'कुंभ', 'Pisces': 'मीन'
+                }[zodiacInfo.sign] || zodiacInfo.sign}
+              </span>
               <span className="text-slate-500">•</span>
-              <span className=" text-[20px] text-emerald-300 font-medium">{zodiacInfo.element} Element</span>
+              <span className=" text-[20px] text-emerald-300 font-medium">
+                {language === 'EN' ? `${zodiacInfo.element} Element` : `${
+                  zodiacInfo.element === 'Fire' ? 'अग्नि' :
+                  zodiacInfo.element === 'Earth' ? 'पृथ्वी' :
+                  zodiacInfo.element === 'Air' ? 'वायु' :
+                  zodiacInfo.element === 'Water' ? 'जल' : zodiacInfo.element
+                } तत्व`}
+              </span>
               <span className="text-slate-500">•</span>
               <button
                 onClick={() => setReadingState('onboarding')}
                 className="text-[16px] text-rose-400 hover:text-purple-300 underline focus:outline-none no-print"
               >
-                Change Details
+                {language === 'EN' ? 'Change Details' : 'विवरण बदलें'}
               </button>
             </div>
           ) : null}
@@ -529,22 +600,24 @@ const TarotReading = () => {
           <div className="max-w-md mx-auto relative z-10 animate-fadeIn bg-slate-900/80 border border-purple-500/30 rounded-3xl p-8 backdrop-blur-md shadow-2xl">
             <h2 className="text-2xl font-bold text-center text-amber-200 mb-2 flex items-center justify-center">
               <Sparkles className="h-6 w-6 mr-2 text-purple-400" />
-              Personalize Your Energy
+              {language === 'EN' ? 'Personalize Your Energy' : 'अपनी ऊर्जा को संरेखित करें'}
             </h2>
             <p className="text-slate-400 text-sm text-center mb-6">
-              Connect your cosmic alignment and state your query to align the deck.
+              {language === 'EN' 
+                ? 'Connect your cosmic alignment and state your query to align the deck.' 
+                : 'डेक को संरेखित करने के लिए अपने ब्रह्मांडीय विवरण और प्रश्न दर्ज करें।'}
             </p>
 
             <form onSubmit={handleOnboardingSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-350 mb-2" htmlFor="name">
-                  Your Sacred Name
+                  {language === 'EN' ? 'Your Sacred Name' : 'आपका पवित्र नाम'}
                 </label>
                 <input
                   type="text"
                   id="name"
                   required
-                  placeholder="Enter your name..."
+                  placeholder={language === 'EN' ? 'Enter your name...' : 'अपना नाम दर्ज करें...'}
                   value={profile.name}
                   onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all placeholder-slate-650"
@@ -553,7 +626,7 @@ const TarotReading = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-slate-350 mb-2" htmlFor="dob">
-                  Date of Birth
+                  {language === 'EN' ? 'Date of Birth' : 'जन्म तिथि'}
                 </label>
                 <input
                   type="date"
@@ -569,7 +642,7 @@ const TarotReading = () => {
                 type="submit"
                 className="w-full py-4 bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-500 hover:from-amber-400 hover:via-purple-500 hover:to-indigo-400 text-black font-bold rounded-xl transition-all transform hover:-translate-y-0.5 shadow-lg shadow-purple-950/30 animate-pulse"
               >
-                Align energy and Enter
+                {language === 'EN' ? 'Align energy and Enter' : 'ऊर्जा संरेखित करें और प्रवेश करें'}
               </button>
             </form>
           </div>
@@ -580,7 +653,7 @@ const TarotReading = () => {
           <div className="max-w-5xl mx-auto relative z-10 animate-fadeIn">
             <h2 className="text-2xl font-bold text-center text-slate-200 mb-8 flex items-center justify-center">
               <Layers className="h-6 w-6 mr-2 text-purple-400" />
-              Choose Your Divination Spread
+              {language === 'EN' ? 'Choose Your Divination Spread' : 'अपना दिव्य स्प्रेड चुनें'}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -596,15 +669,15 @@ const TarotReading = () => {
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-purple-500/5 to-transparent rounded-full group-hover:scale-125 transition-transform duration-500"></div>
 
                   <h3 className="text-[22px] font-bold text-amber-200 mb-2 group-hover:text-amber-100 transition-colors">
-                    {spread.name}
+                    {language === 'EN' ? spread.name : spread.nameHindi || spread.name}
                   </h3>
                   <p className="text-orange-400 text-[18px] mb-4 line-clamp-3">
-                    {spread.description}
+                    {language === 'EN' ? spread.description : spread.descriptionHindi || spread.description}
                   </p>
 
                   <div className="mt-auto flex items-center justify-between text-xs">
                     <span className="px-2.5 py-1 bg-slate-850 border border-slate-700 rounded-md text-[18px] text-amber-300 font-medium">
-                      {spread.cardsNeeded} {spread.cardsNeeded === 1 ? 'Card' : 'Cards'} Required
+                      {spread.cardsNeeded} {language === 'EN' ? (spread.cardsNeeded === 1 ? 'Card Required' : 'Cards Required') : 'कार्ड की आवश्यकता'}
                     </span>
                     <ChevronRight className="h-4 w-4 text-amber-400 transform group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -615,14 +688,14 @@ const TarotReading = () => {
             {/* Question / Intention Input Box */}
             <div className="max-w-2xl mx-auto bg-slate-900/40 border border-purple-500/20 rounded-2xl p-6 mb-12">
               <label className="block text-[22px] font-semibold text-orange-400 mb-4 font-serif flex items-center">
-                <Sparkles className="h-4 w-4 text-[25px]text-orange-400 mr-2 animate-pulse" />
-                Select a Topic & Question (Or write your own)
+                <Sparkles className="h-4 w-4 text-[25px] text-orange-400 mr-2 animate-pulse" />
+                {t("Select a Topic & Question (Or write your own)", "एक विषय और प्रश्न चुनें (या अपना स्वयं का लिखें)")}
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 {/* Category Select */}
                 <div>
-                  <label className="block text-[18px] text-orange-400 mb-1">Category</label>
+                  <label className="block text-[18px] text-orange-400 mb-1">{t("Category", "श्रेणी")}</label>
                   <select
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-[18px] text-emerald-200 focus:outline-none focus:border-purple-500"
                     onChange={(e) => {
@@ -633,9 +706,17 @@ const TarotReading = () => {
                     }}
                     value={selectedCategoryIndex}
                   >
-                    <option value={-1}>-- Choose a Category --</option>
+                    <option value={-1}>{t("-- Choose a Category --", "-- एक श्रेणी चुनें --")}</option>
                     {TAROT_QUESTIONS.map((cat, i) => (
-                      <option key={i} value={i}>{cat.category}</option>
+                      <option key={i} value={i}>
+                        {language === 'EN' ? cat.category : {
+                          "❤️ Love & Relationships": "❤️ प्रेम और संबंध",
+                          "💼 Career & Job": "💼 करियर और नौकरी",
+                          "💰 Money & Finance": "💰 धन और वित्त",
+                          "🌟 Destiny & Future": "🌟 भाग्य और भविष्य",
+                          "🔮 Spiritual Guidance": "🔮 आध्यात्मिक मार्गदर्शन"
+                        }[cat.category] || cat.category}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -643,7 +724,7 @@ const TarotReading = () => {
                 {/* Subcategory Select */}
                 {selectedCategoryIndex >= 0 && TAROT_QUESTIONS[selectedCategoryIndex].subcategories && (
                   <div>
-                    <label className="block text-xs text-slate-400 mb-1">Subcategory</label>
+                    <label className="block text-xs text-slate-400 mb-1">{t("Subcategory", "उपश्रेणी")}</label>
                     <select
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-[18px] text-emerald-200 focus:outline-none focus:border-purple-500"
                       onChange={(e) => {
@@ -653,9 +734,16 @@ const TarotReading = () => {
                       }}
                       value={selectedSubcategoryIndex}
                     >
-                      <option value={-1}>-- Choose Subcategory --</option>
+                      <option value={-1}>{t("-- Choose Subcategory --", "-- उपश्रेणी चुनें --")}</option>
                       {TAROT_QUESTIONS[selectedCategoryIndex].subcategories.map((sub, i) => (
-                        <option key={i} value={i}>{sub.name}</option>
+                        <option key={i} value={i}>
+                          {language === 'EN' ? sub.name : {
+                            "Love Life": "प्रेम जीवन",
+                            "Current Relationship": "वर्तमान संबंध",
+                            "Ex Relationship": "पूर्व संबंध",
+                            "Marriage": "विवाह"
+                          }[sub.name] || sub.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -665,13 +753,13 @@ const TarotReading = () => {
               {/* Predefined Questions Select */}
               {selectedCategoryIndex >= 0 && (
                 <div className="mb-4">
-                  <label className="block text-[20px] text-orange-400 mb-1">Predefined Question</label>
+                  <label className="block text-[20px] text-orange-400 mb-1">{t("Predefined Question", "पूर्व-निर्धारित प्रश्न")}</label>
                   <select
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-[18px] text-emerald-200 focus:outline-none focus:border-purple-500"
                     onChange={(e) => setFocusQuestion(e.target.value)}
                     value={focusQuestion}
                   >
-                    <option value="">-- Select a Question --</option>
+                    <option value="">{t("-- Select a Question --", "-- एक प्रश्न चुनें --")}</option>
                     {TAROT_QUESTIONS[selectedCategoryIndex].subcategories ? (
                       selectedSubcategoryIndex >= 0 &&
                       TAROT_QUESTIONS[selectedCategoryIndex].subcategories[selectedSubcategoryIndex].questions.map((q, i) => (
@@ -688,15 +776,15 @@ const TarotReading = () => {
 
               <div>
                 <label className="block text-[20px] text-orange-400 mb-1 font-medium" htmlFor="intention">
-                  Your Focus Intention
+                  {t("Your Focus Intention", "आपका ध्यान केंद्रित विचार")}
                 </label>
                 <input
                   type="text"
                   id="intention"
-                  placeholder="Ex: Will my current creative endeavor bring me success? Or edit the selected question..."
+                  placeholder={t("Ex: Will my current creative endeavor bring me success? Or edit the selected question...", "उदा: क्या मेरे वर्तमान प्रयास मुझे सफलता दिलाएंगे? या चयनित प्रश्न को बदलें...")}
                   value={focusQuestion}
                   onChange={(e) => setFocusQuestion(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-850 rounded-xl px-4 py-3 text-[18px]  text-emerald-200 focus:outline-none focus:border-purple-500 transition-all placeholder-slate-600 text-sm font-medium"
+                  className="w-full bg-slate-950 border border-slate-850 rounded-xl px-4 py-3 text-[18px] text-emerald-200 focus:outline-none focus:border-purple-500 transition-all placeholder-slate-600 text-sm font-medium"
                 />
               </div>
             </div>
@@ -707,7 +795,7 @@ const TarotReading = () => {
                 className="px-10 py-4 bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-500 hover:from-amber-400 hover:via-purple-500 hover:to-indigo-400 text-[18px] text-black font-bold rounded-full shadow-lg shadow-purple-950/50 hover:shadow-purple-900/50 transform hover:-translate-y-0.5 transition-all duration-300 flex items-center space-x-2"
               >
                 <Sparkles className="h-5 w-5" />
-                <span>Begin Shuffling Deck</span>
+                <span>{t("Begin Shuffling Deck", "टैरो डेक को फेंटना शुरू करें")}</span>
               </button>
             </div>
           </div>
@@ -735,8 +823,8 @@ const TarotReading = () => {
                 </div>
               ))}
             </div>
-            <h3 className="text-xl font-bold text-amber-200 mb-2">Shuffling the Sacred Tarot Deck</h3>
-            <p className="text-slate-400 text-sm">Aligning universal energy fields for your intention...</p>
+            <h3 className="text-xl font-bold text-amber-200 mb-2">{t("Shuffling the Sacred Tarot Deck", "पवित्र टैरो डेक को फेंटा जा रहा है")}</h3>
+            <p className="text-slate-400 text-sm">{t("Aligning universal energy fields for your intention...", "आपके उद्देश्य के लिए ब्रह्मांडीय ऊर्जा क्षेत्रों को संरेखित किया जा रहा है...")}</p>
           </div>
         )}
 
@@ -745,12 +833,14 @@ const TarotReading = () => {
           <div className="max-w-5xl mx-auto relative z-10 animate-fadeIn">
             <div className="bg-slate-900/60 border border-purple-500/20 rounded-2xl p-4 mb-8 flex flex-col sm:flex-row items-center justify-between">
               <div className="mb-2 sm:mb-0">
-                <span className="text-amber-300 text-xs uppercase tracking-wider block">Selected Spread</span>
-                <span className="text-purple-200 font-bold text-lg">{selectedSpread.name}</span>
+                <span className="text-amber-300 text-xs uppercase tracking-wider block">{t("Selected Spread", "चयनित स्प्रेड")}</span>
+                <span className="text-purple-200 font-bold text-lg">
+                  {language === 'EN' ? selectedSpread.name : selectedSpread.nameHindi || selectedSpread.name}
+                </span>
               </div>
               <div className="flex items-center space-x-3">
                 <span className="text-sm text-purple-300 font-medium">
-                  Chosen {selectedCards.length} of {selectedSpread.cardsNeeded}
+                  {t(`Chosen ${selectedCards.length} of ${selectedSpread.cardsNeeded}`, `चुने गए ${selectedCards.length} / ${selectedSpread.cardsNeeded}`)}
                 </span>
                 <div className="w-24 bg-slate-800 h-2 rounded-full overflow-hidden">
                   <div
@@ -763,11 +853,11 @@ const TarotReading = () => {
 
             <div className="text-center mb-10">
               <h2 className="text-2xl font-bold text-slate-100 mb-2">
-                Draw Your Divine Path
+                {t("Draw Your Divine Path", "अपने दिव्य मार्ग का चयन करें")}
               </h2>
               <p className="text-amber-300/90 text-sm flex items-center justify-center">
                 <HelpCircle className="h-4 w-4 mr-1" />
-                Focus on your query. Hover and select the card you feel drawn to.
+                {t("Focus on your query. Hover and select the card you feel drawn to.", "अपने प्रश्न पर ध्यान केंद्रित करें। कार्ड के ऊपर कर्सर ले जाएं और उसे चुनें जिसकी ओर आप आकर्षित महसूस करते हैं।")}
               </p>
             </div>
 
@@ -827,7 +917,7 @@ const TarotReading = () => {
                 onClick={handleReset}
                 className="px-6 py-2 border border-slate-700 hover:border-slate-600 hover:bg-slate-900 text-slate-300 text-sm font-semibold rounded-full transition-all"
               >
-                Choose Another Spread
+                {t("Choose Another Spread", "दूसरा स्प्रेड चुनें")}
               </button>
             </div>
           </div>
@@ -839,14 +929,14 @@ const TarotReading = () => {
 
             <div className="mb-12">
               <div className="flex justify-between items-center mb-6 no-print">
-                <h2 className="text-xl font-bold text-amber-200">Your Drawn Spread</h2>
+                <h2 className="text-xl font-bold text-amber-200">{t("Your Drawn Spread", "आपका चयनित स्प्रेड")}</h2>
                 <div className="flex space-x-3">
                   <button
                     onClick={handlePrint}
                     className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:bg-slate-850 hover:text-white transition-all text-[18px] font-semibold"
                   >
                     <Download className="h-4 w-4" />
-                    <span>Save / Export PDF</span>
+                    <span>{t("Save / Export PDF", "पीडीएफ सहेजें / निर्यात करें")}</span>
                   </button>
                 </div>
               </div>
@@ -869,12 +959,12 @@ const TarotReading = () => {
                         } ${isAligned ? 'ring-1 ring-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : ''}`}
                     >
                       <span className="text-[18px] uppercase tracking-widest text-orange-400 mb-2 block font-semibold">
-                        {item.positionName}
+                        {language === 'EN' ? item.positionName : selectedSpread.positionsHindi[item.positionIndex] || item.positionName}
                       </span>
 
                       {isAligned && (
                         <span className="text-[18px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full mb-2 animate-pulse border border-amber-500/30 font-medium">
-                          ✨ Element Alignment
+                          {t("✨ Element Alignment", "✨ तत्व संरेखण")}
                         </span>
                       )}
 
@@ -889,7 +979,7 @@ const TarotReading = () => {
                             <div className="w-12 h-12 rounded-full border border-amber-500/20 flex items-center justify-center animate-pulse">
                               <Moon className="h-6 w-6 text-amber-500/40" />
                             </div>
-                            <span className="text-xs text-amber-300/60 font-serif tracking-widest">TAP TO FLIP</span>
+                            <span className="text-xs text-amber-300/60 font-serif tracking-widest">{t("TAP TO FLIP", "पलटने के लिए छुएं")}</span>
                           </div>
 
                           {/* CARD BACK (Face up image) */}
@@ -902,7 +992,9 @@ const TarotReading = () => {
                               loading="lazy"
                             />
                             <div className="absolute bottom-0 inset-x-0 bg-slate-950/85 py-1.5 px-2 text-center border-t border-amber-500/35 backdrop-blur-sm">
-                              <h3 className="text-orange-400 font-serif font-bold text-[20px] truncate tracking-wide">{card.name}</h3>
+                              <h3 className="text-orange-400 font-serif font-bold text-[20px] truncate tracking-wide">
+                                {getCardTranslation(card.id, 'name', card.name)}
+                              </h3>
                             </div>
                           </div>
 
@@ -911,24 +1003,34 @@ const TarotReading = () => {
 
                       {isFlipped ? (
                         <div className="mt-2 text-center flex flex-col items-center">
-                          <h4 className="text-orange-400 font-serif font-bold text-[24px]">{card.name}</h4>
-                          <span className="text-[18px] text-emerald-300 mb-2">{item.isReversed ? "Reversed" : "Upright"}</span>
+                          <h4 className="text-orange-400 font-serif font-bold text-[24px]">
+                            {getCardTranslation(card.id, 'name', card.name)}
+                          </h4>
+                          <span className="text-[18px] text-emerald-300 mb-2">
+                            {item.isReversed ? t("Reversed", "उल्टा (Reversed)") : t("Upright", "सीधा (Upright)")}
+                          </span>
 
                           <div className="mt-1 max-w-[360px] bg-slate-950/80 border border-slate-800 rounded-xl p-2 text-slate-400 text-center">
                             <span className="text-[20px] text-orange-400 font-bold block mb-0.5">
-                              {card.type === 'Major' ? 'Major Arcana' : `${card.suit} (${card.element})`}
+                              {card.type === 'Major' 
+                                ? t('Major Arcana', 'मुख्य रहस्य (Major Arcana)') 
+                                : `${t(card.suit, {Wands: 'दंड', Cups: 'प्याले', Swords: 'तलवारें', Pentacles: 'सिक्के'}[card.suit] || card.suit)} (${t(card.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[card.element] || card.element)})`
+                              }
                             </span>
                             <span className="text-[18px] block leading-tight text-emerald-400">
                               {card.type === 'Major'
-                                ? "Themes: Life milestones, karma, & spirit lesson"
-                                : `Themes: ${card.suit === 'Wands' ? 'Action & Ambition' : card.suit === 'Cups' ? 'Emotion & Intuition' : card.suit === 'Swords' ? 'Logic & Challenges' : 'Material & Finances'}`
+                                ? t("Themes: Life milestones, karma, & spirit lesson", "विषय: जीवन के मील के पत्थर, कर्म और आध्यात्मिक सबक")
+                                : `${t("Themes: ", "विषय: ")} ${t(
+                                  card.suit === 'Wands' ? 'Action & Ambition' : card.suit === 'Cups' ? 'Emotion & Intuition' : card.suit === 'Swords' ? 'Logic & Challenges' : 'Material & Finances',
+                                  card.suit === 'Wands' ? 'कर्म और महत्वाकांक्षा' : card.suit === 'Cups' ? 'भावना और अंतर्ज्ञान' : card.suit === 'Swords' ? 'तर्क और चुनौतियाँ' : 'भौतिक और धन'
+                                )}`
                               }
                             </span>
                           </div>
                         </div>
                       ) : (
                         <div className="text-center py-4 text-xs text-slate-500 italic">
-                          Click card to flip
+                          {t("Click card to flip", "कार्ड पलटने के लिए क्लिक करें")}
                         </div>
                       )}
                     </button>
@@ -945,21 +1047,23 @@ const TarotReading = () => {
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-6 border-b border-slate-800">
                   <div>
                     <span className="text-xs uppercase tracking-widest text-emerald-400 font-semibold block mb-1">
-                      Current Focus Position
+                      {t("Current Focus Position", "वर्तमान फोकस स्थान")}
                     </span>
                     <h3 className="text-2xl font-bold text-orange-400">
-                      {selectedCards[revealedIndex].positionName}
+                      {language === 'EN' 
+                        ? selectedCards[revealedIndex].positionName 
+                        : selectedSpread.positionsHindi[selectedCards[revealedIndex].positionIndex] || selectedCards[revealedIndex].positionName}
                     </h3>
                   </div>
 
                   <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
-                    {selectedCards[revealedIndex].cardData.keywords.map((kw, i) => (
+                    {getCardTranslation(selectedCards[revealedIndex].cardData.id, 'keywords', selectedCards[revealedIndex].cardData.keywords).map((kw, i) => (
                       <span key={i} className="px-3 py-1 bg-purple-950/60 border border-purple-500/30 rounded-full text-[18px] text-yellow-400 font-semibold">
                         {kw}
                       </span>
                     ))}
                     <span className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-[18px] text-emerald-400 font-semibold uppercase">
-                      {selectedCards[revealedIndex].cardData.element}
+                      {t(selectedCards[revealedIndex].cardData.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[selectedCards[revealedIndex].cardData.element] || selectedCards[revealedIndex].cardData.element)}
                     </span>
                   </div>
                 </div>
@@ -968,32 +1072,52 @@ const TarotReading = () => {
                   <div className="lg:col-span-2">
                     <h4 className="text-[22px] font-bold text-amber-200 mb-3 font-serif flex items-center">
                       <Eye className="h-5 w-5 mr-2 text-amber-300" />
-                      Divined Meaning
+                      {t("Divined Meaning", "दिव्य अर्थ / वाचन")}
                     </h4>
                     <p className="text-emerald-300 text-[20px] leading-relaxed mb-6">
                       {selectedCards[revealedIndex].isReversed
-                        ? selectedCards[revealedIndex].cardData.reversed
-                        : selectedCards[revealedIndex].cardData.upright
+                        ? getCardTranslation(selectedCards[revealedIndex].cardData.id, 'reversed', selectedCards[revealedIndex].cardData.reversed)
+                        : getCardTranslation(selectedCards[revealedIndex].cardData.id, 'upright', selectedCards[revealedIndex].cardData.upright)
                       }
                     </p>
 
-                    <h5 className="text-[22px] font-semibold text-amber-200 mb-2">Focal Energy Advice</h5>
+                    <h5 className="text-[22px] font-semibold text-amber-200 mb-2">{t("Focal Energy Advice", "मुख्य ऊर्जा परामर्श")}</h5>
                     <p className="text-emerald-300 text-[20px] leading-relaxed mb-4">
-                      This card advises you to examine how <strong>{selectedCards[revealedIndex].cardData.keywords[0].toLowerCase()}</strong> is currently playing out in your query.
-                      {selectedCards[revealedIndex].isReversed
-                        ? " The reversed position indicates a block, delay, or internal friction that requires your inner focus to clear."
-                        : " The upright position shows clear forward momentum, outer support, or active guidance that you should follow."
-                      }
+                      {language === 'EN' ? (
+                        <>
+                          This card advises you to examine how <strong>{selectedCards[revealedIndex].cardData.keywords[0].toLowerCase()}</strong> is currently playing out in your query.
+                          {selectedCards[revealedIndex].isReversed
+                            ? " The reversed position indicates a block, delay, or internal friction that requires your inner focus to clear."
+                            : " The upright position shows clear forward momentum, outer support, or active guidance that you should follow."
+                          }
+                        </>
+                      ) : (
+                        <>
+                          यह कार्ड आपको सलाह देता है कि आप विचार करें कि आपके जीवन में <strong>{getCardTranslation(selectedCards[revealedIndex].cardData.id, 'keywords', selectedCards[revealedIndex].cardData.keywords)[0]}</strong> किस प्रकार प्रभाव डाल रहा है।
+                          {selectedCards[revealedIndex].isReversed
+                            ? " उल्टा कार्ड एक अवरोध, देरी या आंतरिक घर्षण को दर्शाता है जिसे दूर करने के लिए आत्म-मंथन और आंतरिक सुधार की आवश्यकता है।"
+                            : " सीधा कार्ड स्पष्ट प्रगति, बाहरी समर्थन या सक्रिय मार्गदर्शन दिखाता है जिसका आपको बिना झिझक पालन करना चाहिए।"
+                          }
+                        </>
+                      )}
                     </p>
 
                     {selectedCards[revealedIndex].cardData.element === zodiacInfo.element && (
                       <div className="mt-6 p-5 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-amber-200">
                         <span className="font-bold flex items-center mb-2 text-sm text-amber-300">
                           <Sparkles className="h-5 w-5 mr-2 text-amber-400 animate-pulse" />
-                          Astrological Resonance ({zodiacInfo.element})
+                          {t(`Astrological Resonance (${zodiacInfo.element})`, `ज्योतिषीय प्रतिध्वनि (${t(zodiacInfo.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[zodiacInfo.element] || zodiacInfo.element)})`)}
                         </span>
                         <p className="text-sm text-amber-400/90 leading-relaxed">
-                          This card shares the <strong>{zodiacInfo.element}</strong> element of your zodiac sign (<strong>{zodiacInfo.sign}</strong>). The resonance between your energy and this card amplifies its message, indicating that its themes of {selectedCards[revealedIndex].cardData.keywords.join(', ').toLowerCase()} are highly active and personal in your life right now.
+                          {language === 'EN' ? (
+                            `This card shares the ${zodiacInfo.element} element of your zodiac sign (${zodiacInfo.sign}). The resonance between your energy and this card amplifies its message, indicating that its themes of ${selectedCards[revealedIndex].cardData.keywords.join(', ').toLowerCase()} are highly active and personal in your life right now.`
+                          ) : (
+                            `यह कार्ड आपकी राशि (${{
+                              'Aries': 'मेष', 'Taurus': 'वृषभ', 'Gemini': 'मिथुन', 'Cancer': 'कर्क',
+                              'Leo': 'सिंह', 'Virgo': 'कन्या', 'Libra': 'तुला', 'Scorpio': 'वृश्चिक',
+                              'Sagittarius': 'धनु', 'Capricorn': 'मकर', 'Aquarius': 'कुंभ', 'Pisces': 'मीन'
+                            }[zodiacInfo.sign] || zodiacInfo.sign}) के ${t(zodiacInfo.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[zodiacInfo.element] || zodiacInfo.element)} तत्व को साझा करता है। आपकी ऊर्जा और इस कार्ड के बीच का यह संरेखण इसके संदेश को और अधिक शक्तिशाली बनाता है।`
+                          )}
                         </p>
                       </div>
                     )}
@@ -1001,23 +1125,29 @@ const TarotReading = () => {
 
                   <div className="bg-slate-950/80 border border-purple-500/20 rounded-2xl p-5 flex flex-col justify-between">
                     <div>
-                      <h4 className="text-orange-400 font-bold text-[20px] uppercase tracking-wider mb-2">Synthesis Context</h4>
+                      <h4 className="text-orange-400 font-bold text-[20px] uppercase tracking-wider mb-2">
+                        {t("Synthesis Context", "संश्लेषण संदर्भ")}
+                      </h4>
                       <p className="text-[18px] text-emerald-300 leading-relaxed mb-4">
-                        In the context of the <strong>{selectedSpread.name}</strong>, this card represents the crucial energy influencing the {selectedCards[revealedIndex].positionName} phase.
+                        {language === 'EN' ? (
+                          `In the context of the ${selectedSpread.name}, this card represents the crucial energy influencing the ${selectedCards[revealedIndex].positionName} phase.`
+                        ) : (
+                          `चयनित स्प्रेड (${selectedSpread.nameHindi || selectedSpread.name}) के संदर्भ में, यह कार्ड आपके ${selectedSpread.positionsHindi[selectedCards[revealedIndex].positionIndex] || selectedCards[revealedIndex].positionName} चरण को प्रभावित करने वाली महत्वपूर्ण ऊर्जा का प्रतिनिधित्व करता है।`
+                        )}
                       </p>
 
                       <div className="bg-slate-900/60 rounded-lg p-3 border border-slate-800 text-[11px] mb-4 space-y-2">
                         <div>
                           <span className="text-orange-400 text-[20px] font-bold block">
                             {selectedCards[revealedIndex].cardData.type === 'Major'
-                              ? 'Major Arcana (Primary Path)'
-                              : `Minor Arcana - Suit of ${selectedCards[revealedIndex].cardData.suit}`
+                              ? t('Major Arcana (Primary Path)', 'मुख्य रहस्य (प्रमुख नियति पथ)')
+                              : t(`Minor Arcana - Suit of ${selectedCards[revealedIndex].cardData.suit}`, `गौण रहस्य - ${{Wands: 'दंड', Cups: 'प्याले', Swords: 'तलवारें', Pentacles: 'सिक्के'}[selectedCards[revealedIndex].cardData.suit] || selectedCards[revealedIndex].cardData.suit} का समूह`)
                             }
                           </span>
                           <span className="text-[18px] text-emerald-300 block mt-0.5">
                             {selectedCards[revealedIndex].cardData.type === 'Major'
-                              ? "Themes: Core spiritual principles, milestones, and direct destiny."
-                              : "Themes: Daily scenarios, minor events, and practical issues."
+                              ? t("Themes: Core spiritual principles, milestones, and direct destiny.", "मुख्य विषय: मुख्य आध्यात्मिक सिद्धांत, मील के पत्थर और सीधी नियति।")
+                              : t("Themes: Daily scenarios, minor events, and practical issues.", "मुख्य विषय: दैनिक परिदृश्य, छोटी घटनाएं और व्यावहारिक मुद्दे।")
                             }
                           </span>
                         </div>
@@ -1026,17 +1156,23 @@ const TarotReading = () => {
 
                     <div className="space-y-3 pt-4 border-t border-slate-800 text-xs">
                       <div className="flex justify-between">
-                        <span className="text-[20px] text-orange-400">Card Name:</span>
-                        <span className="font-semibold text-[20px] text-emarald-300">{selectedCards[revealedIndex].cardData.name}</span>
+                        <span className="text-[20px] text-orange-400">{t("Card Name:", "कार्ड का नाम:")}</span>
+                        <span className="font-semibold text-[20px] text-emerald-350">
+                          {getCardTranslation(selectedCards[revealedIndex].cardData.id, 'name', selectedCards[revealedIndex].cardData.name)}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[20px] text-orange-400">Deck Division:</span>
-                        <span className="font-semibold text-[20px] text-emarald-300">{selectedCards[revealedIndex].cardData.type} Arcana</span>
+                        <span className="text-[20px] text-orange-400">{t("Deck Division:", "डेक श्रेणी:")}</span>
+                        <span className="font-semibold text-[20px] text-emerald-350">
+                          {selectedCards[revealedIndex].cardData.type === 'Major' 
+                            ? t('Major Arcana', 'मुख्य रहस्य (Major Arcana)') 
+                            : t('Minor Arcana', 'गौण रहस्य (Minor Arcana)')}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[20px] text-orange-400">Orientation:</span>
+                        <span className="text-[20px] text-orange-400">{t("Orientation:", "दिशा / स्थिति:")}</span>
                         <span className="font-semibold text-[20px] text-emerald-300">
-                          {selectedCards[revealedIndex].isReversed ? 'Reversed' : 'Upright'}
+                          {selectedCards[revealedIndex].isReversed ? t('Reversed', 'उल्टा (Reversed)') : t('Upright', 'सीधा (Upright)')}
                         </span>
                       </div>
                     </div>
@@ -1050,17 +1186,17 @@ const TarotReading = () => {
                       disabled={revealedIndex === 0}
                       className="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-xs font-semibold transition-all"
                     >
-                      ← Previous Card
+                      {t("← Previous Card", "← पिछला कार्ड")}
                     </button>
                     <span className="text-xs text-slate-400">
-                      Card {revealedIndex + 1} of {selectedSpread.cardsNeeded}
+                      {t(`Card ${revealedIndex + 1} of ${selectedSpread.cardsNeeded}`, `कार्ड ${revealedIndex + 1} / ${selectedSpread.cardsNeeded}`)}
                     </span>
                     <button
                       onClick={() => setRevealedIndex(prev => Math.min(selectedSpread.cardsNeeded - 1, prev + 1))}
                       disabled={revealedIndex === selectedSpread.cardsNeeded - 1}
                       className="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-xs font-semibold transition-all"
                     >
-                      Next Card →
+                      {t("Next Card →", "अगला कार्ड →")}
                     </button>
                   </div>
                 )}
@@ -1073,18 +1209,20 @@ const TarotReading = () => {
                 <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-full blur-2xl"></div>
                 <h3 className="text-xl font-bold text-amber-200 mb-4 font-serif flex items-center">
                   <Sparkles className="h-5 w-5 mr-2 text-orange-400 animate-pulse" />
-                  Overall Synthesis of Your Energies
+                  {t("Overall Synthesis of Your Energies", "आपकी ऊर्जाओं का समग्र संश्लेषण")}
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
                   <div>
-                    <h4 className="text-[20px] font-semibold text-orange-400 mb-3">Element Analysis</h4>
+                    <h4 className="text-[20px] font-semibold text-orange-400 mb-3">{t("Element Analysis", "तत्व विश्लेषण")}</h4>
                     <div className="space-y-3">
                       {Object.entries(resonance.elementCounts).map(([el, count]) => {
                         const pct = (count / selectedCards.length) * 100;
                         return (
                           <div key={el} className="flex items-center space-x-3">
-                            <span className="w-16 text-[20px] text-yellow-400 font-medium">{el}</span>
+                            <span className="w-16 text-[20px] text-yellow-400 font-medium">
+                              {t(el, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[el] || el)}
+                            </span>
                             <div className="flex-grow bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
                               <div
                                 className={`h-full rounded-full transition-all duration-500 ${el === 'Fire' ? 'bg-orange-500' :
@@ -1102,27 +1240,41 @@ const TarotReading = () => {
                   </div>
 
                   <div>
-                    <h4 className="text-[20px] font-semibold text-orange-400 mb-3">Dominant Force Summary</h4>
+                    <h4 className="text-[20px] font-semibold text-orange-400 mb-3">{t("Dominant Force Summary", "प्रमुख बल सारांश")}</h4>
                     <p className="text-[20px] text-slate-350 leading-relaxed">
-                      Your reading shows a dominant energy of <strong>{resonance.dominantElement}</strong>.
-                      {resonance.dominantElement === 'Fire' && " This represents high inspiration, action, and active changes happening right now. Be proactive, but don't rush."}
-                      {resonance.dominantElement === 'Water' && " This signifies heavy emphasis on emotions, relationships, and deep internal intuition. Pause and feel your answers."}
-                      {resonance.dominantElement === 'Air' && " This reflects an intellectual period full of calculations, plans, and minor mental blocks that need clear boundaries."}
-                      {resonance.dominantElement === 'Earth' && " This points to career opportunities, financial considerations, and stability. Focus on anchoring your plans."}
-                      {!['Fire', 'Water', 'Air', 'Earth'].includes(resonance.dominantElement) && " Multiple elements are equally balanced, representing a rich variety of forces guiding you simultaneously."}
+                      {t("Your reading shows a dominant energy of ", "आपके वाचन में प्रमुख ऊर्जा ")}
+                      <strong>{t(resonance.dominantElement, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[resonance.dominantElement] || resonance.dominantElement)}</strong>
+                      {t(".", " की दिखती है।")}
+                      {resonance.dominantElement === 'Fire' && t(" This represents high inspiration, action, and active changes happening right now. Be proactive, but don't rush.", " यह आपके जीवन में वर्तमान में हो रही उच्च प्रेरणा, कार्रवाई और सक्रिय बदलावों का प्रतिनिधित्व करता है। सक्रिय रहें, लेकिन जल्दबाजी न करें।")}
+                      {resonance.dominantElement === 'Water' && t(" This signifies heavy emphasis on emotions, relationships, and deep internal intuition. Pause and feel your answers.", " यह भावनाओं, संबंधों और गहरी आंतरिक अंतर्ज्ञान पर भारी जोर देता है। ठहरें और अपने उत्तरों को महसूस करें।")}
+                      {resonance.dominantElement === 'Air' && t(" This reflects an intellectual period full of calculations, plans, and minor mental blocks that need clear boundaries.", " यह गणनाओं, योजनाओं और छोटे मानसिक अवरोधों से भरे एक बौद्धिक दौर को दर्शाता है, जिसमें स्पष्ट सीमाओं की आवश्यकता होती है।")}
+                      {resonance.dominantElement === 'Earth' && t(" This points to career opportunities, financial considerations, and stability. Focus on anchoring your plans.", " यह करियर के अवसरों, वित्तीय विचारों और स्थिरता की ओर इशारा करता है। अपनी योजनाओं को मजबूत करने पर ध्यान केंद्रित करें।")}
+                      {!['Fire', 'Water', 'Air', 'Earth'].includes(resonance.dominantElement) && t(" Multiple elements are equally balanced, representing a rich variety of forces guiding you simultaneously.", " कई तत्व समान रूप से संतुलित हैं, जो एक ही समय में आपका मार्गदर्शन करने वाले बलों की समृद्ध विविधता का प्रतिनिधित्व करते हैं।")}
                     </p>
                     {profile.name && (
                       <p className="text-[18px] text-yellow-400 mt-3 italic">
-                        Aligns with {profile.name}'s birth sign {zodiacInfo.sign} ({zodiacInfo.element}).
+                        {t(
+                          `Aligns with ${profile.name}'s birth sign ${zodiacInfo.sign} (${zodiacInfo.element}).`,
+                          `${profile.name} की जन्म राशि ${t(zodiacInfo.sign, {
+                            'Aries': 'मेष', 'Taurus': 'वृषभ', 'Gemini': 'मिथुन', 'Cancer': 'कर्क',
+                            'Leo': 'सिंह', 'Virgo': 'कन्या', 'Libra': 'तुला', 'Scorpio': 'वृश्चिक',
+                            'Sagittarius': 'धनु', 'Capricorn': 'मकर', 'Aquarius': 'कुंभ', 'Pisces': 'मीन'
+                          }[zodiacInfo.sign] || zodiacInfo.sign)} (${t(zodiacInfo.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[zodiacInfo.element] || zodiacInfo.element)}) के साथ मेल खाता है।`
+                        )}
                       </p>
                     )}
                   </div>
                 </div>
 
                 <div className="p-4 bg-slate-950/80 border border-slate-850 rounded-2xl">
-                  <h4 className="text-[20px] font-bold text-amber-300 uppercase tracking-widest mb-1">Sanctuary Guidance</h4>
+                  <h4 className="text-[20px] font-bold text-amber-300 uppercase tracking-widest mb-1">
+                    {t("Sanctuary Guidance", "साधना स्थल मार्गदर्शन")}
+                  </h4>
                   <p className="text-[18px] text-slate-350 leading-relaxed">
-                    Use this reading as a mirror for your self-reflection. The Tarot suggests path options, but your free will decides the direction. Meditate on the synthesized elements as you step forward.
+                    {t(
+                      "Use this reading as a mirror for your self-reflection. The Tarot suggests path options, but your free will decides the direction. Meditate on the synthesized elements as you step forward.",
+                      "इस वाचन का उपयोग अपने आत्म-चिंतन के लिए एक दर्पण के रूप में करें। टैरो मार्ग के विकल्प सुझाता है, लेकिन आपकी स्वतंत्र इच्छा दिशा तय करती है। जैसे ही आप आगे कदम बढ़ाएं, संश्लेषित तत्वों पर ध्यान केंद्रित करें।"
+                    )}
                   </p>
                 </div>
               </div>
@@ -1134,13 +1286,13 @@ const TarotReading = () => {
                 className="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500  text-[25px] text-black font-bold rounded-full transition-all flex items-center text-sm"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Draw Again
+                {t("Draw Again", "पुनः चयन करें")}
               </button>
               <button
                 onClick={handleReset}
                 className="px-8 py-3 border border-slate-800 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900 text-orange-400 text-[25px] font-bold rounded-full transition-all"
               >
-                Choose Spread
+                {t("Choose Spread", "स्प्रेड बदलें")}
               </button>
             </div>
 
