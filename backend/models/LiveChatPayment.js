@@ -19,6 +19,14 @@ const liveChatPaymentSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  questionsLimit: {
+    type: Number,
+    default: 1
+  },
+  questionsAsked: {
+    type: Number,
+    default: 0
+  },
   paymentStatus: {
     type: String,
     enum: ['pending', 'completed'],

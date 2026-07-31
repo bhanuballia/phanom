@@ -34,6 +34,7 @@ const LiveChatMessage = require('./models/LiveChatMessage');
 const axios = require('axios');
 const moderationService = require('./services/moderationService');
 const DisabledChat = require('./models/DisabledChat');
+const LiveChatPayment = require('./models/LiveChatPayment');
 
 
 
@@ -597,6 +598,39 @@ if (io) {
 
         const newMessage = new LiveChatMessage(newMessageOptions);
         const savedMessage = await newMessage.save();
+
+        // Check if this message is a question and should consume Guru Dakshina quota
+        if (text) {
+          const cleanMsg = text.trim().toLowerCase();
+          // Skip greetings and system message texts
+          if (cleanMsg !== 'hi' && cleanMsg !== 'hello' && !cleanMsg.startsWith('[system:')) {
+            try {
+              const activePayment = await LiveChatPayment.findOne({
+                chatId,
+                user: senderId,
+                paymentStatus: 'completed',
+                $expr: { $lt: ['$questionsAsked', '$questionsLimit'] }
+              }).sort({ createdAt: -1 });
+
+              if (activePayment) {
+                activePayment.questionsAsked += 1;
+                await activePayment.save();
+
+                const remaining = Math.max(0, activePayment.questionsLimit - activePayment.questionsAsked);
+                console.log(`[DAKSHINA] Consumed 1 question for chatId ${chatId}. Questions remaining: ${remaining}/${activePayment.questionsLimit}`);
+                
+                // Emit status update to both client and astrologer in the room
+                io.to(chatId).emit('dakshina-status-update', {
+                  isPaid: remaining > 0,
+                  questionsRemaining: remaining,
+                  astrologerId: receiverId
+                });
+              }
+            } catch (quotaErr) {
+              console.error('Error updating Guru Dakshina quota:', quotaErr);
+            }
+          }
+        }
 
         // 2. Populate sender info for the frontend
         const populatedMessage = await LiveChatMessage.findById(savedMessage._id)

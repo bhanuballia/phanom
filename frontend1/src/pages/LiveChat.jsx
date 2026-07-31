@@ -447,6 +447,7 @@ const LiveChat = () => {
     const location = useLocation();
     const [isDakshinaPaid, setIsDakshinaPaid] = useState(false);
     const [showDakshinaModal, setShowDakshinaModal] = useState(false);
+    const [questionsRemaining, setQuestionsRemaining] = useState(0);
 
     // Live chat audio stream states & refs
     const [isVoiceActive, setIsVoiceActive] = useState(false);
@@ -573,6 +574,8 @@ const LiveChat = () => {
     // Set up socket listeners and fetch chat history when an astrologer is selected
     useEffect(() => {
         cleanupAudioConnection();
+        setIsDakshinaPaid(false); // Reset payment status immediately when selecting a new astrologer
+        setQuestionsRemaining(0); // Reset remaining questions count
 
         if (!selectedAstrologer || !socket || !user) return;
 
@@ -591,11 +594,15 @@ const LiveChat = () => {
         // Fetch Guru Dakshina Payment status
         const checkDakshinaStatus = async () => {
             try {
+                console.log('checkDakshinaStatus: Checking payment status for astrologer:', selectedAstrologer._id);
                 const response = await liveChatAPI.getDakshinaStatus(selectedAstrologer._id);
+                console.log('checkDakshinaStatus: API response:', response.data);
                 setIsDakshinaPaid(response.data.isPaid);
+                setQuestionsRemaining(response.data.questionsRemaining || 0);
             } catch (err) {
                 console.error('Error fetching dakshina status:', err);
                 setIsDakshinaPaid(false);
+                setQuestionsRemaining(0);
             }
         };
 
@@ -688,12 +695,24 @@ const LiveChat = () => {
             setWarningInfo(null);
         });
 
+        // Listen for Guru Dakshina quota status updates
+        socket.on('dakshina-status-update', (data) => {
+            console.log('dakshina-status-update event received:', data);
+            setIsDakshinaPaid(data.isPaid);
+            setQuestionsRemaining(data.questionsRemaining);
+            if (!data.isPaid) {
+                // If payment quota is exhausted, immediately show the Guru Dakshina modal
+                setShowDakshinaModal(true);
+            }
+        });
+
         return () => {
             socket.off('receive-live-message');
             socket.off('live-chat-signaling', handleSignaling);
             socket.off('live-chat-violation');
             socket.off('live-chat-warning');
             socket.off('live-chat-disabled');
+            socket.off('dakshina-status-update');
             cleanupAudioConnection();
         };
     }, [selectedAstrologer, socket, user]);
@@ -930,10 +949,17 @@ const LiveChat = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-white">{selectedAstrologer.name}</h3>
-                                        <p className="text-[10px] text-emerald-400 flex items-center font-semibold uppercase tracking-wider">
-                                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span>
-                                            Active Now
-                                        </p>
+                                        <div className="flex items-center gap-3">
+                                            <p className="text-[10px] text-emerald-400 flex items-center font-semibold uppercase tracking-wider">
+                                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span>
+                                                Active Now
+                                            </p>
+                                            {isDakshinaPaid && (
+                                                <p className="text-[9px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full font-black uppercase tracking-widest animate-pulse">
+                                                    {questionsRemaining} {questionsRemaining === 1 ? 'Question' : 'Questions'} Left
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -1343,7 +1369,14 @@ const LiveChat = () => {
                         </div>
 
                         <div className="grid grid-cols-3 gap-3 mb-6">
-                            {[11, 21, 51, 101, 151, 201].map((amount) => (
+                            {[
+                                { amount: 11, label: '1 Question' },
+                                { amount: 21, label: '2 Questions' },
+                                { amount: 51, label: '4 Questions' },
+                                { amount: 101, label: '10 Questions' },
+                                { amount: 151, label: '20 Questions' },
+                                { amount: 201, label: '30 Questions' }
+                            ].map(({ amount, label }) => (
                                 <button
                                     key={amount}
                                     type="button"
@@ -1364,9 +1397,9 @@ const LiveChat = () => {
                                             alert(err.message || 'Failed to initialize payment.');
                                         }
                                     }}
-                                    className="bg-white/5 hover:bg-amber-500 hover:text-slate-950 border border-white/5 rounded-2xl py-3 text-sm font-extrabold text-white transition-all duration-200 active:scale-95 flex flex-col items-center justify-center gap-0.5"
+                                    className="bg-white/5 hover:bg-amber-500 hover:text-slate-950 border border-white/5 rounded-2xl py-3 text-xs font-extrabold text-white transition-all duration-200 active:scale-95 flex flex-col items-center justify-center gap-0.5"
                                 >
-                                    <span className="text-[10px] opacity-75 font-medium">Offer</span>
+                                    <span className="text-[9px] opacity-75 font-medium">{label}</span>
                                     <span>₹{amount}</span>
                                 </button>
                             ))}

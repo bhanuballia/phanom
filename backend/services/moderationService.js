@@ -55,6 +55,40 @@ const allProfanityAndAbuse = [
   ...sexualTerms
 ];
 
+// Whitelist of clean, standard words derived from astrology quick questions to prevent false positives
+const CLEAN_WORDS_WHITELIST = new Set([
+  "about", "abroad", "acept", "activates", "afecting", "after", "again", "against", "age",
+  "already", "anoter", "any", "aproaching", "are", "atract", "atraction", "atracts",
+  "balanced", "become", "before", "best", "beter", "bigest", "breakup", "can", "caste",
+  "causing", "chalenge", "chart", "cheating", "chuse", "coming", "compatibility", "compatible",
+  "conected", "conflicts", "confusion", "contact", "continue", "country", "creating", "curent",
+  "dasa", "debts", "deception", "delaying", "destined", "detachment", "did", "discover",
+  "distance", "divorce", "does", "dosa", "else", "emotional", "emotionaly", "end", "enter",
+  "eventualy", "expres", "fail", "fal", "family", "favorable", "favors", "find", "for",
+  "forever", "from", "future", "fysical", "fysicaly", "genuine", "gud", "hapier", "hapines",
+  "hapy", "has", "have", "heal", "hiding", "horoscope", "how", "improve", "indicated",
+  "infidelity", "influencing", "inter", "intimacy", "into", "involved", "karma", "karmic",
+  "ketu", "kind", "language", "lasting", "lead", "learn", "learning", "leson", "lesons",
+  "life", "live", "long", "love", "loyal", "manglik", "many", "mariage", "maried", "mars",
+  "mary", "mentaly", "mit", "miting", "most", "move", "navamsa", "new", "nids", "obstacle",
+  "oposition", "our", "parents", "partner", "pasionate", "past", "people", "permanent",
+  "person", "planet", "posible", "potential", "probability", "problems", "proposal",
+  "purpose", "rahu", "receive", "reconcile", "reconciliation", "relationsip", "relationsips",
+  "religion", "relocation", "remain", "reremedies", "remedies", "remedy", "repeatedly", "return",
+  "reunite", "reveal", "romance", "sare", "saturn", "second", "secret", "separate", "separation",
+  "serious", "setle", "significant", "someone", "someting", "sould", "soulmate", "soulmates",
+  "souls", "spiritualy", "spouse", "stable", "stay", "stil", "strengten", "strengts",
+  "strong", "stronger", "sucesful", "sucid", "suits", "sun", "survive", "tat", "te",
+  "tere", "term", "time", "tink", "tis", "togeter", "transform", "transit", "triangle",
+  "true", "truly", "trust", "trut", "turn", "twice", "twin", "type", "unfinised", "unlucky",
+  "venus", "wait", "weakneses", "what", "when", "which", "who", "why", "wil", "wises",
+  "wit", "year", "years"
+]);
+
+const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 // Unified 20-step text normalization pipeline
 const applyPipeline = (text) => {
   if (!text) return "";
@@ -303,8 +337,19 @@ const validateMessage = (messageText) => {
 
   for (const item of categoryPhrases) {
     for (const phrase of item.list) {
-      if (phrase.length > 2 && messageLower.includes(phrase.toLowerCase())) {
-        return { isValid: false, violationType: item.type };
+      if (phrase.length > 2) {
+        if (phrase.includes(' ')) {
+          // Multi-word phrase: substring match is appropriate
+          if (messageLower.includes(phrase.toLowerCase())) {
+            return { isValid: false, violationType: item.type };
+          }
+        } else {
+          // Single-word phrase: match with word boundaries to avoid partial matches (e.g. remedies -> die)
+          const regex = new RegExp(`\\b${escapeRegExp(phrase)}\\b`, 'i');
+          if (regex.test(messageText)) {
+            return { isValid: false, violationType: item.type };
+          }
+        }
       }
     }
   }
@@ -329,6 +374,11 @@ const validateMessage = (messageText) => {
     }
 
     const normalizedWord = normalizeWord(word);
+
+    // Bypass check if normalized word is in the whitelist of clean words
+    if (CLEAN_WORDS_WHITELIST.has(normalizedWord)) {
+      continue;
+    }
     
     // Check if the normalized word matches any of our bad words (exact & fuzzy matching)
     for (const badWord of allProfanityAndAbuse) {
@@ -347,9 +397,16 @@ const validateMessage = (messageText) => {
   }
 
   // 4. Check fully condensed and collapsed text for bypass attempts (e.g. "c h u t i y a", "ch_u_t_i_y_a", "chutiyaaaaa")
-  const { condensed, collapsed } = normalizeText(messageText);
+  const cleanWordsForBypass = words.filter(w => !CLEAN_WORDS_WHITELIST.has(normalizeWord(w)));
+  const cleanTextForBypass = cleanWordsForBypass.join(' ');
+  const { condensed, collapsed } = normalizeText(cleanTextForBypass);
   for (const badWord of allProfanityAndAbuse) {
     const normalizedBad = normalizeWord(badWord);
+    // Bypass if the bad word pattern itself contains any of our whitelisted clean words of length >= 4 (e.g., "my soulmate" contains "soulmate")
+    const isWhitelisted = [...CLEAN_WORDS_WHITELIST].some(cleanWord => cleanWord.length >= 4 && normalizedBad.includes(cleanWord));
+    if (isWhitelisted) {
+      continue;
+    }
     // If the bad word is directly in the condensed or collapsed string as a full match or substring
     if (normalizedBad.length >= 4) {
       if (condensed.includes(normalizedBad) || collapsed.includes(normalizedBad)) {

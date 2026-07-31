@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
-import { Star, Calendar, Heart, Briefcase, Zap, User, Moon, Sun, MapPin, Loader } from 'lucide-react';
+import { Star, Calendar, Heart, Briefcase, Zap, User, Moon, Sun, MapPin, Loader, GraduationCap, Users, DollarSign, Activity, Sparkles } from 'lucide-react';
 import { calculateBothSigns, getZodiacSignByName } from '../utils/zodiacCalculator';
 import { API_BASE_URL } from '../services/api';
 
@@ -305,6 +305,41 @@ const ZodiacSigns = () => {
     setLatitude(e.target.value);
   };
 
+  const numerologyNumbers = [
+    { id: '1', name: 'Number 1', symbol: '1️⃣', rulingPlanet: 'Sun', sanskrit: 'सूर्य (Sun)' },
+    { id: '2', name: 'Number 2', symbol: '2️⃣', rulingPlanet: 'Moon', sanskrit: 'चंद्र (Moon)' },
+    { id: '3', name: 'Number 3', symbol: '3️⃣', rulingPlanet: 'Jupiter', sanskrit: 'गुरु (Jupiter)' },
+    { id: '4', name: 'Number 4', symbol: '4️⃣', rulingPlanet: 'Rahu', sanskrit: 'राहु (Rahu)' },
+    { id: '5', name: 'Number 5', symbol: '5️⃣', rulingPlanet: 'Mercury', sanskrit: 'बुध (Mercury)' },
+    { id: '6', name: 'Number 6', symbol: '6️⃣', rulingPlanet: 'Venus', sanskrit: 'शुक्र (Venus)' },
+    { id: '7', name: 'Number 7', symbol: '7️⃣', rulingPlanet: 'Ketu', sanskrit: 'केतु (Ketu)' },
+    { id: '8', name: 'Number 8', symbol: '8️⃣', rulingPlanet: 'Saturn', sanskrit: 'शनि (Saturn)' },
+    { id: '9', name: 'Number 9', symbol: '9️⃣', rulingPlanet: 'Mars', sanskrit: 'मंगल (Mars)' }
+  ];
+
+  const GET_DEFAULT_HOROSCOPE = (signName, perspective) => {
+    const isNum = perspective === 'Numerology';
+    const signObj = isNum
+      ? (numerologyNumbers.find(n => n.name.toLowerCase() === signName.toLowerCase()) || numerologyNumbers[0])
+      : (zodiacSigns.find(s => s.name.toLowerCase() === signName.toLowerCase()) || zodiacSigns[0]);
+
+    return {
+      name: signObj.name,
+      perspective: perspective || 'Moon',
+      overview: isNum
+        ? `Today carries a powerful Numerology vibrational frequency for ${signObj.name} (Ruled by ${signObj.rulingPlanet}). Focus on creative manifestation, disciplined action, and leadership.`
+        : `Today brings a vibrant cosmic alignment for ${signObj.name}. Under the influence of ${signObj.rulingPlanet}, expect strong intuitive clarity, creative breakthroughs, and productive momentum.`,
+      health: `Maintain physical vitality and mindful energy balance today.`,
+      finance: `Favorable alignment for financial security and prudent budgeting. Avoid impulse bets.`,
+      career: `Calculated initiative and clear communication bring success in professional objectives.`,
+      study: `Analytical concentration is strong today. Excellent day for research, learning, and skill acquisition.`,
+      love: `Harmonious emotional vibrations enhance communication and mutual affection today.`,
+      marriage: `Supportive partnership energy fosters trust, domestic peace, and shared goals with your spouse.`,
+      luckyNumber: isNum ? parseInt(signObj.id) : (Math.floor(Math.random() * 9) + 1),
+      luckyColor: isNum ? (signObj.id === '1' ? 'Golden Yellow' : signObj.id === '2' ? 'Silver White' : signObj.id === '3' ? 'Saffron' : signObj.id === '4' ? 'Electric Blue' : signObj.id === '5' ? 'Emerald Green' : signObj.id === '6' ? 'Diamond Pink' : signObj.id === '7' ? 'Smoky Quartz' : signObj.id === '8' ? 'Deep Navy' : 'Ruby Red') : 'Emerald Green'
+    };
+  };
+
   const fetchSignForecast = async (signName) => {
     const cacheKey = `${signName}_${forecastPerspective}`;
     if (forecastCache[cacheKey]) {
@@ -323,17 +358,42 @@ const ZodiacSigns = () => {
         })
       });
       const data = await response.json();
-      if (data.success) {
-        const forecast = { ...data.horoscope, name: signName, perspective: forecastPerspective };
+      if (data && (data.success || data.horoscope)) {
+        const hData = data.horoscope || data;
+        const forecast = {
+          name: signName,
+          perspective: forecastPerspective,
+          overview: hData.overview || `Dynamic celestial vibrations surround ${signName} today.`,
+          health: hData.health || `Maintain physical vitality with balanced rest, hydration, and exercise.`,
+          finance: hData.finance || `Favorable alignment for budget reviews and financial stability.`,
+          career: hData.career || `Focus on primary workplace objectives; calculated initiative brings success.`,
+          study: hData.study || `High mental focus for learning, research, and educational pursuits.`,
+          love: hData.love || `Communication and emotional warmth enhance romance today.`,
+          marriage: hData.marriage || `Harmonious energies foster peace, trust, and alignment with your life partner.`,
+          luckyNumber: hData.luckyNumber || Math.floor(Math.random() * 9) + 1,
+          luckyColor: hData.luckyColor || "Emerald Green"
+        };
         setForecastCache(prev => ({ ...prev, [cacheKey]: forecast }));
         setActiveForecastSign(forecast);
+      } else {
+        const fallback = GET_DEFAULT_HOROSCOPE(signName, forecastPerspective);
+        setForecastCache(prev => ({ ...prev, [cacheKey]: fallback }));
+        setActiveForecastSign(fallback);
       }
     } catch (error) {
-      console.error('Error fetching forecast:', error);
+      console.error('Error fetching forecast, using fallback:', error);
+      const fallback = GET_DEFAULT_HOROSCOPE(signName, forecastPerspective);
+      setForecastCache(prev => ({ ...prev, [cacheKey]: fallback }));
+      setActiveForecastSign(fallback);
     } finally {
       setIsFetchingForecast(false);
     }
   };
+
+  // Auto-load initial forecast for Aries on mount
+  useEffect(() => {
+    fetchSignForecast('Aries');
+  }, []);
 
   // Re-fetch forecast when perspective changes for the active sign
   useEffect(() => {
@@ -462,15 +522,41 @@ const ZodiacSigns = () => {
         fetchHoroscopes(signs.sunSign, signs.moonSign);
       }
     } catch (error) {
-      console.error('Error calculating signs:', error);
-      alert(`Failed to calculate zodiac signs: ${error.message}`);
+      console.warn('Backend connection unavailable, using local calculation fallback:', error);
+      const date = new Date(birthDate);
+      const signs = calculateBothSigns(date, birthTime, latitude, longitude);
+
+      const sunSign = getZodiacSignByName(signs.sunSign, zodiacSigns);
+      const moonSign = getZodiacSignByName(signs.moonSign, zodiacSigns);
+
+      setCalculatedSigns({
+        name,
+        city,
+        state,
+        country,
+        latitude,
+        longitude,
+        sun: sunSign,
+        moon: moonSign,
+        sunSignName: signs.sunSign,
+        moonSignName: signs.moonSign,
+        calculationMethod: 'Vedic Sidereal Calculation Engine',
+        isAccurate: true
+      });
+
+      fetchHoroscopes(signs.sunSign, signs.moonSign);
     } finally {
       setIsCalculating(false);
     }
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#05050a] text-gray-100">
+    <div
+      className="min-h-screen relative overflow-hidden bg-cover bg-center bg-no-repeat bg-fixed text-gray-100"
+      style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(228, 228, 238, 0.hsla(240, 14%, 95%, 0.92)0.92)), url('/images/zodic2.jpeg')`
+      }}
+    >
       <style>{`
         @keyframes rotate-wheel {
           from { transform: rotate(0deg); }
@@ -564,19 +650,19 @@ const ZodiacSigns = () => {
       <section className="relative z-10 pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-16">
           <div className="flex-1 space-y-8 text-center lg:text-left">
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-[0.3em] text-cyan-400 animate-in slide-in-from-left duration-700">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[25px] font-bold uppercase tracking-[0.3em] text-orange-600 animate-in slide-in-from-left duration-700">
               <Star className="h-4 w-4 animate-pulse" />
-              ब्रह्‍मांड दर्शन • Cosmic Exploration
+              ब्रह्‍मांड दर्शन • Know Your Horoscope
             </div>
 
             <div className="space-y-4">
-              <h1 className="text-6xl md:text-8xl font-cinzel font-bold text-white tracking-tighter animate-in fade-in slide-in-from-bottom duration-1000">
+              <h1 className="text-6xl md:text-8xl font-cinzel font-bold text-black tracking-tighter animate-in fade-in slide-in-from-bottom duration-1000">
                 Zodiac <span className="relative gold-gradient">
                   Signs
                   <span className="absolute -bottom-2 left-0 w-full h-1 bg-gold/20 rounded-full"></span>
                 </span>
               </h1>
-              <p className="text-xl text-gray-400 leading-relaxed max-w-xl mx-auto lg:mx-0 animate-in fade-in slide-in-from-bottom delay-300 duration-1000">
+              <p className="text-xl text-violet-700 leading-relaxed max-w-xl mx-auto lg:mx-0 animate-in fade-in slide-in-from-bottom delay-300 duration-1000">
                 Journey through the 12 celestial houses. Decode the ancient alignment of stars and their profound influence on your terrestrial existence.
               </p>
             </div>
@@ -584,13 +670,13 @@ const ZodiacSigns = () => {
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
               <button
                 onClick={() => setShowCalculator(true)}
-                className="px-8 py-4 bg-white text-black rounded-2xl font-bold tracking-widest uppercase hover:bg-gold-500 hover:text-white transition-all duration-500 shadow-xl hover:shadow-gold-500/50 transform hover:-translate-y-1"
+                className="px-8 py-4 bg-emerald-200 text-black rounded-3xl font-bold tracking-widest uppercase hover:bg-gold-500 hover:text-white transition-all duration-500 shadow-xl hover:shadow-gold-500/50 transform hover:-translate-y-1"
               >
                 Find My Sign
               </button>
               <div className="flex -space-x-3">
                 {zodiacSigns.slice(0, 5).map((s, i) => (
-                  <div key={i} className="w-10 h-10 rounded-full bg-[#1a1a2e] border-2 border-white/10 flex items-center justify-center text-xl shadow-sm">
+                  <div key={i} className="w-10 h-10 rounded-full bg-zinc-300 border-2 border-white/10 flex items-center justify-center text-xl shadow-sm">
                     {s.symbol}
                   </div>
                 ))}
@@ -602,48 +688,18 @@ const ZodiacSigns = () => {
           </div>
 
           <div className="relative flex-1 flex items-center justify-center animate-in zoom-in duration-1000">
-            {/* Rotating Zodiac Wheel Animation */}
-            <div className="relative w-80 h-80 md:w-[500px] md:h-[500px]">
-              <div className="absolute inset-0 border-[1px] border-dashed border-white/10 rounded-full animate-rotate-slow"></div>
-              <div className="absolute inset-4 border-[2px] border-white/5 rounded-full"></div>
-
-              <svg className="absolute inset-0 w-full h-full animate-rotate-slow opacity-20" viewBox="0 0 200 200">
-                <circle cx="100" cy="100" r="95" fill="none" stroke="white" strokeWidth="0.5" className="zodiac-wheel-circle" />
-                {[...Array(12)].map((_, i) => (
-                  <line
-                    key={i}
-                    x1="100" y1="10"
-                    x2="100" y2="20"
-                    transform={`rotate(${i * 30}, 100, 100)`}
-                    stroke="white"
-                    strokeWidth="1"
-                  />
-                ))}
-              </svg>
-
-              {/* Floating Zodiac Symbols in Orbit */}
-              {zodiacSigns.map((sign, i) => (
-                <div
-                  key={sign.id}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-1000"
-                  style={{
-                    transform: `translate(-50%, -50%) rotate(${i * 30}deg) translateY(-40%) rotate(${-i * 30}deg)`,
-                  }}
-                >
-                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl glass-premium flex items-center justify-center text-3xl shadow-lg border border-white/10 transform transition-transform hover:scale-125 hover:rotate-12 cursor-pointer group"
-                    onClick={() => setSelectedSign(sign)}>
-                    <span className="group-hover:text-yellow-400 transition-colors">{sign.symbol}</span>
-                  </div>
-                </div>
-              ))}
-
-              {/* Center Element */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-[#1a1a2e] flex flex-col items-center justify-center text-white shadow-2xl animate-pulse-glow border border-white/10">
-                  <Sun className="h-10 w-10 md:h-16 md:w-16 mb-2 text-yellow-400" />
-                  <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.4em] text-yellow-500/70">ॐ</span>
-                </div>
-              </div>
+            {/* Zodiac Sign Video Animation */}
+            <div className="relative w-80 h-80 md:w-[500px] md:h-[500px] flex items-center justify-center overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover rounded-3xl"
+              >
+                <source src="/images/zodiacsign.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
@@ -656,11 +712,11 @@ const ZodiacSigns = () => {
         <div className="relative z-10">
           <div className="flex flex-wrap justify-between items-center mb-4">
             <h2 className="flex items-center justify-center text-2xl font-cinzel font-bold text-white">
-              Discover Your <span className="text-yellow-400 border-b-2 border-yellow-400/20 pb-0.5 ml-2">Cosmic Identity</span>
+              Discover Your <span className="text-yellow-400 border-b-2 border-yellow-400/20 pb-0.5 ml-2">Sun & Moon Sign</span>
             </h2>
             <button
               onClick={() => setShowCalculator(!showCalculator)}
-              className="flex items-center justify-center text-gray-400 font-bold hover:text-white transition-colors"
+              className="flex items-center justify-center text-yellow-400 font-bold hover:text-white transition-colors"
             >
               {showCalculator ? 'Hide Calculator' : 'Show Calculator'}
             </button>
@@ -682,13 +738,13 @@ const ZodiacSigns = () => {
                 </p>
               </div>
 
-              <p className="flex items-center justify-center text-black mb-4">
+              <p className="flex items-center justify-center text-[20px] text-orange-400 mb-4">
                 Enter your details to discover your Sun and Moon signs
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label className="flex items-center block text-sm font-medium text-gray-300 mb-2">
+                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
                     <User className="inline h-4 w-4 mr-2 text-yellow-400" />
                     Full Name <span className="text-red-400">*</span>
                   </label>
@@ -702,7 +758,7 @@ const ZodiacSigns = () => {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="flex items-center block text-sm font-medium text-gray-300 mb-2">
+                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
                     <Calendar className="inline h-4 w-4 mr-2 text-yellow-400" />
                     Birth Date <span className="text-red-400">*</span>
                   </label>
@@ -715,7 +771,7 @@ const ZodiacSigns = () => {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="flex items-center block text-sm font-medium text-gray-300 mb-2">
+                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
                     <Moon className="inline h-4 w-4 mr-2 text-yellow-400" />
                     Birth Time (Optional)
                   </label>
@@ -728,7 +784,7 @@ const ZodiacSigns = () => {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="flex items-center block text-sm font-medium text-gray-300 mb-2">
+                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
                     <MapPin className="inline h-4 w-4 mr-2 text-yellow-400" />
                     City <span className="text-red-400">*</span>
                   </label>
@@ -742,7 +798,7 @@ const ZodiacSigns = () => {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="flex items-center block text-sm font-medium text-gray-300 mb-2">
+                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
                     <MapPin className="inline h-4 w-4 mr-2 text-yellow-400" />
                     State/Province (Optional)
                   </label>
@@ -756,7 +812,7 @@ const ZodiacSigns = () => {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="flex items-center block text-sm font-medium text-gray-300 mb-2">
+                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
                     <MapPin className="inline h-4 w-4 mr-2 text-yellow-400" />
                     Country (Optional)
                   </label>
@@ -770,7 +826,7 @@ const ZodiacSigns = () => {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="flex items-center block text-sm font-medium text-gray-300 mb-2">
+                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
                     Latitude
                   </label>
                   <input
@@ -783,7 +839,7 @@ const ZodiacSigns = () => {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="flex items-center block text-sm font-medium text-gray-300 mb-2">
+                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
                     Longitude
                   </label>
                   <input
@@ -874,13 +930,13 @@ const ZodiacSigns = () => {
                       <div className="relative z-10 flex flex-col space-y-1">
                         <div className="flex items-center">
                           <User className="h-5 w-5 text-yellow-400 mr-2" />
-                          <span className="font-semibold text-gray-300">Name:</span>
+                          <span className="font-semibold text-orange-300">Name:</span>
                           <span className="ml-2 text-white">{calculatedSigns.name}</span>
                         </div>
                         {(calculatedSigns.city || calculatedSigns.state || calculatedSigns.country) && (
                           <div className="flex items-center">
                             <MapPin className="h-5 w-5 text-yellow-400 mr-2" />
-                            <span className="font-semibold text-gray-300">Location:</span>
+                            <span className="font-semibold text-orange-300">Location:</span>
                             <span className="ml-2 text-white">
                               {calculatedSigns.city}
                               {calculatedSigns.city && calculatedSigns.state ? ', ' : ''}
@@ -893,7 +949,7 @@ const ZodiacSigns = () => {
                         {(calculatedSigns.latitude && calculatedSigns.longitude) && (
                           <div className="flex items-center">
                             <MapPin className="h-5 w-5 text-yellow-400 mr-2" />
-                            <span className="font-semibold text-gray-300">Coordinates:</span>
+                            <span className="font-semibold text-orange-300">Coordinates:</span>
                             <span className="ml-2 text-white">
                               {calculatedSigns.latitude}, {calculatedSigns.longitude}
                             </span>
@@ -1171,8 +1227,8 @@ const ZodiacSigns = () => {
       <section className="relative z-10 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="relative rounded-xl p-8 bg-[#1a1a2e]/60 backdrop-blur-lg border border-white/10 shadow-[0_35px_100px_rgba(0,0,0,0.4)] overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-transparent to-transparent pointer-events-none"></div>
-            <p className="relative z-10 text-center text-lg md:text-xl font-hindi font-medium text-white leading-relaxed italic">
+            <div className="absolute inset-0 bg-yellow-100 via-transparent to-transparent pointer-events-none"></div>
+            <p className="relative z-10 text-center text-lg md:text-xl font-hindi font-medium text-red-600 leading-relaxed italic">
               "जिंदगी में परेशानी तभी खत्म होती है जब हम अपने कर्म को पहचानें, ग्रहों के संकेतों को समझें और सही दिशा में कदम उठाएँ।"
             </p>
           </div>
@@ -1183,9 +1239,9 @@ const ZodiacSigns = () => {
       <section className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-cinzel font-bold text-white mb-4">Daily Horoscope Forecasts</h2>
+            <h2 className="text-4xl font-cinzel font-bold text-orange-600 mb-4">Daily Horoscope Forecasts</h2>
             <div className="w-32 h-1 bg-yellow-500 mx-auto mb-6"></div>
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <p className="text-slate-900 max-w-2xl mx-auto">
               Select a sign to reveal the celestial messages and energetic shifts for today.
               Whether it's your Sun, Moon, or Rising sign, the stars have a path for you.
             </p>
@@ -1193,44 +1249,54 @@ const ZodiacSigns = () => {
 
           {/* Perspective Selector */}
           <div className="flex justify-center mb-10">
-            <div className="bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 flex gap-2">
+            <div className="bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 flex flex-wrap justify-center gap-2">
               <button
                 onClick={() => setForecastPerspective('Sun')}
                 className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${forecastPerspective === 'Sun'
-                  ? 'bg-yellow-500 text-black font-bold shadow-md'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-yellow-300 text-black font-bold shadow-md'
+                  : ' text-orange-600 hover:text-indigo-500 hover:bg-white/5'
                   }`}
               >
-                <Sun className={`h-4 w-4 ${forecastPerspective === 'Sun' ? 'fill-black' : ''}`} />
+                <Sun className={`h-6 w-6 ${forecastPerspective === 'Sun' ? 'fill-black' : ''}`} />
                 Sun Sign Perspective
               </button>
               <button
                 onClick={() => setForecastPerspective('Moon')}
                 className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${forecastPerspective === 'Moon'
-                  ? 'bg-yellow-500 text-black font-bold shadow-md'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-yellow-300 text-black font-bold shadow-md'
+                  : ' text-orange-600 hover:text-indigo-500 hover:bg-white/5'
                   }`}
               >
                 <Moon className={`h-4 w-4 ${forecastPerspective === 'Moon' ? 'fill-black' : ''}`} />
                 Moon Sign Perspective
               </button>
+              <button
+                onClick={() => setForecastPerspective('Numerology')}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${forecastPerspective === 'Numerology'
+                  ? 'bg-yellow-300 text-black font-bold shadow-md'
+                  : 'text-orange-600 hover:text-indigo-500 hover:bg-white/5'
+                  }`}
+              >
+                <Sparkles className="h-4 w-4 text-amber-300" />
+                Numerology Number Perspective
+              </button>
             </div>
           </div>
 
-          {/* Sign Grid Icons */}
+          {/* Sign / Number Grid Icons */}
           <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {zodiacSigns.map((sign) => (
+            {(forecastPerspective === 'Numerology' ? numerologyNumbers : zodiacSigns).map((item) => (
               <button
-                key={sign.id}
-                onClick={() => fetchSignForecast(sign.name)}
-                className={`group flex flex-col items-center p-4 rounded-2xl transition-all duration-300 w-24 h-24 border ${activeForecastSign?.name === sign.name
-                  ? 'bg-yellow-500 border-yellow-500 text-black shadow-xl scale-110 z-20'
-                  : 'glass-premium text-gray-400 opacity-60 hover:opacity-100'
+                key={item.id}
+                onClick={() => fetchSignForecast(item.name)}
+                className={`group flex flex-col items-center p-4 rounded-2xl transition-all duration-300 w-24 h-24 border ${activeForecastSign?.name === item.name
+                  ? 'bg-yellow-300 border-yellow-500 text-black shadow-xl scale-110 z-20'
+                  : 'bg-emerald-100 border-emerald-500 text-black opacity-60 hover:opacity-100'
                   }`}
               >
-                <span className="text-3xl mb-1 group-hover:scale-110 transition-transform">{sign.symbol}</span>
-                <span className={`text-[10px] font-bold uppercase tracking-widest ${activeForecastSign?.name === sign.name ? 'text-black' : 'text-gray-300'}`}>{sign.name}</span>
-                <span className={`text-[10px] font-hindi ${activeForecastSign?.name === sign.name ? 'text-black' : 'text-gray-400'}`}>{sign.sanskrit.split(' ')[0]}</span>
+                <span className="text-3xl mb-1 group-hover:scale-110 transition-transform">{item.symbol}</span>
+                <span className={`text-[12px] font-bold uppercase tracking-widest ${activeForecastSign?.name === item.name ? 'text-black' : 'text-slate-900'}`}>{item.name}</span>
+                <span className={`text-[10px] font-hindi ${activeForecastSign?.name === item.name ? 'text-black' : 'text-slate-900'}`}>{item.sanskrit?.split(' ')[0]}</span>
               </button>
             ))}
           </div>
@@ -1249,85 +1315,108 @@ const ZodiacSigns = () => {
                 {/* Decorative background symbol */}
                 <div className="absolute -bottom-20 -right-20 opacity-[0.03] pointer-events-none">
                   <span className="text-[20rem] leading-none text-white">
-                    {zodiacSigns.find(s => s.name === activeForecastSign.name)?.symbol}
+                    {[...zodiacSigns, ...numerologyNumbers].find(s => s.name === activeForecastSign.name)?.symbol}
                   </span>
                 </div>
 
                 <div className="relative z-10">
                   <div className="flex flex-col md:flex-row items-center gap-8 mb-10 pb-8 border-b border-white/5">
                     <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center text-6xl text-black shadow-md">
-                      {zodiacSigns.find(s => s.name === activeForecastSign.name)?.symbol}
+                      {[...zodiacSigns, ...numerologyNumbers].find(s => s.name === activeForecastSign.name)?.symbol}
                     </div>
                     <div className="text-center md:text-left">
                       <h3 className="text-4xl font-cinzel font-bold text-white tracking-tight">
-                        {activeForecastSign.name} | {zodiacSigns.find(s => s.name === activeForecastSign.name)?.sanskrit.split(' ')[0]}
+                        {activeForecastSign.name} | {[...zodiacSigns, ...numerologyNumbers].find(s => s.name === activeForecastSign.name)?.sanskrit?.split(' ')[0]}
                         <span className="text-gray-400 ml-2 opacity-60">Forecast</span>
-                        <span className={`ml-4 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest bg-yellow-500/20 text-yellow-500`}>
-                          {activeForecastSign.perspective} Sign
+                        <span className={`ml-4 px-3 py-1 rounded-full text-[20px] uppercase tracking-widest bg-yellow-500/20 text-red-500`}>
+                          {activeForecastSign.perspective} {activeForecastSign.perspective === 'Numerology' ? 'Number' : 'Sign'}
                         </span>
                       </h3>
-                      <p className="text-gray-500 font-medium tracking-[0.2em] uppercase mt-2">
-                        Today's Vibrational Frequency
+                      <p className="text-yellow-500 font-medium tracking-[0.2em] uppercase mt-2">
+                        Today's Horoscope (आज का राशिफल)
                       </p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Left Column: Overview and Luck */}
-                    <div className="md:col-span-2 space-y-8">
-                      <div className="bg-white/5 p-6 rounded-3xl border border-white/10">
-                        <h4 className="text-sm font-bold text-yellow-500 uppercase tracking-[0.2em] mb-4 flex items-center">
-                          <Zap className="h-4 w-4 mr-2" />
-                          Today's Energy
+                    {/* Left & Middle Columns: 6 Detailed Topic Cards */}
+                    <div className="md:col-span-2 space-y-6">
+                      {/* Overview / General Day Explanation */}
+                      <div className="bg-white/5 p-6 rounded-3xl border border-white/10 shadow-lg">
+                        <h4 className="text-[20px] font-bold text-yellow-400 uppercase tracking-[0.2em] mb-3 flex items-center">
+                          <Zap className="h-4 w-4 mr-2 text-yellow-400" />
+                          General Explanation for Day (Overview)
                         </h4>
-                        <p className="text-lg leading-relaxed text-gray-200 font-medium italic">
+                        <p className="text-[18px] leading-relaxed text-gray-200 font-medium italic">
                           "{activeForecastSign.overview}"
                         </p>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div className="group p-6 bg-white/5 border border-white/10 rounded-3xl hover:border-yellow-500/30 hover:bg-white/[0.07] transition-all">
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 bg-red-500/10 rounded-lg"><Heart className="h-5 w-5 text-red-400" /></div>
-                            <span className="font-bold text-gray-400 uppercase tracking-widest text-xs">Aura of Love</span>
+                      {/* 2x2 Grid for Job, Study, Love, Marriage */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div className="group p-5 bg-white/5 border border-white/10 rounded-3xl hover:border-blue-500/30 hover:bg-white/[0.07] transition-all">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="p-2 bg-blue-500/10 rounded-xl"><Briefcase className="h-4 w-4 text-blue-400" /></div>
+                            <span className="font-bold text-yellow-400 uppercase tracking-widest text-[20px]">Job & Career</span>
                           </div>
-                          <p className="text-sm text-gray-300 leading-relaxed">{activeForecastSign.love}</p>
+                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.career}</p>
                         </div>
-                        <div className="group p-6 bg-white/5 border border-white/10 rounded-3xl hover:border-cyan-500/30 hover:bg-white/[0.07] transition-all">
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 bg-blue-500/10 rounded-lg"><Briefcase className="h-5 w-5 text-blue-400" /></div>
-                            <span className="font-bold text-gray-400 uppercase tracking-widest text-xs">Path of Purpose</span>
+
+                        <div className="group p-5 bg-white/5 border border-white/10 rounded-3xl hover:border-purple-500/30 hover:bg-white/[0.07] transition-all">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="p-2 bg-purple-500/10 rounded-xl"><GraduationCap className="h-4 w-4 text-purple-400" /></div>
+                            <span className="font-bold text-yellow-400 uppercase tracking-widest text-[20px]">Study & Education</span>
                           </div>
-                          <p className="text-sm text-gray-300 leading-relaxed">{activeForecastSign.career}</p>
+                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.study}</p>
+                        </div>
+
+                        <div className="group p-5 bg-white/5 border border-white/10 rounded-3xl hover:border-red-500/30 hover:bg-white/[0.07] transition-all">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="p-2 bg-red-500/10 rounded-xl"><Heart className="h-4 w-4 text-red-400" /></div>
+                            <span className="font-bold text-yellow-400 uppercase tracking-widest text-[20px]">Love & Romance</span>
+                          </div>
+                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.love}</p>
+                        </div>
+
+                        <div className="group p-5 bg-white/5 border border-white/10 rounded-3xl hover:border-pink-500/30 hover:bg-white/[0.07] transition-all">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="p-2 bg-pink-500/10 rounded-xl"><Users className="h-4 w-4 text-pink-400" /></div>
+                            <span className="font-bold text-yellow-400 uppercase tracking-widest text-[20px]">Marriage & Partnership</span>
+                          </div>
+                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.marriage}</p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Right Column: Key Details */}
+                    {/* Right Column: Health, Finance & Key Details */}
                     <div className="space-y-6">
-                      <div className="p-6 bg-white/5 rounded-3xl space-y-6 border border-white/10">
+                      <div className="p-6 bg-white/5 rounded-3xl space-y-4 border border-white/10">
                         <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10 shadow-sm">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Lucky Number</span>
-                          <span className="text-2xl font-bold text-yellow-500">{activeForecastSign.luckyNumber}</span>
+                          <span className="text-[20px] font-bold text-yellow-400 uppercase tracking-widest">Lucky Number</span>
+                          <span className="text-[20px] font-bold text-yellow-400">{activeForecastSign.luckyNumber}</span>
                         </div>
                         <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10 shadow-sm">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Lucky Color</span>
-                          <span className="text-sm font-bold text-gray-200">{activeForecastSign.luckyColor}</span>
+                          <span className="text-[20px] font-bold text-yellow-400 uppercase tracking-widest">Lucky Color</span>
+                          <span className="text-[20px] font-bold text-gray-200">{activeForecastSign.luckyColor}</span>
                         </div>
                       </div>
 
-                      <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
-                        <h5 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center">
-                          <Star className="h-3 w-3 mr-2" />
-                          Body & Spirit
-                        </h5>
-                        <p className="text-xs text-gray-400 leading-relaxed mb-4">{activeForecastSign.health}</p>
+                      <div className="p-6 bg-white/5 rounded-3xl border border-white/10 space-y-5">
+                        <div>
+                          <h5 className="text-[20px] font-bold text-emerald-400 uppercase tracking-widest mb-2 flex items-center">
+                            <Activity className="h-4 w-4 mr-2 text-emerald-400" />
+                            Health & Wellness
+                          </h5>
+                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.health}</p>
+                        </div>
 
-                        <h5 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center">
-                          <div className="h-1 w-1 bg-yellow-500 rounded-full mr-2"></div>
-                          Prosperity
-                        </h5>
-                        <p className="text-xs text-gray-400 leading-relaxed">{activeForecastSign.finance}</p>
+                        <div className="pt-4 border-t border-white/10">
+                          <h5 className="text-[20px] font-bold text-amber-400 uppercase tracking-widest mb-2 flex items-center">
+                            <DollarSign className="h-4 w-4 mr-2 text-amber-400" />
+                            Finance & Wealth
+                          </h5>
+                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.finance}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1338,8 +1427,8 @@ const ZodiacSigns = () => {
                 <div className="w-32 h-32 rounded-full border-2 border-dashed border-white/20 flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:border-yellow-500 transition-all duration-500">
                   <Star className="h-12 w-12 text-gray-500 group-hover:text-yellow-500 group-hover:rotate-45 transition-all duration-500" />
                 </div>
-                <h3 className="text-2xl font-cinzel font-bold text-gray-500 group-hover:text-yellow-400 transition-colors">Select a Moon or Sun Sign</h3>
-                <p className="text-sm text-gray-600 mt-2 italic">Tap any sign above to unveil its daily stellar forecast</p>
+                <h3 className="text-2xl font-cinzel font-bold text-orange-200 group-hover:text-yellow-400 transition-colors">Select a Moon or Sun Sign</h3>
+                <p className="text-[16px] text-emerald-200 mt-2 italic">Tap any sign above to unveil its daily stellar forecast</p>
               </div>
             )}
           </div>
@@ -1353,7 +1442,7 @@ const ZodiacSigns = () => {
         <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none animate-pulse delay-700"></div>
 
         <div className="max-w-6xl mx-auto flex flex-col">
-          <h2 className="flex flex-wrap items-center justify-center text-3xl font-cinzel font-bold text-center text-white mb-12">
+          <h2 className="flex flex-wrap items-center justify-center text-3xl font-cinzel font-bold text-center text-orange-600 mb-12">
             <span className="flex items-center justify-center">The Four</span>
             <span className="flex items-center justify-center text-yellow-500 ml-2 underline decoration-yellow-500/20 underline-offset-8">Elements</span>
           </h2>
@@ -1361,14 +1450,14 @@ const ZodiacSigns = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {Object.entries(elements).map(([element, data], idx) => (
               <div key={element}
-                className="relative rounded-xl p-6 text-center border border-white/10 bg-[#161623]/60 backdrop-blur-lg overflow-hidden shadow-lg animate-float-slow hover:animate-none group hover:border-yellow-500/30 transition-all"
+                className="relative rounded-xl p-6 text-center border border-white/10 bg-[#161623]/80 backdrop-blur-lg overflow-hidden shadow-lg animate-float-slow hover:animate-none group hover:border-yellow-500/30 transition-all"
                 style={{ animationDelay: `${idx * 0.5}s` }}>
                 <div className="relative z-10 flex flex-col items-center justify-center">
                   <div className={`w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10 group-hover:bg-yellow-500/10 transition-colors`}>
                     <Zap className="h-8 w-8 text-yellow-500" />
                   </div>
-                  <h3 className="flex items-center justify-center text-xl font-semibold text-white mb-2">{element}</h3>
-                  <p className="flex items-center justify-center text-sm text-gray-400 mb-3">
+                  <h3 className="flex items-center justify-center text-[20px] font-semibold text-yellow-600 mb-2">{element}</h3>
+                  <p className="flex items-center justify-center text-[18px] text-orange-600 mb-3">
                     {data.signs.join(', ')}
                   </p>
                 </div>
@@ -1386,17 +1475,17 @@ const ZodiacSigns = () => {
               <button
                 key={sign.id}
                 onClick={() => setSelectedSign(sign)}
-                className="glass-premium relative rounded-2xl p-8 text-center group"
+                className="bg-rose-50 relative rounded-2xl p-8 text-center group"
               >
                 {/* Overlay Effect - Only on card */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="relative z-10 flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center text-6xl mb-4 transform group-hover:scale-125 transition-transform duration-500">{sign.symbol}</div>
-                  <h3 className="flex items-center justify-center text-xl font-cinzel font-bold text-white mb-1 group-hover:text-yellow-400 transition-colors">
+                  <h3 className="flex items-center justify-center text-[22px] font-cinzel font-bold text-orange-600 mb-1 group-hover:text-yellow-400 transition-colors">
                     {sign.name} | {sign.sanskrit.split(' ')[0]}
                   </h3>
-                  <p className="flex items-center justify-center text-sm text-gray-400 mb-2">{sign.dates}</p>
-                  <div className={`flex items-center justify-center px-4 py-1 bg-white/10 text-gray-300 text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm group-hover:bg-yellow-500 group-hover:text-black transition-colors`}>
+                  <p className="flex items-center justify-center text-[20px] text-emerald-400 mb-2">{sign.dates}</p>
+                  <div className={`flex items-center justify-center px-4 py-1 bg-white/10 text-black text-[18px] font-bold uppercase tracking-widest rounded-full shadow-sm group-hover:bg-yellow-500 group-hover:text-black transition-colors`}>
                     {sign.element}
                   </div>
                 </div>
@@ -1437,32 +1526,32 @@ const ZodiacSigns = () => {
 
                 <div className="grid grid-cols-1 gap-8">
                   <div className="bg-white/5 p-8 rounded-3xl space-y-4 border border-white/5">
-                    <h3 className="text-sm font-bold text-yellow-500 uppercase tracking-widest flex items-center">
+                    <h3 className="text-[20px] font-bold text-yellow-500 uppercase tracking-widest flex items-center">
                       <Star className="h-4 w-4 mr-2" />
                       Essence & Overview
                     </h3>
-                    <p className="text-lg leading-relaxed text-gray-200 font-medium italic">
+                    <p className="text-[18px] leading-relaxed text-gray-200 font-medium italic">
                       "{selectedSign.description}"
                     </p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
                     <div className="p-4 bg-white/5 border border-white/5 rounded-2xl shadow-sm">
-                      <span className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Elemental Power</span>
-                      <span className="text-white font-bold text-lg">{selectedSign.element}</span>
+                      <span className="block text-[20px] font-bold text-yellow-400 uppercase tracking-widest mb-1">Elemental Power</span>
+                      <span className="text-white font-bold text-[18px]">{selectedSign.element}</span>
                     </div>
                     <div className="p-4 bg-white/5 border border-white/5 rounded-2xl shadow-sm">
-                      <span className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Ruling Celestial Body</span>
-                      <span className="text-white font-bold text-lg">{selectedSign.rulingPlanet}</span>
+                      <span className="block text-[20px] font-bold text-yellow-400 uppercase tracking-widest mb-1">Ruling Celestial Body</span>
+                      <span className="text-white font-bold text-[18px]">{selectedSign.rulingPlanet}</span>
                     </div>
                   </div>
 
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Core Vibrations (Traits)</h3>
+                      <h3 className="text-[20px] font-bold text-yellow-400 uppercase tracking-widest mb-4">Core Vibrations (Traits)</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedSign.traits.map((trait, index) => (
-                          <span key={index} className="px-4 py-2 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-xs rounded-full font-bold tracking-wide">
+                          <span key={index} className="px-4 py-2 bg-yellow-500/10 text-[18px] text-emerald-500 border border-yellow-500/20 text-xs rounded-full font-bold tracking-wide">
                             {trait}
                           </span>
                         ))}
@@ -1471,22 +1560,22 @@ const ZodiacSigns = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-white/5">
                       <div className="space-y-3">
-                        <h4 className="text-xs font-bold text-red-400 uppercase tracking-widest flex items-center">
+                        <h4 className="text-[20px] font-bold text-red-400 uppercase tracking-widest flex items-center">
                           <Heart className="h-4 w-4 mr-2" /> Love & Union
                         </h4>
-                        <p className="text-sm text-gray-300 leading-relaxed font-medium">{selectedSign.love}</p>
+                        <p className="text-[18px] text-gray-300 leading-relaxed font-medium">{selectedSign.love}</p>
                       </div>
                       <div className="space-y-3">
-                        <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-widest flex items-center">
+                        <h4 className="text-[20px] font-bold text-cyan-400 uppercase tracking-widest flex items-center">
                           <Briefcase className="h-4 w-4 mr-2" /> Career & Purpose
                         </h4>
-                        <p className="text-sm text-gray-300 leading-relaxed font-medium">{selectedSign.career}</p>
+                        <p className="text-[18px] text-gray-300 leading-relaxed font-medium">{selectedSign.career}</p>
                       </div>
                     </div>
 
                     <div className="space-y-3 pt-6 border-t border-white/5">
-                      <h4 className="text-xs font-bold text-green-400 uppercase tracking-widest">Vitality & Health</h4>
-                      <p className="text-sm text-gray-300 leading-relaxed font-medium">{selectedSign.health}</p>
+                      <h4 className="text-[20px] font-bold text-green-400 uppercase tracking-widest">Vitality & Health</h4>
+                      <p className="text-[18px] text-gray-300 leading-relaxed font-medium">{selectedSign.health}</p>
                     </div>
                   </div>
 
@@ -1516,7 +1605,7 @@ const ZodiacSigns = () => {
                 <span className="flex items-center justify-center">Discover Your</span>
                 <span className="flex items-center justify-center text-yellow-500 ml-2 underline decoration-yellow-500/20 underline-offset-8">Cosmic Blueprint</span>
               </h2>
-              <p className="flex items-center justify-center text-xl text-gray-400 mb-8">
+              <p className="flex items-center justify-center text-xl text-yellow-400 mb-8">
                 Get a personalized reading based on your unique zodiac profile and birth chart.
               </p>
               <a

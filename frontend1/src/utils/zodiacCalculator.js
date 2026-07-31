@@ -44,56 +44,48 @@ export const calculateSunSign = (birthDate) => {
  * @returns {string} The moon sign name (approximation only)
  */
 export const calculateMoonSign = (birthDate, birthTime = '12:00', latitude = null, longitude = null) => {
-  // Disclaimer: This is NOT an accurate calculation for Hindu astrology purposes
-  console.warn('This Moon sign calculation is for demonstration only. For accurate results, please use our professional Kundali service.');
+  if (!birthDate) return 'Aries';
 
-  // Improved approximation using Moon's orbital characteristics
-  // The Moon completes one orbit through the zodiac approximately every 27.3 days
-  // This is still a simplified calculation and NOT suitable for real astrological work
+  const date = new Date(birthDate);
+  const [hours, minutes] = (birthTime || '12:00').split(':').map(Number);
 
-  const year = birthDate.getFullYear();
-  const month = birthDate.getMonth() + 1; // 1-12
-  const day = birthDate.getDate();
+  // Compute Julian Date (JD)
+  const yr = date.getUTCFullYear();
+  const m = date.getUTCMonth() + 1;
+  const d = date.getUTCDate() + (hours + minutes / 60) / 24;
 
-  // Parse birth time
-  const [hours, minutes] = birthTime.split(':').map(Number);
-  const timeInHours = hours + (minutes / 60);
-
-  // Calculate days since a reference point (Jan 1, 2000)
-  const referenceDate = new Date(2000, 0, 1);
-  const daysSinceReference = Math.floor((birthDate - referenceDate) / (1000 * 60 * 60 * 24));
-
-  // Moon's approximate cycle through zodiac (27.3 days)
-  const moonCycleDays = 27.3;
-
-  // Calculate approximate position in cycle
-  let moonPosition = (daysSinceReference % moonCycleDays) / moonCycleDays;
-
-  // Adjust for birth time (time of day affects moon position)
-  moonPosition += (timeInHours / 24) * (1 / moonCycleDays);
-
-  // Location adjustment (longitude affects local time)
-  if (longitude) {
-    const lon = parseFloat(longitude);
-    if (!isNaN(lon)) {
-      // Longitude affects time zone and thus moon position
-      const longitudeAdjustment = (lon / 360) * (1 / moonCycleDays);
-      moonPosition += longitudeAdjustment;
-    }
+  let y = yr;
+  let month = m;
+  if (month <= 2) {
+    y -= 1;
+    month += 12;
   }
 
-  // Normalize to 0-1 range
-  moonPosition = moonPosition % 1;
-  if (moonPosition < 0) moonPosition += 1;
+  const A = Math.floor(y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  const jd = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (month + 1)) + d + B - 1524.5;
 
-  // Map to zodiac signs (12 signs, each occupying ~1/12 of the cycle)
+  // Days from J2000.0
+  const daysSinceJ2000 = jd - 2451545.0;
+
+  // Moon's Mean Tropical Longitude (Degrees)
+  let moonMeanLongitude = (218.316 + 13.176396 * daysSinceJ2000) % 360;
+  if (moonMeanLongitude < 0) moonMeanLongitude += 360;
+
+  // Lahiri Ayanamsa Correction (~23.85° at J2000 + precession)
+  const ayanamsa = 23.85 + (yr - 2000) * 0.01397;
+
+  // Sidereal Longitude (Nirayana)
+  let siderealLongitude = (moonMeanLongitude - ayanamsa) % 360;
+  if (siderealLongitude < 0) siderealLongitude += 360;
+
   const zodiacSigns = [
     'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
     'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
   ];
 
-  const signIndex = Math.floor(moonPosition * 12);
-  return zodiacSigns[signIndex];
+  const signIndex = Math.floor(siderealLongitude / 30);
+  return zodiacSigns[signIndex] || 'Aries';
 };
 
 /**

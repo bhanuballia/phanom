@@ -240,9 +240,16 @@ router.get('/dakshina-status/:astrologerId', protect, async (req, res) => {
         const payment = await LiveChatPayment.findOne({
             chatId,
             paymentStatus: 'completed'
-        });
+        }).sort({ createdAt: -1 });
 
-        res.json({ isPaid: !!payment, payment });
+        if (!payment) {
+            return res.json({ isPaid: false, questionsRemaining: 0, payment: null });
+        }
+
+        const questionsRemaining = Math.max(0, payment.questionsLimit - payment.questionsAsked);
+        const isPaid = questionsRemaining > 0;
+
+        res.json({ isPaid, questionsRemaining, payment });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -255,14 +262,27 @@ router.post('/dakshina-payment', protect, async (req, res) => {
         const { astrologerId, amount } = req.body;
         const chatId = [userId, astrologerId].sort().join('_');
 
-        // Check if there is already a completed payment
+        // Check if there is already a completed payment with remaining questions
         const existingPayment = await LiveChatPayment.findOne({
             chatId,
             paymentStatus: 'completed'
-        });
+        }).sort({ createdAt: -1 });
 
-        if (existingPayment) {
+        if (existingPayment && existingPayment.questionsAsked < existingPayment.questionsLimit) {
             return res.json({ message: 'Already paid', payment: existingPayment });
+        }
+
+        // Map amount to questions limit
+        let questionsLimit = 1;
+        const amt = Number(amount);
+        if (amt === 11) questionsLimit = 1;
+        else if (amt === 21) questionsLimit = 2;
+        else if (amt === 51) questionsLimit = 4;
+        else if (amt === 101) questionsLimit = 10;
+        else if (amt === 151) questionsLimit = 20;
+        else if (amt === 201) questionsLimit = 30;
+        else {
+            questionsLimit = Math.max(1, Math.floor(amt / 10));
         }
 
         // Create new pending payment
@@ -270,7 +290,8 @@ router.post('/dakshina-payment', protect, async (req, res) => {
             user: userId,
             astrologer: astrologerId,
             chatId,
-            amount
+            amount: amt,
+            questionsLimit
         });
 
         await payment.save();
