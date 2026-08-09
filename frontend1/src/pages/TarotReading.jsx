@@ -554,8 +554,8 @@ const TarotReading = () => {
             <span>{language === 'EN' ? 'Interactive Divination Sanctuary' : 'इंटरैक्टिव दिव्य साधना स्थल'}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-amber-200 via-purple-300 to-indigo-200 bg-clip-text text-transparent mb-4">
-            {profile.name 
-              ? (language === 'EN' ? `Welcome, ${profile.name}` : `स्वागत है, ${profile.name}`) 
+            {profile.name
+              ? (language === 'EN' ? `Welcome, ${profile.name}` : `स्वागत है, ${profile.name}`)
               : (language === 'EN' ? 'Cosmic Tarot Card Reading' : 'ब्रह्मांडीय टैरो कार्ड रीडिंग')}
           </h1>
 
@@ -570,12 +570,11 @@ const TarotReading = () => {
               </span>
               <span className="text-slate-500">•</span>
               <span className=" text-[20px] text-emerald-300 font-medium">
-                {language === 'EN' ? `${zodiacInfo.element} Element` : `${
-                  zodiacInfo.element === 'Fire' ? 'अग्नि' :
+                {language === 'EN' ? `${zodiacInfo.element} Element` : `${zodiacInfo.element === 'Fire' ? 'अग्नि' :
                   zodiacInfo.element === 'Earth' ? 'पृथ्वी' :
-                  zodiacInfo.element === 'Air' ? 'वायु' :
-                  zodiacInfo.element === 'Water' ? 'जल' : zodiacInfo.element
-                } तत्व`}
+                    zodiacInfo.element === 'Air' ? 'वायु' :
+                      zodiacInfo.element === 'Water' ? 'जल' : zodiacInfo.element
+                  } तत्व`}
               </span>
               <span className="text-slate-500">•</span>
               <button
@@ -602,15 +601,15 @@ const TarotReading = () => {
               <Sparkles className="h-6 w-6 mr-2 text-purple-400" />
               {language === 'EN' ? 'Personalize Your Energy' : 'अपनी ऊर्जा को संरेखित करें'}
             </h2>
-            <p className="text-slate-400 text-sm text-center mb-6">
-              {language === 'EN' 
-                ? 'Connect your cosmic alignment and state your query to align the deck.' 
+            <p className="text-slate-400 text-[16px] text-center mb-6">
+              {language === 'EN'
+                ? 'Connect your cosmic alignment and state your query to align the deck.'
                 : 'डेक को संरेखित करने के लिए अपने ब्रह्मांडीय विवरण और प्रश्न दर्ज करें।'}
             </p>
 
             <form onSubmit={handleOnboardingSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-slate-350 mb-2" htmlFor="name">
+                <label className="block text-[18px] font-semibold text-slate-350 mb-2" htmlFor="name">
                   {language === 'EN' ? 'Your Sacred Name' : 'आपका पवित्र नाम'}
                 </label>
                 <input
@@ -625,7 +624,7 @@ const TarotReading = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-350 mb-2" htmlFor="dob">
+                <label className="block text-[18px] font-semibold text-slate-350 mb-2" htmlFor="dob">
                   {language === 'EN' ? 'Date of Birth' : 'जन्म तिथि'}
                 </label>
                 <input
@@ -640,7 +639,7 @@ const TarotReading = () => {
 
               <button
                 type="submit"
-                className="w-full py-4 bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-500 hover:from-amber-400 hover:via-purple-500 hover:to-indigo-400 text-black font-bold rounded-xl transition-all transform hover:-translate-y-0.5 shadow-lg shadow-purple-950/30 animate-pulse"
+                className="w-full py-4 bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-500 hover:from-amber-400 hover:via-purple-500 hover:to-indigo-400  text-[18px] text-black font-bold rounded-xl transition-all transform hover:-translate-y-0.5 shadow-lg shadow-purple-950/30 animate-pulse"
               >
                 {language === 'EN' ? 'Align energy and Enter' : 'ऊर्जा संरेखित करें और प्रवेश करें'}
               </button>
@@ -662,7 +661,7 @@ const TarotReading = () => {
                   key={spread.id}
                   onClick={() => setSelectedSpread(spread)}
                   className={`relative p-6 text-left rounded-2xl border transition-all duration-300 group overflow-hidden ${selectedSpread.id === spread.id
-                    ? 'bg-purple-950/45 border-purple-500/80 shadow-[0_0_20px_rgba(168,85,247,0.25)] scale-[1.02]'
+                    ? 'bg-gradient-to-br from-purple-900/80 via-indigo-900/70 to-amber-950/60 border-amber-400 shadow-[0_0_25px_rgba(245,158,11,0.4)] scale-[1.03] ring-2 ring-amber-400/50'
                     : 'bg-slate-900/40 border-slate-800 hover:border-slate-700 hover:bg-slate-900/70'
                     }`}
                 >
@@ -868,6 +867,16 @@ const TarotReading = () => {
               {fanCards.map((item, index) => {
                 const isPicked = selectedCards.some(sel => sel.deckIndex === index);
 
+                // Distinct color themes across cards (cycles through 5 mystical elemental themes)
+                const cardThemes = [
+                  { bg: "from-purple-950 via-indigo-950 to-slate-950", border: "border-amber-400/40", text: "text-amber-300", accent: "border-amber-500/30 bg-amber-500/10" },
+                  { bg: "from-blue-950 via-slate-900 to-indigo-950", border: "border-cyan-400/40", text: "text-cyan-300", accent: "border-cyan-500/30 bg-cyan-500/10" },
+                  { bg: "from-rose-950 via-purple-950 to-slate-950", border: "border-pink-400/40", text: "text-pink-300", accent: "border-pink-500/30 bg-pink-500/10" },
+                  { bg: "from-emerald-950 via-slate-900 to-teal-950", border: "border-emerald-400/40", text: "text-emerald-300", accent: "border-emerald-500/30 bg-emerald-500/10" },
+                  { bg: "from-amber-950 via-slate-900 to-purple-950", border: "border-orange-400/40", text: "text-orange-300", accent: "border-orange-500/30 bg-orange-500/10" },
+                ];
+                const theme = cardThemes[index % cardThemes.length];
+
                 // Math to position cards in a beautiful fan/arc
                 const totalCards = fanCards.length;
                 const angleSpread = 70; // Sweep angle
@@ -886,25 +895,25 @@ const TarotReading = () => {
                       zIndex: isPicked ? 0 : 20 + index
                     }}
                     className={`absolute w-38 h-60 md:w-52 md:h-68 rounded-xl transition-all duration-300 origin-bottom border shadow-2xl ${isPicked
-                      ? 'opacity-20 scale-90 border-purple-500/10 pointer-events-none'
-                      : 'bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 border-amber-500/30 hover:border-amber-400/80 hover:-translate-y-12 hover:shadow-[0_15px_30px_rgba(245,158,11,0.3)]'
+                      ? 'bg-gradient-to-br from-amber-500/20 via-purple-900/40 to-slate-950 border-amber-400 opacity-60 scale-95 shadow-[0_0_20px_rgba(245,158,11,0.5)] pointer-events-none'
+                      : `bg-gradient-to-br ${theme.bg} ${theme.border} hover:border-amber-300 hover:-translate-y-12 hover:shadow-[0_15px_30px_rgba(245,158,11,0.4)]`
                       }`}
                   >
-                    <div className="absolute inset-0.5 border border-amber-500/10 rounded-lg flex flex-col items-center justify-between p-3 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,119,6,0.06)_0%,transparent_60%)]"></div>
+                    <div className={`absolute inset-0.5 border ${theme.accent.split(' ')[0]} rounded-lg flex flex-col items-center justify-between p-3 relative overflow-hidden`}>
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08)_0%,transparent_60%)]"></div>
 
-                      <div className="w-full flex justify-between text-[8px] text-amber-500/20 font-serif">
-                        <span>★</span>
-                        <span>★</span>
+                      <div className={`w-full flex justify-between text-[14px] ${theme.text} font-serif font-bold`}>
+                        <span>#{index + 1}</span>
+                        <span>#{index + 1}</span>
                       </div>
 
-                      <div className="w-10 h-10 rounded-full border border-amber-500/20 flex items-center justify-center">
-                        <Moon className="h-4 w-4 text-amber-500/30" />
+                      <div className={`w-10 h-10 rounded-full border ${theme.accent} flex items-center justify-center shadow-inner`}>
+                        <span className={`text-base font-black ${theme.text} font-serif`}>{index + 1}</span>
                       </div>
 
-                      <div className="w-full flex justify-between text-[8px] text-amber-500/20 font-serif">
-                        <span>★</span>
-                        <span>★</span>
+                      <div className={`w-full flex justify-between text-[14px] ${theme.text} font-serif font-bold`}>
+                        <span>#{index + 1}</span>
+                        <span>#{index + 1}</span>
                       </div>
                     </div>
                   </button>
@@ -954,9 +963,9 @@ const TarotReading = () => {
                       key={index}
                       onClick={() => triggerFlipCard(index)}
                       className={`flex-1 min-w-[240px] max-w-[320px] flex flex-col items-center p-6 rounded-2xl border transition-all duration-300 focus:outline-none ${isCurrent
-                        ? 'bg-slate-900 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.2)] scale-[1.02]'
+                        ? 'bg-gradient-to-b from-purple-900/90 via-slate-900 to-indigo-950 border-amber-400 ring-2 ring-amber-400/60 shadow-[0_0_30px_rgba(245,158,11,0.35)] scale-[1.03]'
                         : 'bg-[#070318] border-purple-900/40 hover:bg-[#0c0524] hover:border-purple-500/70'
-                        } ${isAligned ? 'ring-1 ring-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : ''}`}
+                        } ${isAligned ? 'ring-2 ring-amber-500/80 shadow-[0_0_20px_rgba(245,158,11,0.3)]' : ''}`}
                     >
                       <span className="text-[18px] uppercase tracking-widest text-orange-400 mb-2 block font-semibold">
                         {language === 'EN' ? item.positionName : selectedSpread.positionsHindi[item.positionIndex] || item.positionName}
@@ -975,9 +984,9 @@ const TarotReading = () => {
                           {/* CARD FRONT (Face down) */}
                           <div className="card-front bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 rounded-xl border-2 border-amber-500/50 shadow-2xl flex flex-col items-center justify-between p-4 overflow-hidden">
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,119,6,0.06)_0%,transparent_70%)]"></div>
-                            <span className="text-[10px] text-amber-500/30 font-serif">★</span>
-                            <div className="w-12 h-12 rounded-full border border-amber-500/20 flex items-center justify-center animate-pulse">
-                              <Moon className="h-6 w-6 text-amber-500/40" />
+                            <span className="text-xs font-bold text-amber-400/60 font-serif">Card #{index + 1}</span>
+                            <div className="w-12 h-12 rounded-full border border-amber-500/40 bg-amber-500/10 flex items-center justify-center animate-pulse">
+                              <span className="text-lg font-black text-amber-300 font-serif">{index + 1}</span>
                             </div>
                             <span className="text-xs text-amber-300/60 font-serif tracking-widest">{t("TAP TO FLIP", "पलटने के लिए छुएं")}</span>
                           </div>
@@ -1012,9 +1021,9 @@ const TarotReading = () => {
 
                           <div className="mt-1 max-w-[360px] bg-slate-950/80 border border-slate-800 rounded-xl p-2 text-slate-400 text-center">
                             <span className="text-[20px] text-orange-400 font-bold block mb-0.5">
-                              {card.type === 'Major' 
-                                ? t('Major Arcana', 'मुख्य रहस्य (Major Arcana)') 
-                                : `${t(card.suit, {Wands: 'दंड', Cups: 'प्याले', Swords: 'तलवारें', Pentacles: 'सिक्के'}[card.suit] || card.suit)} (${t(card.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[card.element] || card.element)})`
+                              {card.type === 'Major'
+                                ? t('Major Arcana', 'मुख्य रहस्य (Major Arcana)')
+                                : `${t(card.suit, { Wands: 'दंड', Cups: 'प्याले', Swords: 'तलवारें', Pentacles: 'सिक्के' }[card.suit] || card.suit)} (${t(card.element, { Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी' }[card.element] || card.element)})`
                               }
                             </span>
                             <span className="text-[18px] block leading-tight text-emerald-400">
@@ -1041,7 +1050,7 @@ const TarotReading = () => {
 
             {/* DYNAMIC CARD SYNTHESIS & ANALYSIS */}
             {revealedIndex >= 0 && flippedCards[revealedIndex] && (
-              <div className="bg-slate-900/60 border border-purple-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-2xl relative overflow-hidden animate-slideUp mb-12">
+              <div className="bg-rose-100 border border-purple-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-2xl relative overflow-hidden animate-slideUp mb-12">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-purple-500/10 to-transparent rounded-full blur-2xl"></div>
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-6 border-b border-slate-800">
@@ -1050,39 +1059,63 @@ const TarotReading = () => {
                       {t("Current Focus Position", "वर्तमान फोकस स्थान")}
                     </span>
                     <h3 className="text-2xl font-bold text-orange-400">
-                      {language === 'EN' 
-                        ? selectedCards[revealedIndex].positionName 
+                      {language === 'EN'
+                        ? selectedCards[revealedIndex].positionName
                         : selectedSpread.positionsHindi[selectedCards[revealedIndex].positionIndex] || selectedCards[revealedIndex].positionName}
                     </h3>
                   </div>
 
-                  <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
-                    {getCardTranslation(selectedCards[revealedIndex].cardData.id, 'keywords', selectedCards[revealedIndex].cardData.keywords).map((kw, i) => (
-                      <span key={i} className="px-3 py-1 bg-purple-950/60 border border-purple-500/30 rounded-full text-[18px] text-yellow-400 font-semibold">
-                        {kw}
+                  <div className="mt-4 md:mt-0 flex flex-wrap items-center gap-3">
+                    {selectedSpread.cardsNeeded > 1 && (
+                      <div className="flex items-center gap-2 no-print bg-slate-900/60 p-1.5 rounded-xl border border-purple-500/20">
+                        <button
+                          onClick={() => setRevealedIndex(prev => Math.max(0, prev - 1))}
+                          disabled={revealedIndex === 0}
+                          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-[18px] font-semibold text-amber-400 transition-all flex items-center"
+                        >
+                          {t("← Prev", "← पिछला")}
+                        </button>
+                        <span className="text-[18px] text-slate-300 font-medium px-2">
+                          {revealedIndex + 1} / {selectedSpread.cardsNeeded}
+                        </span>
+                        <button
+                          onClick={() => setRevealedIndex(prev => Math.min(selectedSpread.cardsNeeded - 1, prev + 1))}
+                          disabled={revealedIndex === selectedSpread.cardsNeeded - 1}
+                          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-[18px] font-semibold text-amber-400 transition-all flex items-center"
+                        >
+                          {t("Next →", "अगला →")}
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-2">
+                      {getCardTranslation(selectedCards[revealedIndex].cardData.id, 'keywords', selectedCards[revealedIndex].cardData.keywords).map((kw, i) => (
+                        <span key={i} className="px-3 py-1 bg-purple-950/60 border border-purple-500/30 rounded-full text-[18px] text-yellow-400 font-semibold">
+                          {kw}
+                        </span>
+                      ))}
+                      <span className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-[18px] text-emerald-400 font-semibold uppercase">
+                        {t(selectedCards[revealedIndex].cardData.element, { Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी' }[selectedCards[revealedIndex].cardData.element] || selectedCards[revealedIndex].cardData.element)}
                       </span>
-                    ))}
-                    <span className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-[18px] text-emerald-400 font-semibold uppercase">
-                      {t(selectedCards[revealedIndex].cardData.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[selectedCards[revealedIndex].cardData.element] || selectedCards[revealedIndex].cardData.element)}
-                    </span>
+                    </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2">
-                    <h4 className="text-[22px] font-bold text-amber-200 mb-3 font-serif flex items-center">
-                      <Eye className="h-5 w-5 mr-2 text-amber-300" />
+                    <h4 className="text-[22px] font-bold text-amber-900 mb-3 font-serif flex items-center">
+                      <Eye className="h-5 w-5 mr-2 text-amber-900" />
                       {t("Divined Meaning", "दिव्य अर्थ / वाचन")}
                     </h4>
-                    <p className="text-emerald-300 text-[20px] leading-relaxed mb-6">
+                    <p className="text-green-900 text-[20px] leading-relaxed mb-6">
                       {selectedCards[revealedIndex].isReversed
                         ? getCardTranslation(selectedCards[revealedIndex].cardData.id, 'reversed', selectedCards[revealedIndex].cardData.reversed)
                         : getCardTranslation(selectedCards[revealedIndex].cardData.id, 'upright', selectedCards[revealedIndex].cardData.upright)
                       }
                     </p>
 
-                    <h5 className="text-[22px] font-semibold text-amber-200 mb-2">{t("Focal Energy Advice", "मुख्य ऊर्जा परामर्श")}</h5>
-                    <p className="text-emerald-300 text-[20px] leading-relaxed mb-4">
+                    <h5 className="text-[22px] font-semibold text-amber-900 mb-2">{t("Focal Energy Advice", "मुख्य ऊर्जा परामर्श")}</h5>
+                    <p className="text-green-900 text-[20px] leading-relaxed mb-4">
                       {language === 'EN' ? (
                         <>
                           This card advises you to examine how <strong>{selectedCards[revealedIndex].cardData.keywords[0].toLowerCase()}</strong> is currently playing out in your query.
@@ -1104,11 +1137,11 @@ const TarotReading = () => {
 
                     {selectedCards[revealedIndex].cardData.element === zodiacInfo.element && (
                       <div className="mt-6 p-5 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-amber-200">
-                        <span className="font-bold flex items-center mb-2 text-sm text-amber-300">
-                          <Sparkles className="h-5 w-5 mr-2 text-amber-400 animate-pulse" />
-                          {t(`Astrological Resonance (${zodiacInfo.element})`, `ज्योतिषीय प्रतिध्वनि (${t(zodiacInfo.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[zodiacInfo.element] || zodiacInfo.element)})`)}
+                        <span className="font-bold flex items-center mb-2 text-[20px] text-orange-900">
+                          <Sparkles className="h-5 w-5 mr-2 text-slate-900 animate-pulse" />
+                          {t(`Astrological Resonance (${zodiacInfo.element})`, `ज्योतिषीय प्रतिध्वनि (${t(zodiacInfo.element, { Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी' }[zodiacInfo.element] || zodiacInfo.element)})`)}
                         </span>
-                        <p className="text-sm text-amber-400/90 leading-relaxed">
+                        <p className="text-[20px] text-slate-900 leading-relaxed">
                           {language === 'EN' ? (
                             `This card shares the ${zodiacInfo.element} element of your zodiac sign (${zodiacInfo.sign}). The resonance between your energy and this card amplifies its message, indicating that its themes of ${selectedCards[revealedIndex].cardData.keywords.join(', ').toLowerCase()} are highly active and personal in your life right now.`
                           ) : (
@@ -1116,7 +1149,7 @@ const TarotReading = () => {
                               'Aries': 'मेष', 'Taurus': 'वृषभ', 'Gemini': 'मिथुन', 'Cancer': 'कर्क',
                               'Leo': 'सिंह', 'Virgo': 'कन्या', 'Libra': 'तुला', 'Scorpio': 'वृश्चिक',
                               'Sagittarius': 'धनु', 'Capricorn': 'मकर', 'Aquarius': 'कुंभ', 'Pisces': 'मीन'
-                            }[zodiacInfo.sign] || zodiacInfo.sign}) के ${t(zodiacInfo.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[zodiacInfo.element] || zodiacInfo.element)} तत्व को साझा करता है। आपकी ऊर्जा और इस कार्ड के बीच का यह संरेखण इसके संदेश को और अधिक शक्तिशाली बनाता है।`
+                            }[zodiacInfo.sign] || zodiacInfo.sign}) के ${t(zodiacInfo.element, { Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी' }[zodiacInfo.element] || zodiacInfo.element)} तत्व को साझा करता है। आपकी ऊर्जा और इस कार्ड के बीच का यह संरेखण इसके संदेश को और अधिक शक्तिशाली बनाता है।`
                           )}
                         </p>
                       </div>
@@ -1141,7 +1174,7 @@ const TarotReading = () => {
                           <span className="text-orange-400 text-[20px] font-bold block">
                             {selectedCards[revealedIndex].cardData.type === 'Major'
                               ? t('Major Arcana (Primary Path)', 'मुख्य रहस्य (प्रमुख नियति पथ)')
-                              : t(`Minor Arcana - Suit of ${selectedCards[revealedIndex].cardData.suit}`, `गौण रहस्य - ${{Wands: 'दंड', Cups: 'प्याले', Swords: 'तलवारें', Pentacles: 'सिक्के'}[selectedCards[revealedIndex].cardData.suit] || selectedCards[revealedIndex].cardData.suit} का समूह`)
+                              : t(`Minor Arcana - Suit of ${selectedCards[revealedIndex].cardData.suit}`, `गौण रहस्य - ${{ Wands: 'दंड', Cups: 'प्याले', Swords: 'तलवारें', Pentacles: 'सिक्के' }[selectedCards[revealedIndex].cardData.suit] || selectedCards[revealedIndex].cardData.suit} का समूह`)
                             }
                           </span>
                           <span className="text-[18px] text-emerald-300 block mt-0.5">
@@ -1164,8 +1197,8 @@ const TarotReading = () => {
                       <div className="flex justify-between">
                         <span className="text-[20px] text-orange-400">{t("Deck Division:", "डेक श्रेणी:")}</span>
                         <span className="font-semibold text-[20px] text-emerald-350">
-                          {selectedCards[revealedIndex].cardData.type === 'Major' 
-                            ? t('Major Arcana', 'मुख्य रहस्य (Major Arcana)') 
+                          {selectedCards[revealedIndex].cardData.type === 'Major'
+                            ? t('Major Arcana', 'मुख्य रहस्य (Major Arcana)')
                             : t('Minor Arcana', 'गौण रहस्य (Minor Arcana)')}
                         </span>
                       </div>
@@ -1205,23 +1238,23 @@ const TarotReading = () => {
 
             {/* INTEGRATED READING SYNTHESIS */}
             {selectedCards.every((_, i) => flippedCards[i]) && (
-              <div className="bg-slate-900/60 border border-amber-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-2xl relative overflow-hidden animate-slideUp mb-12">
+              <div className="bg-rose-100 border border-amber-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-2xl relative overflow-hidden animate-slideUp mb-12">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-full blur-2xl"></div>
-                <h3 className="text-xl font-bold text-amber-200 mb-4 font-serif flex items-center">
-                  <Sparkles className="h-5 w-5 mr-2 text-orange-400 animate-pulse" />
+                <h3 className="text-xl font-bold text-amber-900 mb-4 font-serif flex items-center">
+                  <Sparkles className="h-5 w-5 mr-2 text-orange-900 animate-pulse" />
                   {t("Overall Synthesis of Your Energies", "आपकी ऊर्जाओं का समग्र संश्लेषण")}
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
                   <div>
-                    <h4 className="text-[20px] font-semibold text-orange-400 mb-3">{t("Element Analysis", "तत्व विश्लेषण")}</h4>
+                    <h4 className="text-[20px] font-semibold text-orange-900 mb-3">{t("Element Analysis", "तत्व विश्लेषण")}</h4>
                     <div className="space-y-3">
                       {Object.entries(resonance.elementCounts).map(([el, count]) => {
                         const pct = (count / selectedCards.length) * 100;
                         return (
                           <div key={el} className="flex items-center space-x-3">
-                            <span className="w-16 text-[20px] text-yellow-400 font-medium">
-                              {t(el, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[el] || el)}
+                            <span className="w-16 text-[20px] text-orange-900 font-medium">
+                              {t(el, { Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी' }[el] || el)}
                             </span>
                             <div className="flex-grow bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
                               <div
@@ -1240,10 +1273,10 @@ const TarotReading = () => {
                   </div>
 
                   <div>
-                    <h4 className="text-[20px] font-semibold text-orange-400 mb-3">{t("Dominant Force Summary", "प्रमुख बल सारांश")}</h4>
-                    <p className="text-[20px] text-slate-350 leading-relaxed">
+                    <h4 className="text-[20px] font-semibold text-orange-900 mb-3">{t("Dominant Force Summary", "प्रमुख बल सारांश")}</h4>
+                    <p className="text-[20px] text-slate-900 leading-relaxed">
                       {t("Your reading shows a dominant energy of ", "आपके वाचन में प्रमुख ऊर्जा ")}
-                      <strong>{t(resonance.dominantElement, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[resonance.dominantElement] || resonance.dominantElement)}</strong>
+                      <strong>{t(resonance.dominantElement, { Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी' }[resonance.dominantElement] || resonance.dominantElement)}</strong>
                       {t(".", " की दिखती है।")}
                       {resonance.dominantElement === 'Fire' && t(" This represents high inspiration, action, and active changes happening right now. Be proactive, but don't rush.", " यह आपके जीवन में वर्तमान में हो रही उच्च प्रेरणा, कार्रवाई और सक्रिय बदलावों का प्रतिनिधित्व करता है। सक्रिय रहें, लेकिन जल्दबाजी न करें।")}
                       {resonance.dominantElement === 'Water' && t(" This signifies heavy emphasis on emotions, relationships, and deep internal intuition. Pause and feel your answers.", " यह भावनाओं, संबंधों और गहरी आंतरिक अंतर्ज्ञान पर भारी जोर देता है। ठहरें और अपने उत्तरों को महसूस करें।")}
@@ -1252,14 +1285,14 @@ const TarotReading = () => {
                       {!['Fire', 'Water', 'Air', 'Earth'].includes(resonance.dominantElement) && t(" Multiple elements are equally balanced, representing a rich variety of forces guiding you simultaneously.", " कई तत्व समान रूप से संतुलित हैं, जो एक ही समय में आपका मार्गदर्शन करने वाले बलों की समृद्ध विविधता का प्रतिनिधित्व करते हैं।")}
                     </p>
                     {profile.name && (
-                      <p className="text-[18px] text-yellow-400 mt-3 italic">
+                      <p className="text-[18px] text-green-900 mt-3 italic">
                         {t(
                           `Aligns with ${profile.name}'s birth sign ${zodiacInfo.sign} (${zodiacInfo.element}).`,
                           `${profile.name} की जन्म राशि ${t(zodiacInfo.sign, {
                             'Aries': 'मेष', 'Taurus': 'वृषभ', 'Gemini': 'मिथुन', 'Cancer': 'कर्क',
                             'Leo': 'सिंह', 'Virgo': 'कन्या', 'Libra': 'तुला', 'Scorpio': 'वृश्चिक',
                             'Sagittarius': 'धनु', 'Capricorn': 'मकर', 'Aquarius': 'कुंभ', 'Pisces': 'मीन'
-                          }[zodiacInfo.sign] || zodiacInfo.sign)} (${t(zodiacInfo.element, {Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी'}[zodiacInfo.element] || zodiacInfo.element)}) के साथ मेल खाता है।`
+                          }[zodiacInfo.sign] || zodiacInfo.sign)} (${t(zodiacInfo.element, { Fire: 'अग्नि', Water: 'जल', Air: 'वायु', Earth: 'पृथ्वी' }[zodiacInfo.element] || zodiacInfo.element)}) के साथ मेल खाता है।`
                         )}
                       </p>
                     )}

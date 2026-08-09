@@ -148,7 +148,8 @@ const KundaliHub = () => {
     { key: 'ascendant', name: 'Ascendant Analysis', desc: 'Ascendant & Personality', icon: Compass, type: 'simple', value: 'ascendant' },
     { key: 'medical_astrology', name: 'Ayur Jyotish', desc: 'Ayur Jyotish (Medical Astrology)', icon: Activity, type: 'simple', value: 'medical_astrology' },
     { key: 'naming', name: 'Naming', desc: 'Auspicious baby/person naming analysis', icon: Sparkles, type: 'simple', value: 'naming' },
-    { key: 'sadesati_report', name: 'Sade Sati Status', desc: 'Saturn transit period & phase analysis', icon: Sparkles, type: 'simple', value: 'sadesati_report' }
+    { key: 'sadesati_report', name: 'Sade Sati Status', desc: 'Saturn transit period & phase analysis', icon: Sparkles, type: 'simple', value: 'sadesati_report' },
+    { key: 'tithi', name: 'Tithi Pravesha', desc: 'Annual Tithi Return & Solar-Lunar chart analysis', icon: Calendar, type: 'simple', value: 'tithi' }
   ];
 
   if (!birthData) {
