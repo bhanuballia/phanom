@@ -19,7 +19,8 @@ import {
   Clock,
   LayoutGrid,
   Star,
-  Sun
+  Sun,
+  FileText
 } from 'lucide-react';
 import { VEDIC_ASTROLOGY_BASE_URL } from '../services/api';
 
@@ -60,6 +61,8 @@ const KundaliHub = () => {
       targetParams = `${value}=true`;
     } else if (type === 'deep_horoscope') {
       targetParams = `deep_horoscope=${value}`;
+    } else if (type === 'html_report') {
+      targetParams = `html_report=true&hide_customization=true`;
     }
 
     // Build common parameters
@@ -190,9 +193,16 @@ const KundaliHub = () => {
               <h1 className="text-3xl font-cinzel font-bold text-white mt-1">
                 {birthData.name}'s Kundali Dashboard
               </h1>
-              <p className="text-white/70 text-sm mt-1">
+              <p className="text-white/70 text-sm mt-1 mb-4">
                 Explore specialized charts and diagnostic oracles for your birth details.
               </p>
+              <button
+                onClick={() => handleRedirect('html_report')}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold rounded-xl shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <FileText className="h-5 w-5 text-slate-950" />
+                <span>Your Kundali (Detailed Report)</span>
+              </button>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
