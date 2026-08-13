@@ -82,7 +82,15 @@ const CLEAN_WORDS_WHITELIST = new Set([
   "tere", "term", "time", "tink", "tis", "togeter", "transform", "transit", "triangle",
   "true", "truly", "trust", "trut", "turn", "twice", "twin", "type", "unfinised", "unlucky",
   "venus", "wait", "weakneses", "what", "when", "which", "who", "why", "wil", "wises",
-  "wit", "year", "years"
+  "wit", "year", "years",
+  // Common Hindi & Hinglish Astrology Words (Prevent False Positives)
+  "meri", "mera", "mere", "shadi", "shaadi", "kab", "kabhi", "hogi", "hoga", "hoge",
+  "namaste", "pranam", "kaisa", "kaisi", "kaise", "kya", "kyu", "kyun", "kaun",
+  "aaj", "kal", "parso", "saal", "mahine", "dosh", "kundli", "kundali", "varsh",
+  "dhan", "job", "n नौकरी", "shubh", "labh", "upay", "upaye", "graha", "grah",
+  "bataiye", "batao", "bataye", "batayen", "samay", "kismat", "bhagya", "dasha",
+  "pyaar", "pyar", "prem", "pati", "patni", "pariwar", "ghar", "bache", "bacche",
+  "sarkari", "vyapar", "karobar", "health", "sehat", "bimar", "bimari"
 ]);
 
 const escapeRegExp = (string) => {
@@ -373,10 +381,11 @@ const validateMessage = (messageText) => {
       } catch (e) {}
     }
 
+    const rawWordLower = word.toLowerCase();
     const normalizedWord = normalizeWord(word);
 
-    // Bypass check if normalized word is in the whitelist of clean words
-    if (CLEAN_WORDS_WHITELIST.has(normalizedWord)) {
+    // Bypass check if raw or normalized word is in the whitelist of clean words
+    if (CLEAN_WORDS_WHITELIST.has(rawWordLower) || CLEAN_WORDS_WHITELIST.has(normalizedWord)) {
       continue;
     }
     
@@ -397,7 +406,7 @@ const validateMessage = (messageText) => {
   }
 
   // 4. Check fully condensed and collapsed text for bypass attempts (e.g. "c h u t i y a", "ch_u_t_i_y_a", "chutiyaaaaa")
-  const cleanWordsForBypass = words.filter(w => !CLEAN_WORDS_WHITELIST.has(normalizeWord(w)));
+  const cleanWordsForBypass = words.filter(w => !CLEAN_WORDS_WHITELIST.has(w.toLowerCase()) && !CLEAN_WORDS_WHITELIST.has(normalizeWord(w)));
   const cleanTextForBypass = cleanWordsForBypass.join(' ');
   const { condensed, collapsed } = normalizeText(cleanTextForBypass);
   for (const badWord of allProfanityAndAbuse) {

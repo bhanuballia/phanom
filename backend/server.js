@@ -663,6 +663,8 @@ if (io) {
           { chatId, isRead: false },
           { $set: { isRead: true } }
         );
+        // Instantly notify everyone in the room that messages have been read
+        io.to(chatId).emit('messages-read-update', { chatId, isRead: true });
       } catch (error) {
         console.error('Error marking messages as read:', error);
       }

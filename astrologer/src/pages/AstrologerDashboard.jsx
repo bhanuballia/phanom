@@ -32,7 +32,11 @@ import {
   FileCode,
   Download,
   Mic,
-  MicOff
+  MicOff,
+  Volume2,
+  VolumeX,
+  Settings,
+  CheckCheck
 } from 'lucide-react';
 
 import { generateAstroPDF } from '../services/pdfGenerator';
@@ -69,6 +73,51 @@ const AstrologerDashboard = () => {
   const [isMicMuted, setIsMicMuted] = useState(false);
   const localAudioStreamRef = useRef(null);
   const peerConnectionRef = useRef(null);
+
+  // Text-To-Speech (TTS) Voice Reader State & Settings
+  const [isSpeechEnabled, setIsSpeechEnabled] = useState(true);
+  const [voicePitch, setVoicePitch] = useState(1.2); // 0.5 to 2.0
+  const [voiceRate, setVoiceRate] = useState(1.0);   // 0.5 to 2.0
+  const [availableVoices, setAvailableVoices] = useState([]);
+  const [selectedVoiceName, setSelectedVoiceName] = useState('');
+  const [showVoiceModal, setShowVoiceModal] = useState(false);
+
+  useEffect(() => {
+    if (!('speechSynthesis' in window)) return;
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      setAvailableVoices(voices);
+      if (voices.length > 0 && !selectedVoiceName) {
+        const female = voices.find(voice => 
+          /female|zira|samantha|victoria|karen|fiona|veena|heera|kalpana|swara|lekha|ananya|madhur|google हिन्दी|google us english/i.test(voice.name)
+        ) || voices.find(v => v.lang.startsWith('en')) || voices[0];
+        if (female) setSelectedVoiceName(female.name);
+      }
+    };
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }, []);
+
+  const speakTextMessage = (text) => {
+    if (!isSpeechEnabled || !('speechSynthesis' in window) || !text) return;
+    try {
+      window.speechSynthesis.cancel(); // Stop any currently playing audio
+      const cleanText = text.replace(/https?:\/\/\S+/g, 'link').trim();
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      const chosenVoice = availableVoices.find(v => v.name === selectedVoiceName) || 
+        availableVoices.find(v => /female|zira|samantha|victoria|karen|fiona|veena|heera|kalpana|swara/i.test(v.name));
+      if (chosenVoice) {
+        utterance.voice = chosenVoice;
+        utterance.lang = chosenVoice.lang;
+      }
+      utterance.rate = voiceRate;
+      utterance.pitch = voicePitch;
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.error('Speech synthesis error:', err);
+    }
+  };
 
 
   // Prokerala Astro Tools State
@@ -150,6 +199,11 @@ const AstrologerDashboard = () => {
         setChatMessages((prev) => [...prev, message]);
         // Auto mark as read if this chat is open
         socket.emit('mark-as-read', selectedChat._id);
+        // Read incoming user message aloud
+        const senderId = message.sender?._id || message.sender;
+        if (senderId !== profile?._id && message.message) {
+          speakTextMessage(message.message);
+        }
       } else {
         // Refresh sessions list to show notification/unread count
         fetchChatSessions();
@@ -181,7 +235,15 @@ const AstrologerDashboard = () => {
       }
     };
 
+    // Listen for real-time read status updates (instant blue double checks)
+    const handleMessagesReadUpdate = (data) => {
+      if (data.chatId === selectedChat._id) {
+        setChatMessages((prev) => prev.map(m => ({ ...m, isRead: true })));
+      }
+    };
+
     socket.on('receive-live-message', handleReceiveMessage);
+    socket.on('messages-read-update', handleMessagesReadUpdate);
     socket.on('live-chat-signaling', handleSignaling);
 
     // Listen for violations
@@ -192,6 +254,7 @@ const AstrologerDashboard = () => {
 
     return () => {
       socket.off('receive-live-message', handleReceiveMessage);
+      socket.off('messages-read-update', handleMessagesReadUpdate);
       socket.off('live-chat-signaling', handleSignaling);
       socket.off('live-chat-violation');
       stopVoiceBroadcast();
@@ -1717,10 +1780,17 @@ const AstrologerDashboard = () => {
                             </div>
                             <div>
                               <h3 className="font-bold text-gray-900">{otherUser.name || 'User'}</h3>
-                              <p className="text-[10px] text-emerald-500 flex items-center font-bold uppercase tracking-wider">
-                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span>
-                                Online
-                              </p>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <p className="text-[10px] text-emerald-500 flex items-center font-bold uppercase tracking-wider">
+                                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span>
+                                  Online
+                                </p>
+                                {(otherUser.dateOfBirth || otherUser.timeOfBirth || otherUser.placeOfBirth) && (
+                                  <span className="text-[10px] text-purple-700 font-semibold bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">
+                                    🎂 {otherUser.dateOfBirth ? new Date(otherUser.dateOfBirth).toLocaleDateString() : ''} {otherUser.timeOfBirth ? `• ${otherUser.timeOfBirth}` : ''} {otherUser.placeOfBirth ? `• 📍 ${otherUser.placeOfBirth}` : ''}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </>
                         );
@@ -1763,6 +1833,37 @@ const AstrologerDashboard = () => {
                           Go Live (Voice)
                         </button>
                       )}
+                      {/* Text-To-Speech Controls */}
+                      <div className="flex items-center gap-1 bg-gray-100 border border-gray-200 rounded-xl p-0.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextVal = !isSpeechEnabled;
+                            setIsSpeechEnabled(nextVal);
+                            if (!nextVal && 'speechSynthesis' in window) {
+                              window.speechSynthesis.cancel();
+                            }
+                          }}
+                          className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+                            isSpeechEnabled
+                              ? 'bg-purple-600 text-white shadow-sm'
+                              : 'text-gray-400 hover:bg-gray-200'
+                          }`}
+                          title={isSpeechEnabled ? "Disable message voice reading" : "Enable message voice reading"}
+                        >
+                          {isSpeechEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5 text-gray-400" />}
+                          <span>{isSpeechEnabled ? "Speech ON" : "Speech OFF"}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowVoiceModal(true)}
+                          className="p-1.5 rounded-lg text-gray-500 hover:text-purple-600 hover:bg-gray-200 transition-colors"
+                          title="Voice Reader Settings (Voice, Pitch, Speed)"
+                        >
+                          <Settings className="w-4 h-4" />
+                        </button>
+                      </div>
+
                       <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-400">
                         <MoreVertical className="w-5 h-5" />
                       </button>
@@ -1825,10 +1926,31 @@ const AstrologerDashboard = () => {
                                   ))}
                                 </div>
                               )}
-                              {msg.message && <p className="text-sm leading-relaxed">{msg.message}</p>}
-                              <div className={`text-[10px] mt-1.5 flex items-center ${isMine ? 'text-purple-100' : 'text-gray-400'}`}>
-                                <Clock className="w-3 h-3 mr-1" />
-                                {new Date(msg.timestamp || msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              {msg.message && <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>}
+                              <div className={`text-[10px] mt-1.5 flex items-center justify-between gap-2 ${isMine ? 'text-purple-100' : 'text-gray-400'}`}>
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3 mr-0.5 opacity-75" />
+                                  <span>{new Date(msg.timestamp || msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                  {isMine && (
+                                    <span className="ml-1 flex items-center">
+                                      {msg.isRead ? (
+                                        <CheckCheck className="w-3.5 h-3.5 text-cyan-300 font-bold" title="Read" />
+                                      ) : (
+                                        <CheckCheck className="w-3.5 h-3.5 text-purple-200 opacity-80" title="Delivered" />
+                                      )}
+                                    </span>
+                                  )}
+                                </div>
+                                {msg.message && (
+                                  <button
+                                    type="button"
+                                    onClick={() => speakTextMessage(msg.message)}
+                                    className={`p-1 rounded hover:bg-black/10 transition-colors opacity-70 hover:opacity-100`}
+                                    title="Listen to message"
+                                  >
+                                    <Volume2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -2367,6 +2489,102 @@ const AstrologerDashboard = () => {
           </div>
         )}
       </main>
+
+      {/* Voice Reader Sound Settings Modal */}
+      {showVoiceModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-gray-100 rounded-3xl p-6 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button
+              onClick={() => setShowVoiceModal(false)}
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-purple-50 border border-purple-100 rounded-2xl text-purple-600">
+                <Volume2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Voice Reader Settings</h3>
+                <p className="text-xs text-gray-500">Customize voice pitch, speed & sound persona</p>
+              </div>
+            </div>
+
+            <div className="space-y-5">
+              {/* Select Voice Dropdown */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
+                  Select Voice
+                </label>
+                <select
+                  value={selectedVoiceName}
+                  onChange={(e) => setSelectedVoiceName(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl p-3 text-xs focus:ring-2 focus:ring-purple-500 outline-none"
+                >
+                  {availableVoices.map((v) => (
+                    <option key={v.name} value={v.name}>
+                      {v.name} ({v.lang})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Pitch Slider */}
+              <div>
+                <div className="flex justify-between text-xs font-bold text-gray-700 mb-1.5">
+                  <span>Voice Pitch (Tone / Depth)</span>
+                  <span className="text-purple-600 font-mono">{voicePitch.toFixed(1)}x</span>
+                </div>
+                <input
+                  type="range"
+                  min="0.5"
+                  max="1.8"
+                  step="0.1"
+                  value={voicePitch}
+                  onChange={(e) => setVoicePitch(parseFloat(e.target.value))}
+                  className="w-full accent-purple-600 h-1.5 bg-gray-200 rounded-lg cursor-pointer"
+                />
+                <div className="flex justify-between text-[9px] text-gray-400 mt-1 font-semibold uppercase">
+                  <span>Deep Voice</span>
+                  <span>Normal</span>
+                  <span>Female / High Tone</span>
+                </div>
+              </div>
+
+              {/* Speed / Rate Slider */}
+              <div>
+                <div className="flex justify-between text-xs font-bold text-gray-700 mb-1.5">
+                  <span>Speech Speed (Rate)</span>
+                  <span className="text-purple-600 font-mono">{voiceRate.toFixed(1)}x</span>
+                </div>
+                <input
+                  type="range"
+                  min="0.6"
+                  max="1.6"
+                  step="0.1"
+                  value={voiceRate}
+                  onChange={(e) => setVoiceRate(parseFloat(e.target.value))}
+                  className="w-full accent-purple-600 h-1.5 bg-gray-200 rounded-lg cursor-pointer"
+                />
+                <div className="flex justify-between text-[9px] text-gray-400 mt-1 font-semibold uppercase">
+                  <span>Slow (0.6x)</span>
+                  <span>Normal (1.0x)</span>
+                  <span>Fast (1.6x)</span>
+                </div>
+              </div>
+
+              {/* Test Button */}
+              <button
+                onClick={() => speakTextMessage("Hello! This is a test preview of your selected chat voice settings.")}
+                className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-purple-200 transition-all flex items-center justify-center gap-2"
+              >
+                <Volume2 className="w-4 h-4" />
+                Test Voice Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

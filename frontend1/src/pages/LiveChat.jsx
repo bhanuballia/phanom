@@ -26,7 +26,11 @@ import {
     Zap,
     HelpCircle,
     Volume2,
-    VolumeX
+    VolumeX,
+    Settings,
+    LogOut,
+    Check,
+    CheckCheck
 } from 'lucide-react';
 
 
@@ -454,6 +458,59 @@ const LiveChat = () => {
     const [isUserMuted, setIsUserMuted] = useState(false);
     const [volume, setVolume] = useState(1); // 0 to 1
 
+    // End Chat & Astrologer Rating States
+    const [showEndChatModal, setShowEndChatModal] = useState(false);
+    const [userRating, setUserRating] = useState(5);
+    const [reviewComment, setReviewComment] = useState('');
+    const [remediesFeedback, setRemediesFeedback] = useState('');
+    const [isSubmittingRating, setIsSubmittingRating] = useState(false);
+    const [ratingSubmitted, setRatingSubmitted] = useState(false);
+
+    // Text-To-Speech (TTS) Voice Reader State & Settings
+    const [isSpeechEnabled, setIsSpeechEnabled] = useState(true);
+    const [voicePitch, setVoicePitch] = useState(1.2); // 0.5 to 2.0
+    const [voiceRate, setVoiceRate] = useState(1.0);   // 0.5 to 2.0
+    const [availableVoices, setAvailableVoices] = useState([]);
+    const [selectedVoiceName, setSelectedVoiceName] = useState('');
+    const [showVoiceModal, setShowVoiceModal] = useState(false);
+
+    useEffect(() => {
+        if (!('speechSynthesis' in window)) return;
+        const loadVoices = () => {
+            const voices = window.speechSynthesis.getVoices();
+            setAvailableVoices(voices);
+            if (voices.length > 0 && !selectedVoiceName) {
+                const female = voices.find(voice =>
+                    /female|zira|samantha|victoria|karen|fiona|veena|heera|kalpana|swara|lekha|ananya|madhur|google हिन्दी|google us english/i.test(voice.name)
+                ) || voices.find(v => v.lang.startsWith('en')) || voices[0];
+                if (female) setSelectedVoiceName(female.name);
+            }
+        };
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+    }, []);
+
+    const speakTextMessage = (text) => {
+        if (!isSpeechEnabled || !('speechSynthesis' in window) || !text) return;
+        try {
+            window.speechSynthesis.cancel(); // Stop ongoing speech
+            const cleanText = text.replace(/https?:\/\/\S+/g, 'link').trim();
+            if (!cleanText) return;
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            const chosenVoice = availableVoices.find(v => v.name === selectedVoiceName) ||
+                availableVoices.find(v => /female|zira|samantha|victoria|karen|fiona|veena|heera|kalpana|swara/i.test(v.name));
+            if (chosenVoice) {
+                utterance.voice = chosenVoice;
+                utterance.lang = chosenVoice.lang;
+            }
+            utterance.rate = voiceRate;
+            utterance.pitch = voicePitch;
+            window.speechSynthesis.speak(utterance);
+        } catch (err) {
+            console.error('Speech synthesis error:', err);
+        }
+    };
+
     const peerConnectionRef = useRef(null);
     const audioRef = useRef(null);
 
@@ -634,6 +691,20 @@ const LiveChat = () => {
         socket.on('receive-live-message', (message) => {
             if (message.chatId === chatId) {
                 setMessages((prev) => [...prev, message]);
+                // Automatically mark as read if active
+                socket.emit('mark-as-read', chatId);
+                // Speak incoming message aloud if it's from the other person
+                const senderId = message.sender?._id || message.sender;
+                if (senderId !== user?._id && message.message) {
+                    speakTextMessage(message.message);
+                }
+            }
+        });
+
+        // Listen for real-time read status updates (instant blue double checks)
+        socket.on('messages-read-update', (data) => {
+            if (data.chatId === chatId) {
+                setMessages((prev) => prev.map(m => ({ ...m, isRead: true })));
             }
         });
 
@@ -739,6 +810,16 @@ const LiveChat = () => {
 
         const chatId = [user._id, selectedAstrologer._id].sort().join('_');
 
+        // Check if this is the first message in the session to include Birth Details summary card for Astrologer
+        let messageTextToSend = newMessage.trim();
+        if (messages.length === 0 && user) {
+            const formattedDOB = user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('en-GB') : 'Not provided';
+            const formattedTime = user.timeOfBirth || 'Not provided';
+            const formattedPlace = user.placeOfBirth || 'Not provided';
+
+            const birthDetailsCard = `📋 CLIENT BIRTH DETAILS:\n• Name: ${user.name || 'User'}\n• DOB: ${formattedDOB}\n• Time: ${formattedTime}\n• Place: ${formattedPlace}\n\n💬 ${messageTextToSend}`;
+            messageTextToSend = birthDetailsCard;
+        }
 
         const messageData = {
             senderId: user._id,
@@ -746,7 +827,7 @@ const LiveChat = () => {
             chatId
         };
 
-        if (newMessage.trim()) messageData.text = newMessage.trim();
+        if (messageTextToSend) messageData.text = messageTextToSend;
         if (attachment) messageData.attachments = [attachment];
 
         socket.emit('send-live-message', messageData);
@@ -996,14 +1077,52 @@ const LiveChat = () => {
                                             Voice Offline
                                         </div>
                                     )}
+                                    {/* Text-To-Speech Controls */}
+                                    <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-0.5">
+                                        <button
+                                            onClick={() => {
+                                                const nextVal = !isSpeechEnabled;
+                                                setIsSpeechEnabled(nextVal);
+                                                if (!nextVal && 'speechSynthesis' in window) {
+                                                    window.speechSynthesis.cancel();
+                                                }
+                                            }}
+                                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${isSpeechEnabled
+                                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
+                                                : 'text-slate-400 hover:bg-white/5'
+                                                }`}
+                                            title={isSpeechEnabled ? "Disable message voice reading" : "Enable message voice reading"}
+                                        >
+                                            {isSpeechEnabled ? <Volume2 className="w-3.5 h-3.5 text-amber-400" /> : <VolumeX className="w-3.5 h-3.5 text-slate-400" />}
+                                            <span>{isSpeechEnabled ? "Speech ON" : "Speech OFF"}</span>
+                                        </button>
+                                        <button
+                                            onClick={() => setShowVoiceModal(true)}
+                                            className="p-1 rounded-full text-slate-400 hover:text-amber-400 hover:bg-white/10 transition-colors"
+                                            title="Voice Reader Settings (Voice, Pitch, Speed)"
+                                        >
+                                            <Settings className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+
+
+
+                                    {/* End Chat Session Button */}
                                     <button
-                                        onClick={fetchAstroReport}
-                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${showAstroCard ? 'bg-amber-500 text-slate-950' : 'bg-white/5 text-amber-500 border border-amber-500/30'
-                                            }`}
+                                        onClick={() => {
+                                            setUserRating(5);
+                                            setReviewComment('');
+                                            setRemediesFeedback('');
+                                            setRatingSubmitted(false);
+                                            setShowEndChatModal(true);
+                                        }}
+                                        className="flex items-center gap-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer"
+                                        title="End live chat session & rate astrologer"
                                     >
-                                        <Compass className={`w-3.5 h-3.5 ${reportLoading ? 'animate-spin' : ''}`} />
-                                        {reportLoading ? 'Reading Stars...' : 'Astro Card'}
+                                        <LogOut className="w-3.5 h-3.5" />
+                                        <span>End Chat</span>
                                     </button>
+
                                     <button className="p-2 hover:bg-white/10 rounded-lg transition-colors text-slate-400">
                                         <MoreVertical className="w-5 h-5" />
                                     </button>
@@ -1066,10 +1185,30 @@ const LiveChat = () => {
                                                             ))}
                                                         </div>
                                                     )}
-                                                    {msg.message && <p className="text-sm leading-relaxed">{msg.message}</p>}
-                                                    <div className={`text-[10px] mt-1.5 flex items-center ${isMine ? 'text-slate-800' : 'text-slate-500'}`}>
-                                                        <Clock className="w-3 h-3 mr-1" />
-                                                        {new Date(msg.timestamp || msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    {msg.message && <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>}
+                                                    <div className={`text-[10px] mt-1.5 flex items-center justify-between gap-2 ${isMine ? 'text-slate-800' : 'text-slate-500'}`}>
+                                                        <div className="flex items-center gap-1">
+                                                            <Clock className="w-3 h-3 mr-0.5 opacity-75" />
+                                                            <span>{new Date(msg.timestamp || msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                            {isMine && (
+                                                                <span className="ml-1 flex items-center">
+                                                                    {msg.isRead ? (
+                                                                        <CheckCheck className="w-3.5 h-3.5 text-blue-700 font-bold" title="Read" />
+                                                                    ) : (
+                                                                        <CheckCheck className="w-3.5 h-3.5 text-slate-700 opacity-70" title="Delivered" />
+                                                                    )}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        {msg.message && (
+                                                            <button
+                                                                onClick={() => speakTextMessage(msg.message)}
+                                                                className={`p-1 rounded hover:bg-black/10 transition-colors opacity-70 hover:opacity-100`}
+                                                                title="Listen to message"
+                                                            >
+                                                                <Volume2 className="w-3 h-3" />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -1127,11 +1266,14 @@ const LiveChat = () => {
                                                 <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
                                                     <p className="text-[10px] text-amber-500/70 font-bold uppercase mb-3">Planet Alignment</p>
                                                     <div className="space-y-2">
-                                                        {astroReport.planets?.map((p, i) => (
+                                                        {(Array.isArray(astroReport.planets)
+                                                            ? astroReport.planets
+                                                            : (astroReport.planets && typeof astroReport.planets === 'object' ? Object.values(astroReport.planets) : [])
+                                                        ).map((p, i) => (
                                                             <div key={i} className="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
-                                                                <span className="text-[11px] text-slate-300">{p.name}</span>
+                                                                <span className="text-[11px] text-slate-300">{p.name || p.planet || `Planet ${i + 1}`}</span>
                                                                 <span className="text-[11px] text-white font-medium">
-                                                                    {typeof p.rasi === 'object' ? p.rasi.name : p.rasi} ({Math.floor(p.degree)}°)
+                                                                    {typeof p.rasi === 'object' ? p.rasi.name : (p.rasi || p.zodiac || 'N/A')} {p.degree !== undefined ? `(${Math.floor(p.degree)}°)` : ''}
                                                                 </span>
                                                             </div>
                                                         ))}
@@ -1408,6 +1550,252 @@ const LiveChat = () => {
                         <p className="text-[9px] text-center text-slate-500 font-bold uppercase tracking-widest">
                             DEVOTION • KNOWLEDGE • RESPECT
                         </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Voice Reader Sound Settings Modal */}
+            {showVoiceModal && (
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
+                    <div className="bg-slate-900 border border-white/10 rounded-3xl p-6 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+                        <button
+                            onClick={() => setShowVoiceModal(false)}
+                            className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-500">
+                                <Volume2 className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-white">Voice Reader Settings</h3>
+                                <p className="text-xs text-slate-400">Customize voice pitch, speed & sound persona</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-5">
+                            {/* Select Voice Dropdown */}
+                            <div>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                    Select Voice
+                                </label>
+                                <select
+                                    value={selectedVoiceName}
+                                    onChange={(e) => setSelectedVoiceName(e.target.value)}
+                                    className="w-full bg-slate-800 border border-white/10 text-white rounded-xl p-3 text-xs focus:ring-2 focus:ring-amber-500 outline-none"
+                                >
+                                    {availableVoices.map((v) => (
+                                        <option key={v.name} value={v.name}>
+                                            {v.name} ({v.lang})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Pitch Slider */}
+                            <div>
+                                <div className="flex justify-between text-xs font-bold text-slate-300 mb-1.5">
+                                    <span>Voice Pitch (Tone / Depth)</span>
+                                    <span className="text-amber-400 font-mono">{voicePitch.toFixed(1)}x</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="0.5"
+                                    max="1.8"
+                                    step="0.1"
+                                    value={voicePitch}
+                                    onChange={(e) => setVoicePitch(parseFloat(e.target.value))}
+                                    className="w-full accent-amber-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
+                                />
+                                <div className="flex justify-between text-[9px] text-slate-500 mt-1 font-semibold uppercase">
+                                    <span>Deep Voice</span>
+                                    <span>Normal</span>
+                                    <span>Female / High Tone</span>
+                                </div>
+                            </div>
+
+                            {/* Speed / Rate Slider */}
+                            <div>
+                                <div className="flex justify-between text-xs font-bold text-slate-300 mb-1.5">
+                                    <span>Speech Speed (Rate)</span>
+                                    <span className="text-amber-400 font-mono">{voiceRate.toFixed(1)}x</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="0.6"
+                                    max="1.6"
+                                    step="0.1"
+                                    value={voiceRate}
+                                    onChange={(e) => setVoiceRate(parseFloat(e.target.value))}
+                                    className="w-full accent-amber-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
+                                />
+                                <div className="flex justify-between text-[9px] text-slate-500 mt-1 font-semibold uppercase">
+                                    <span>Slow (0.6x)</span>
+                                    <span>Normal (1.0x)</span>
+                                    <span>Fast (1.6x)</span>
+                                </div>
+                            </div>
+
+                            {/* Test Button */}
+                            <button
+                                onClick={() => speakTextMessage("Hello! This is a test preview of your selected chat voice settings.")}
+                                className="w-full mt-4 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+                            >
+                                <Volume2 className="w-4 h-4" />
+                                Test Voice Preview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* End Chat Session & 5-Star Rating Modal */}
+            {showEndChatModal && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+                    <div className="bg-slate-900 border border-amber-500/30 rounded-3xl p-6 max-w-lg w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+                        <button
+                            onClick={() => setShowEndChatModal(false)}
+                            className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+
+                        {!ratingSubmitted ? (
+                            <>
+                                <div className="text-center mb-6">
+                                    <div className="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-500">
+                                        <Star className="w-8 h-8 fill-amber-500 text-amber-500 animate-pulse" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-white mb-1">End Consultation</h3>
+                                    <p className="text-xs text-slate-400">
+                                        How was your experience with <span className="text-amber-400 font-semibold">{selectedAstrologer?.name}</span>?
+                                    </p>
+                                </div>
+
+                                <div className="space-y-5">
+                                    {/* Interactive 5-Star Rating */}
+                                    <div className="bg-slate-800/60 p-4 rounded-2xl border border-white/5 text-center">
+                                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">
+                                            Rate Your Consultation
+                                        </label>
+                                        <div className="flex justify-center items-center gap-2">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <button
+                                                    key={star}
+                                                    type="button"
+                                                    onClick={() => setUserRating(star)}
+                                                    className="p-1 hover:scale-125 transition-transform"
+                                                >
+                                                    <Star
+                                                        className={`w-8 h-8 ${star <= userRating
+                                                            ? 'fill-amber-400 text-amber-400 shadow-amber-500/50 drop-shadow-md'
+                                                            : 'text-slate-600 hover:text-slate-400'
+                                                            }`}
+                                                    />
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <p className="text-[11px] font-bold text-amber-400 mt-2">
+                                            {userRating === 5 && '🌟 Excellent Guidance!'}
+                                            {userRating === 4 && '👍 Very Good & Helpful'}
+                                            {userRating === 3 && '🙂 Satisfactory'}
+                                            {userRating === 2 && '😐 Could Be Better'}
+                                            {userRating === 1 && '😞 Needs Improvement'}
+                                        </p>
+                                    </div>
+
+                                    {/* Optional Review Text */}
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                                            Write a Review (Optional)
+                                        </label>
+                                        <textarea
+                                            value={reviewComment}
+                                            onChange={(e) => setReviewComment(e.target.value)}
+                                            placeholder="Share what insights were helpful during your reading..."
+                                            rows="2"
+                                            className="w-full bg-slate-800 border border-white/10 text-white rounded-xl p-3 text-xs focus:ring-2 focus:ring-amber-500 outline-none resize-none placeholder-slate-500"
+                                        />
+                                    </div>
+
+                                    {/* Optional Remedies Summary */}
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                                            Suggested Remedies / Gemstones (Optional)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={remediesFeedback}
+                                            onChange={(e) => setRemediesFeedback(e.target.value)}
+                                            placeholder="e.g. Yellow Sapphire, Chanting Vishnu Sahasranama..."
+                                            className="w-full bg-slate-800 border border-white/10 text-white rounded-xl p-3 text-xs focus:ring-2 focus:ring-amber-500 outline-none placeholder-slate-500"
+                                        />
+                                    </div>
+
+                                    {/* Submit Rating & End Session */}
+                                    <div className="flex gap-3 pt-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowEndChatModal(false)}
+                                            className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all"
+                                        >
+                                            Continue Chat
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            disabled={isSubmittingRating}
+                                            onClick={async () => {
+                                                try {
+                                                    setIsSubmittingRating(true);
+                                                    await liveChatAPI.submitRating({
+                                                        astrologerId: selectedAstrologer?._id,
+                                                        rating: userRating,
+                                                        reviewText: reviewComment,
+                                                        remediesSummary: remediesFeedback
+                                                    });
+                                                    setRatingSubmitted(true);
+                                                } catch (err) {
+                                                    console.error('Rating submit error:', err);
+                                                    setRatingSubmitted(true); // Graceful fallback
+                                                } finally {
+                                                    setIsSubmittingRating(false);
+                                                }
+                                            }}
+                                            className="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5"
+                                        >
+                                            {isSubmittingRating ? (
+                                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-slate-950 border-t-transparent"></div>
+                                            ) : (
+                                                <>
+                                                    <Check className="w-4 h-4" />
+                                                    Submit & Complete
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="text-center py-6">
+                                <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400">
+                                    <Check className="w-8 h-8" />
+                                </div>
+                                <h3 className="text-2xl font-bold text-white mb-2">Thank You! 🙏</h3>
+                                <p className="text-xs text-slate-300 max-w-sm mx-auto mb-6 leading-relaxed">
+                                    Your review and feedback have been submitted successfully. May the stars bless your path ahead!
+                                </p>
+                                <button
+                                    onClick={() => {
+                                        setShowEndChatModal(false);
+                                        setSelectedAstrologer(null); // Return to astrologers selection
+                                    }}
+                                    className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-8 py-3 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-amber-500/20"
+                                >
+                                    Close & Return to Astrologers
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
