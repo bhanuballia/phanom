@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
 import OurAstrologers from './pages/OurAstrologers';
+import AstrologerProfile from './pages/AstrologerProfile/AstrologerProfile';
 import ZodiacSigns from './pages/ZodiacSigns';
 import ContactUs from './pages/ContactUs';
 import Kundali from './pages/Kundali';
@@ -113,6 +114,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <OurAstrologers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/astrologers/:id"
+              element={
+                <ProtectedRoute>
+                  <AstrologerProfile />
                 </ProtectedRoute>
               }
             />
