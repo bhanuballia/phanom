@@ -275,7 +275,7 @@ const OurAstrologers = () => {
                       {/* Followers */}
                       <div className="flex items-center text-xs text-gray-500 font-medium">
                         <User className="w-3.5 h-3.5 mr-1 text-orange-500" />
-                        Followers {1000 + Math.floor(Math.random() * 500)}
+                        Followers {astrologer.followersCount !== undefined ? astrologer.followersCount : (astrologer.followers?.length || 0)}
                       </div>
                     </div>
 

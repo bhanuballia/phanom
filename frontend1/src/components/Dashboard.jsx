@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { appointmentsAPI } from '../services/api';
+import { appointmentsAPI, walletAPI } from '../services/api';
 import {
   Calendar,
   Clock,
@@ -16,7 +16,11 @@ import {
   XCircle,
   PlayCircle,
   Home,
-  Trash2
+  Trash2,
+  Wallet,
+  CreditCard,
+  ArrowUpRight,
+  ArrowDownLeft
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -33,11 +37,28 @@ const Dashboard = () => {
     cancelled: 0
   });
 
+  const [wallet, setWallet] = useState({ balance: 0, transactions: [] });
+  const [rechargeAmount, setRechargeAmount] = useState('');
+  const [isRecharging, setIsRecharging] = useState(false);
+
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#wallet') {
+      const element = document.getElementById('wallet');
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 300); // Slight delay to ensure content is rendered
+      }
+    }
+  }, [location]);
 
   useEffect(() => {
     fetchAppointments();
+    fetchWallet();
   }, []);
 
   useEffect(() => {
@@ -54,6 +75,108 @@ const Dashboard = () => {
       setError('Failed to load appointments');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchWallet = async () => {
+    try {
+      const response = await walletAPI.getBalance();
+      setWallet({
+        balance: response.data.balance || 0,
+        transactions: response.data.transactions || []
+      });
+    } catch (error) {
+      console.error('Failed to fetch wallet data', error);
+    }
+  };
+
+  const handleRecharge = async (e) => {
+    e.preventDefault();
+    if (!rechargeAmount || isNaN(rechargeAmount) || Number(rechargeAmount) <= 0) {
+      setError('Please enter a valid amount');
+      return;
+    }
+
+    try {
+      setIsRecharging(true);
+      setError('');
+      setSuccessMessage('');
+
+      // 1. Create order on backend
+      const orderResponse = await walletAPI.createOrder({ amount: Number(rechargeAmount) });
+      const order = orderResponse.data.order;
+
+      if (order.id && order.id.startsWith('order_mock_')) {
+        // Skip Razorpay popup for mock orders
+        const verifyResponse = await walletAPI.verifyPayment({
+          razorpay_payment_id: "mock_payment_id",
+          razorpay_order_id: order.id,
+          razorpay_signature: "mock_signature",
+          amount: Number(rechargeAmount)
+        });
+
+        setSuccessMessage(`Successfully recharged ₹${rechargeAmount} (MOCK)`);
+        setWallet({
+          balance: verifyResponse.data.balance,
+          transactions: [verifyResponse.data.transaction, ...wallet.transactions]
+        });
+        setRechargeAmount('');
+        setTimeout(() => setSuccessMessage(''), 5000);
+        setIsRecharging(false);
+        return;
+      }
+
+      // 2. Setup Razorpay options
+      const options = {
+        key: "rzp_test_dummyKey12345", // Dummy key, replace with actual RAZORPAY_KEY_ID later
+        amount: order.amount,
+        currency: order.currency,
+        name: "Astro Consult",
+        description: "Wallet Recharge",
+        order_id: order.id,
+        handler: async function (response) {
+          try {
+            // 3. Verify payment on backend
+            const verifyResponse = await walletAPI.verifyPayment({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              amount: Number(rechargeAmount)
+            });
+
+            setSuccessMessage(`Successfully recharged ₹${rechargeAmount}`);
+            setWallet({
+              balance: verifyResponse.data.balance,
+              transactions: [verifyResponse.data.transaction, ...wallet.transactions]
+            });
+            setRechargeAmount('');
+
+            setTimeout(() => setSuccessMessage(''), 5000);
+          } catch (verifyErr) {
+            setError(verifyErr.response?.data?.message || 'Payment verification failed');
+            setTimeout(() => setError(''), 5000);
+          }
+        },
+        prefill: {
+          name: user.name || "Astro User",
+          email: user.email || "user@example.com",
+          contact: user.phone || "9999999999"
+        },
+        theme: {
+          color: "#10B981"
+        }
+      };
+
+      // Open Razorpay Popup
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to initialize payment gateway';
+      setError(errorMsg);
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setIsRecharging(false);
     }
   };
 
@@ -254,6 +377,13 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => document.getElementById('wallet')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center px-5 py-2.5 bg-yellow-200 border border-green-500/30 text-black rounded-lg hover:bg-green-500/30 hover:shadow-lg transition-all duration-300 transform hover:scale-105 font-medium"
+                >
+                  <Wallet className="h-4 w-4 mr-2" />
+                  Wallet
+                </button>
                 <Link
                   to="/"
                   className="inline-flex items-center px-5 py-2.5 bg-black/10 backdrop-blur-md border border-black/20 text-black rounded-lg hover:bg-black/20 hover:shadow-lg transition-all duration-300 transform hover:scale-105 font-medium"
@@ -475,6 +605,95 @@ const Dashboard = () => {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+
+        {/* Wallet Section */}
+        <div id="wallet" className="bg-white/90 backdrop-blur-lg rounded-xl border border-astro-gold/20 relative overflow-hidden mt-8">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-600/5 opacity-50 pointer-events-none"></div>
+          <div className="relative z-10 p-6">
+            <div className="flex flex-wrap justify-between items-center border-b border-astro-gold/20 pb-4 mb-4">
+              <h2 className="flex items-center text-xl font-semibold text-black">
+                <Wallet className="h-6 w-6 mr-2 text-green-600" />
+                My Wallet
+              </h2>
+              <div className="text-right">
+                <p className="text-sm text-gray-600">Current Balance</p>
+                <p className="text-3xl font-bold text-green-700">₹{wallet.balance.toFixed(2)}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Recharge Form */}
+              <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm">
+                <h3 className="text-lg font-medium text-black mb-4 flex items-center">
+                  <CreditCard className="h-5 w-5 mr-2 text-blue-500" />
+                  Add Funds
+                </h3>
+                <form onSubmit={handleRecharge} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+                    <input
+                      type="number"
+                      value={rechargeAmount}
+                      onChange={(e) => setRechargeAmount(e.target.value)}
+                      placeholder="Enter amount (e.g. 500)"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      min="1"
+                    />
+                  </div>
+                  <div className="flex space-x-2">
+                    {[100, 500, 1000].map(amt => (
+                      <button
+                        key={amt}
+                        type="button"
+                        onClick={() => setRechargeAmount(amt.toString())}
+                        className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-green-100 hover:text-green-700 transition-colors"
+                      >
+                        +₹{amt}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isRecharging}
+                    className="w-full py-2.5 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-medium hover:from-green-600 hover:to-emerald-700 transition-colors disabled:opacity-50"
+                  >
+                    {isRecharging ? 'Processing...' : 'Proceed to Pay'}
+                  </button>
+                </form>
+              </div>
+
+              {/* Transaction History */}
+              <div>
+                <h3 className="text-lg font-medium text-black mb-4">Recent Transactions</h3>
+                {wallet.transactions.length === 0 ? (
+                  <p className="text-gray-500 text-center py-8 bg-gray-50 rounded-lg">No transactions yet.</p>
+                ) : (
+                  <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                    {wallet.transactions.map((txn, idx) => (
+                      <div key={idx} className="flex justify-between items-center p-3 border border-gray-100 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex items-center">
+                          <div className={`p-2 rounded-full mr-3 ${txn.type === 'credit' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                            {txn.type === 'credit' ? <ArrowDownLeft className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm text-gray-900">{txn.description}</p>
+                            <p className="text-xs text-gray-500">{new Date(txn.createdAt).toLocaleString()}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className={`font-bold ${txn.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
+                            {txn.type === 'credit' ? '+' : '-'}₹{txn.amount}
+                          </p>
+                          <p className="text-xs text-gray-500">Bal: ₹{txn.balanceAfter}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

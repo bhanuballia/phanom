@@ -56,7 +56,7 @@ const KundaliHub = () => {
     if (type === 'varga') {
       targetParams = `worksheet=true&fullScreen=${value}`;
     } else if (type === 'oracle') {
-      targetParams = `oracle=${value}`;
+      targetParams = value === 'lalkitab' ? `lalkitab=true` : `oracle=${value}`;
     } else if (type === 'simple') {
       targetParams = `${value}=true`;
     } else if (type === 'deep_horoscope') {
@@ -85,7 +85,7 @@ const KundaliHub = () => {
 
     const tzOffset = getTzOffset(birthData.timezone || 'Asia/Kolkata');
 
-    const redirectUrl = `${basePortUrl}/?${targetParams}&name=${encodeURIComponent(birthData.name || 'User')}&date=${encodeURIComponent(birthData.dateOfBirth)}&time=${encodeURIComponent(birthData.timeOfBirth || '12:00')}&lat=${lat}&lon=${lon}&tz_offset=${tzOffset}&location_name=${encodeURIComponent(birthData.placeOfBirth || 'Birth Place')}&gender=Male`;
+    const redirectUrl = `${basePortUrl}/?${targetParams}&hide_search=true&from_app=frontend1&name=${encodeURIComponent(birthData.name || 'User')}&date=${encodeURIComponent(birthData.dateOfBirth)}&time=${encodeURIComponent(birthData.timeOfBirth || '12:00')}&lat=${lat}&lon=${lon}&tz_offset=${tzOffset}&location_name=${encodeURIComponent(birthData.placeOfBirth || 'Birth Place')}&gender=Male`;
 
     window.open(redirectUrl, '_blank');
   };
@@ -138,7 +138,8 @@ const KundaliHub = () => {
     { key: 'sadesati', name: 'Sadesati Analysis', desc: 'Saturn Period Analysis', icon: Sparkles },
     { key: 'rahu', name: 'Rahu Dosha', desc: 'North Node Remedies', icon: Sparkles },
     { key: 'ketu', name: 'Ketu Dosha', desc: 'South Node Remedies', icon: Sparkles },
-    { key: 'loshu', name: 'Lo Shu Grid', desc: 'Chinese Numerology Grid', icon: Grid }
+    { key: 'loshu', name: 'Lo Shu Grid', desc: 'Chinese Numerology Grid', icon: Grid },
+    { key: 'lalkitab', name: 'Lal Kitab', desc: 'Lal Kitab Kundli & Remedies', icon: BookOpen }
   ];
 
   const specialtyRemedies = [
@@ -159,7 +160,7 @@ const KundaliHub = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
         <Navigation />
-        <div className="flex-grow flex items-center justify-center p-6">
+        <div className="flex-grow flex items-center justify-center p-6 pt-24 sm:pt-28">
           <div className="max-w-md w-full bg-white rounded-3xl border border-black/10 shadow-2xl p-8 text-center">
             <h2 className="text-2xl font-bold font-cinzel mb-4">No Birth Details Found</h2>
             <p className="text-gray-600 mb-6">Please generate your Kundali first from the services page.</p>
@@ -183,8 +184,8 @@ const KundaliHub = () => {
       <div className="relative z-10 flex flex-col min-h-screen bg-black/30 backdrop-blur-[2px]">
         <Navigation />
 
-        {/* Main Content Area */}
-        <div className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Main Content Area - starts cleanly below Navigation */}
+        <div className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-12">
 
           {/* Header Summary */}
           <div className="mb-8 p-6 rounded-3xl border border-white/20 bg-black/60 backdrop-blur-md shadow-lg text-white flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -193,47 +194,63 @@ const KundaliHub = () => {
               <h1 className="text-3xl font-cinzel font-bold text-white mt-1">
                 {birthData.name}'s Kundali Dashboard
               </h1>
-              <p className="text-white/70 text-sm mt-1 mb-4">
+              <p className="text-amber-400 text-[16px] mt-1 mb-4">
                 Explore specialized charts and diagnostic oracles for your birth details.
               </p>
-              <button
-                onClick={() => handleRedirect('html_report')}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold rounded-xl shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <FileText className="h-5 w-5 text-slate-950" />
-                <span>Your Kundali (Detailed Report)</span>
-              </button>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => handleRedirect('html_report')}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold rounded-xl shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <FileText className="h-5 w-5 text-slate-950" />
+                  <span>Your Kundali (Detailed Report)</span>
+                </button>
+
+                <button
+                  onClick={() => handleRedirect('simple', 'tithi')}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <Calendar className="h-5 w-5 text-white" />
+                  <span>Tithi Pravesh (Astro Chart)</span>
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-              <div className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-xl border border-white/10">
-                <Calendar className="h-4 w-4 text-amber-400" />
+              <div className="flex items-center gap-2 bg-yellow-100 px-3 py-2 rounded-xl border border-white/10">
+                <Calendar className="h-4 w-4 text-amber-900" />
                 <div>
-                  <div className="text-white/50">Date of Birth</div>
-                  <div className="font-semibold">{birthData.dateOfBirth}</div>
+                  <div className="text-red-900">Date of Birth</div>
+                  <div className="font-semibold text-black">{birthData.dateOfBirth}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-xl border border-white/10">
-                <Clock className="h-4 w-4 text-amber-400" />
-                <div>
-                  <div className="text-white/50">Time</div>
-                  <div className="font-semibold">{birthData.timeOfBirth || '12:00'}</div>
+              {birthData.timeOfBirth && (
+                <div className="flex items-center gap-2 bg-yellow-100 px-3 py-2 rounded-xl border border-white/10">
+                  <Clock className="h-4 w-4 text-amber-900" />
+                  <div>
+                    <div className="text-red-900">Time</div>
+                    <div className="font-semibold text-black">{birthData.timeOfBirth}</div>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-xl border border-white/10">
-                <MapPin className="h-4 w-4 text-amber-400" />
-                <div>
-                  <div className="text-white/50">Place</div>
-                  <div className="font-semibold truncate max-w-[100px]">{birthData.placeOfBirth}</div>
+              )}
+              {birthData.placeOfBirth && (
+                <div className="flex items-center gap-2 bg-yellow-100 px-3 py-2 rounded-xl border border-white/10">
+                  <MapPin className="h-4 w-4 text-amber-400" />
+                  <div>
+                    <div className="text-red-900">Place</div>
+                    <div className="font-semibold text-black truncate max-w-[100px]">{birthData.placeOfBirth}</div>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-xl border border-white/10">
-                <Globe className="h-4 w-4 text-amber-400" />
-                <div>
-                  <div className="text-white/50">Timezone</div>
-                  <div className="font-semibold truncate max-w-[80px]">{birthData.timezone || 'Asia/Kolkata'}</div>
+              )}
+              {birthData.timezone && (
+                <div className="flex items-center gap-2 bg-yellow-100 px-3 py-2 rounded-xl border border-white/10">
+                  <Globe className="h-4 w-4 text-amber-900" />
+                  <div>
+                    <div className="text-red-900">Timezone</div>
+                    <div className="font-semibold text-black truncate max-w-[80px]">{birthData.timezone}</div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -242,12 +259,12 @@ const KundaliHub = () => {
             {/* 1. divisional charts (varga charts) */}
             <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-black/10 shadow-xl p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-amber-100 text-amber-700 rounded-xl">
+                <div className="p-2.5 bg-amber-100 text-amber-900 rounded-xl">
                   <Grid className="h-6 w-6" />
                 </div>
                 <div>
                   <h2 className="text-xl font-cinzel font-bold text-slate-800">Varga / Divisional Charts</h2>
-                  <p className="text-xs text-slate-500">Examine specific aspects of life mapped to astronomical divisionals.</p>
+                  <p className="text-[16px] text-black">Examine specific aspects of life mapped to astronomical divisionals.</p>
                 </div>
               </div>
 
@@ -261,10 +278,10 @@ const KundaliHub = () => {
                     <span className="text-sm font-bold text-slate-800 group-hover:text-amber-700 font-cinzel">
                       {chart.code.toUpperCase()}
                     </span>
-                    <span className="text-xs font-semibold text-amber-600 mt-1">
+                    <span className="text-[14px] font-semibold text-amber-600 mt-1">
                       {chart.name.replace(/d\d+\s+/i, '')}
                     </span>
-                    <span className="text-[10px] text-slate-400 mt-1 leading-tight line-clamp-2">
+                    <span className="text-[12px] text-black mt-1 leading-tight line-clamp-2">
                       {chart.desc}
                     </span>
                   </button>
@@ -280,7 +297,7 @@ const KundaliHub = () => {
                 </div>
                 <div>
                   <h2 className="text-xl font-cinzel font-bold text-slate-800">Detailed Horoscope Insights</h2>
-                  <p className="text-xs text-slate-500">Access in-depth personalized reports for daily, monthly, and yearly timeframes.</p>
+                  <p className="text-[14px] text-black">Access in-depth personalized reports for daily, monthly, and yearly timeframes.</p>
                 </div>
               </div>
 
@@ -298,7 +315,7 @@ const KundaliHub = () => {
                       </div>
                       <div>
                         <div className="font-bold text-sm font-cinzel text-slate-800">{horo.name}</div>
-                        <div className="text-xs text-slate-500 mt-0.5 leading-snug">{horo.desc}</div>
+                        <div className="text-[14px] text-black mt-0.5 leading-snug">{horo.desc}</div>
                       </div>
                     </button>
                   );
@@ -317,7 +334,7 @@ const KundaliHub = () => {
                     </div>
                     <div>
                       <h2 className="text-xl font-cinzel font-bold text-slate-800">Life Analysis & Career Lenses</h2>
-                      <p className="text-xs text-slate-500">Detailed insights into education, career, romance, and financial wealth.</p>
+                      <p className="text-[14px] text-amber-900">Detailed insights into education, career, romance, and financial wealth.</p>
                     </div>
                   </div>
 
@@ -341,7 +358,7 @@ const KundaliHub = () => {
                           </div>
                           <div>
                             <div className="font-bold text-sm font-cinzel text-slate-800">{theme.name}</div>
-                            <div className="text-xs text-slate-500 mt-0.5 leading-snug">{theme.desc}</div>
+                            <div className="text-[14px] text-amber-900 mt-0.5 leading-snug">{theme.desc}</div>
                           </div>
                         </button>
                       );
@@ -358,7 +375,7 @@ const KundaliHub = () => {
                   </div>
                   <div>
                     <h2 className="text-xl font-cinzel font-bold text-slate-800">Health Diagnostics</h2>
-                    <p className="text-xs text-slate-500">Examine specific indicators of health and longevity.</p>
+                    <p className="text-[14px] text-amber-900">Examine specific indicators of health and longevity.</p>
                   </div>
                 </div>
 
@@ -376,7 +393,7 @@ const KundaliHub = () => {
                         </div>
                         <div>
                           <div className="font-bold text-xs font-cinzel text-slate-800">{theme.name}</div>
-                          <div className="text-[10px] text-slate-400 mt-0.5">{theme.desc}</div>
+                          <div className="text-[12px] text-amber-900 mt-0.5">{theme.desc}</div>
                         </div>
                       </button>
                     );
@@ -397,7 +414,7 @@ const KundaliHub = () => {
                   </div>
                   <div>
                     <h2 className="text-xl font-cinzel font-bold text-slate-800">Astro-Oracle Diagnostics</h2>
-                    <p className="text-xs text-slate-500 font-medium">Check for key planetary conditions and doshas affecting your destiny.</p>
+                    <p className="text-[14px] text-amber-900 font-medium">Check for key planetary conditions and doshas affecting your destiny.</p>
                   </div>
                 </div>
 
@@ -409,7 +426,9 @@ const KundaliHub = () => {
                       className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 bg-white hover:bg-purple-50 hover:border-purple-300 transition-all duration-200 text-left shadow-sm group"
                     >
                       <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl group-hover:bg-white transition-colors duration-200">
-                        {tool.key === 'loshu' ? (
+                        {tool.icon ? (
+                          <tool.icon className="h-5 w-5" />
+                        ) : tool.key === 'loshu' ? (
                           <Grid className="h-5 w-5" />
                         ) : (
                           <Sparkles className="h-5 w-5" />
@@ -417,7 +436,7 @@ const KundaliHub = () => {
                       </div>
                       <div>
                         <div className="font-bold text-sm text-slate-800 font-cinzel">{tool.name}</div>
-                        <div className="text-xs text-slate-400 mt-0.5 leading-snug">{tool.desc}</div>
+                        <div className="text-[14px] text-red-900 mt-0.5 leading-snug">{tool.desc}</div>
                       </div>
                     </button>
                   ))}
@@ -432,7 +451,7 @@ const KundaliHub = () => {
                   </div>
                   <div>
                     <h2 className="text-xl font-cinzel font-bold text-slate-800">Specialty & Suggestions</h2>
-                    <p className="text-xs text-slate-500">Remedial metrics, planetary alignments, and directional forces.</p>
+                    <p className="text-[14px] text-amber-900">Remedial metrics, planetary alignments, and directional forces.</p>
                   </div>
                 </div>
 
@@ -450,11 +469,11 @@ const KundaliHub = () => {
                             <IconComponent className="h-4 w-4" />
                           </div>
                           <div>
-                            <div className="font-bold text-xs font-cinzel text-slate-800">{remedy.name}</div>
-                            <div className="text-[10px] text-slate-400 mt-0.5">{remedy.desc}</div>
+                            <div className="font-bold text-[16px] font-cinzel text-slate-800">{remedy.name}</div>
+                            <div className="text-[14px] text-red-900 mt-0.5">{remedy.desc}</div>
                           </div>
                         </div>
-                        <span className="text-[10px] bg-slate-100 text-slate-500 font-semibold px-2.5 py-1 rounded-lg uppercase tracking-wider group-hover:bg-cyan-100 group-hover:text-cyan-700 transition-colors">
+                        <span className="text-[14px] bg-yellow-100 text-slate-900 font-semibold px-2.5 py-1 rounded-lg uppercase tracking-wider group-hover:bg-cyan-100 group-hover:text-cyan-700 transition-colors">
                           Analyze
                         </span>
                       </button>

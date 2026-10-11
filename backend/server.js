@@ -35,7 +35,8 @@ const axios = require('axios');
 const moderationService = require('./services/moderationService');
 const DisabledChat = require('./models/DisabledChat');
 const LiveChatPayment = require('./models/LiveChatPayment');
-
+const walletRoutes = require('./routes/walletRoutes');
+const agoraRoutes = require('./routes/agora');
 
 
 // Initialize Express app
@@ -106,6 +107,13 @@ app.use((req, res, next) => {
 // Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Global Request Logger
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  require('fs').appendFileSync('debug.log', `[GLOBAL] ${req.method} ${req.url}\n`);
+  next();
+});
 
 
 // MongoDB connection
@@ -424,7 +432,8 @@ app.use('/api/palmistry', palmistryRoutes);
 app.use('/api/live-chat', liveChatRoutes);
 app.use('/api/geo', geoRoutes);
 app.use('/api/audit', auditRoutes);
-
+app.use('/api/wallet', walletRoutes);
+app.use('/api/agora', agoraRoutes);
 
 // Serve uploaded files - ensure paths work in Vercel
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -513,6 +522,45 @@ if (io) {
     });
 
     // --- LIVE CHAT (REAL PERSON) CHANNELS ---
+
+    // Join a private chat room between user and astrologer
+    // --- LIVE STREAM (GROUP) CHAT ---
+    socket.on('join-stream-chat', (astrologerId) => {
+      socket.join(`stream_${astrologerId}`);
+      console.log(`User joined stream chat: stream_${astrologerId}`);
+    });
+
+    socket.on('send-stream-message', async (data) => {
+      const { astrologerId, senderName, text } = data;
+      
+      // Validate message content
+      if (text) {
+        const validationResult = await validateChatMessage(text);
+        if (!validationResult.isValid) {
+          const trackingKey = `stream_${astrologerId}_${socket.id}`;
+          chatViolationCounters[trackingKey] = (chatViolationCounters[trackingKey] || 0) + 1;
+          const currentCount = chatViolationCounters[trackingKey];
+
+          if (currentCount >= 3) {
+            socket.emit('stream-chat-disabled', { reason: 'policy_violation' });
+          } else {
+            socket.emit('stream-chat-warning', {
+              violationType: validationResult.violationType,
+              originalMessage: text,
+              count: currentCount,
+              max: 3
+            });
+          }
+          return; // Block message
+        }
+      }
+
+      io.to(`stream_${astrologerId}`).emit('receive-stream-message', {
+        senderName,
+        text,
+        timestamp: new Date()
+      });
+    });
 
     // Join a private chat room between user and astrologer
     socket.on('join-live-chat', (chatId) => {

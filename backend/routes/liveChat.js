@@ -4,6 +4,7 @@ const LiveChatMessage = require('../models/LiveChatMessage');
 const User = require('../models/User');
 const LiveChatPayment = require('../models/LiveChatPayment');
 const DisabledChat = require('../models/DisabledChat');
+const WalletTransaction = require('../models/WalletTransaction');
 
 
 const { protect } = require('../middleware/auth');
@@ -315,6 +316,64 @@ router.post('/dakshina-confirm', protect, async (req, res) => {
         await payment.save();
 
         res.json({ success: true, payment });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Pay Guru Dakshina via Wallet directly
+router.post('/dakshina-wallet-pay', protect, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { astrologerId, amount } = req.body;
+        const chatId = [userId, astrologerId].sort().join('_');
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const amt = Number(amount);
+        if (user.walletBalance < amt) {
+            return res.status(400).json({ message: 'Insufficient wallet balance' });
+        }
+
+        // Deduct from wallet
+        user.walletBalance -= amt;
+        await user.save();
+
+        // Create Wallet Transaction
+        await WalletTransaction.create({
+            user: userId,
+            type: 'debit',
+            amount: amt,
+            balanceAfter: user.walletBalance,
+            description: 'Guru Dakshina (Live Chat)',
+            status: 'success'
+        });
+
+        // Determine questions limit
+        let questionsLimit = 1;
+        if (amt === 11) questionsLimit = 1;
+        else if (amt === 21) questionsLimit = 2;
+        else if (amt === 51) questionsLimit = 4;
+        else if (amt === 101) questionsLimit = 10;
+        else if (amt === 151) questionsLimit = 20;
+        else if (amt === 201) questionsLimit = 30;
+        else questionsLimit = Math.max(1, Math.floor(amt / 10));
+
+        // Create completed payment
+        const payment = new LiveChatPayment({
+            user: userId,
+            astrologer: astrologerId,
+            chatId,
+            amount: amt,
+            questionsLimit,
+            paymentStatus: 'completed'
+        });
+        await payment.save();
+
+        res.json({ success: true, payment, newBalance: user.walletBalance });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

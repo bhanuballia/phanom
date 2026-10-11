@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useAuth } from '../context/AuthContext';
-import { appointmentsAPI } from '../services/api';
+import { appointmentsAPI, walletAPI } from '../services/api';
 import {
   Video,
   VideoOff,
@@ -13,8 +13,11 @@ import {
   MessageCircle,
   Settings,
   Maximize,
-  Minimize
+  Minimize,
+  IndianRupee,
+  Clock
 } from 'lucide-react';
+import SessionFeedbackModal from './SessionFeedbackModal';
 
 const VideoChat = () => {
   const { appointmentId } = useParams();
@@ -54,6 +57,16 @@ const VideoChat = () => {
   const [showTimeLimitModal, setShowTimeLimitModal] = useState(false);
   const [showSilenceWarning, setShowSilenceWarning] = useState(false);
   const [hasAcceptedConduct, setHasAcceptedConduct] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+
+  // Live billing states for per-minute appointments
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [sessionSeconds, setSessionSeconds] = useState(0);
+  const [totalDeducted, setTotalDeducted] = useState(0);
+  const deductionIntervalRef = useRef(null);
+  const sessionTimerRef = useRef(null);
+  const currentBalanceRef = useRef(0);
+  const isDeductingRef = useRef(false);
 
   // WebRTC configuration
   const servers = {
@@ -127,6 +140,100 @@ const VideoChat = () => {
       cleanupResources();
     };
   }, [appointment, user._id, hasAcceptedConduct]);
+
+  // Fetch user's wallet balance
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (isAuthenticated && user?.role !== 'astrologer') {
+        try {
+          const res = await walletAPI.getBalance();
+          const bal = res.data?.balance || 0;
+          setWalletBalance(bal);
+          currentBalanceRef.current = bal;
+        } catch (err) {
+          console.error('Failed to fetch wallet balance:', err);
+        }
+      }
+    };
+    fetchBalance();
+  }, [isAuthenticated, user]);
+
+  // Clean up billing intervals on unmount
+  useEffect(() => {
+    return () => {
+      if (deductionIntervalRef.current) clearInterval(deductionIntervalRef.current);
+      if (sessionTimerRef.current) clearInterval(sessionTimerRef.current);
+    };
+  }, []);
+
+  const isPerMinuteBilling =
+    appointment &&
+    !appointment.isFirstTimeBooking &&
+    appointment.billingType === 'per_minute' &&
+    user?.role !== 'astrologer';
+
+  const perMinuteRate = Number(appointment?.perMinuteRate) > 0
+    ? Number(appointment.perMinuteRate)
+    : (Number(appointment?.astrologer?.pricing) > 0 ? Number(appointment.astrologer.pricing) : 16);
+
+  const deductMinute = async (rate) => {
+    if (isDeductingRef.current) return;
+    isDeductingRef.current = true;
+
+    if (currentBalanceRef.current < rate) {
+      alert(`Your wallet balance is insufficient (₹${currentBalanceRef.current.toFixed(2)}). Required: ₹${rate}/min. Ending call.`);
+      endCall();
+      isDeductingRef.current = false;
+      return;
+    }
+
+    try {
+      const res = await walletAPI.deduct({
+        amount: rate,
+        description: `Live video consultation with ${appointment?.astrologer?.name || 'Astrologer'} (₹${rate}/min)`,
+        relatedServiceId: appointment?.astrologer?._id || appointment?._id
+      });
+
+      if (res.data?.success) {
+        const newBal = res.data.balance;
+        setWalletBalance(newBal);
+        currentBalanceRef.current = newBal;
+        setTotalDeducted(prev => prev + rate);
+      }
+    } catch (err) {
+      console.error('Error during per-minute video chat deduction:', err);
+      if (err.response?.status === 400) {
+        alert('Insufficient wallet balance to continue video consultation. Ending call.');
+        endCall();
+      }
+    } finally {
+      isDeductingRef.current = false;
+    }
+  };
+
+  // Real-time per-minute deduction timer (starts when video chat is connected & active, with 1-min free grace period)
+  useEffect(() => {
+    if (!isPerMinuteBilling || connectionStatus !== 'connected') {
+      if (deductionIntervalRef.current) clearInterval(deductionIntervalRef.current);
+      if (sessionTimerRef.current) clearInterval(sessionTimerRef.current);
+      return;
+    }
+
+    // Active session seconds counter
+    sessionTimerRef.current = setInterval(() => {
+      setSessionSeconds(prev => prev + 1);
+    }, 1000);
+
+    // Per-minute deductions begin after 1 minute (60 seconds) of active connection
+    deductionIntervalRef.current = setInterval(() => {
+      deductMinute(perMinuteRate);
+    }, 60000);
+
+    return () => {
+      if (deductionIntervalRef.current) clearInterval(deductionIntervalRef.current);
+      if (sessionTimerRef.current) clearInterval(sessionTimerRef.current);
+    };
+  }, [isPerMinuteBilling, connectionStatus, perMinuteRate]);
 
   // Handle 10-minute timer for first-time bookings
   useEffect(() => {
@@ -608,9 +715,11 @@ const VideoChat = () => {
   };
 
   const endCall = () => {
-    socketRef.current.emit('end-call', appointment.roomId);
+    if (socketRef.current && appointment?.roomId) {
+      socketRef.current.emit('end-call', appointment.roomId);
+    }
     cleanupResources();
-    navigate('/dashboard');
+    setShowFeedbackModal(true);
   };
 
   const toggleFullscreen = () => {
@@ -846,14 +955,31 @@ const VideoChat = () => {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       {/* Header */}
-      <div className="bg-gray-800 text-white p-4 flex justify-between items-center">
+      <div className="bg-gray-800 text-white p-4 flex flex-wrap justify-between items-center gap-3">
         <div>
           <h1 className="text-xl font-semibold">
             Video Consultation with {user?.role === 'astrologer' ? (appointment.client?.name || 'Client') : (appointment.astrologer?.name || 'Astrologer')}
           </h1>
-          <p className="text-sm text-gray-400">
-            Status: {connectionStatus} {timeLeft !== null && `(Time Remaining: ${formatTime(timeLeft)})`}
-          </p>
+          <div className="flex flex-wrap items-center gap-3 mt-1 text-sm text-gray-400">
+            <span>Status: <strong className="text-white capitalize">{connectionStatus}</strong></span>
+            {timeLeft !== null && <span>(Time Remaining: {formatTime(timeLeft)})</span>}
+            {isPerMinuteBilling && (
+              <>
+                <span className="inline-flex items-center gap-1 text-amber-300 font-medium bg-amber-950/60 border border-amber-500/30 px-2.5 py-0.5 rounded-full text-xs">
+                  <IndianRupee className="w-3 h-3" />
+                  Rate: ₹{perMinuteRate}/min
+                </span>
+                <span className="inline-flex items-center gap-1 text-blue-300 text-xs">
+                  <Clock className="w-3 h-3" />
+                  Duration: {formatTime(sessionSeconds)}
+                  {sessionSeconds < 60 && ' (Free Intro)'}
+                </span>
+                <span className="text-emerald-300 text-xs font-semibold">
+                  Wallet: ₹{walletBalance.toFixed(2)} (Deducted: ₹{totalDeducted})
+                </span>
+              </>
+            )}
+          </div>
         </div>
         <div className="flex items-center space-x-2">
           <button
@@ -1068,6 +1194,26 @@ const VideoChat = () => {
           </div>
         </div>
       )}
+
+      {/* Session Feedback / Rating Modal */}
+      <SessionFeedbackModal
+        isOpen={showFeedbackModal}
+        onClose={() => {
+          setShowFeedbackModal(false);
+          navigate('/dashboard');
+        }}
+        astrologer={appointment?.astrologer ? {
+          _id: appointment.astrologer._id || appointment.astrologer,
+          name: appointment.astrologer.name || 'Astrologer'
+        } : null}
+        sessionType="Video Consultation"
+        onComplete={() => {
+          setTimeout(() => {
+            setShowFeedbackModal(false);
+            navigate('/dashboard');
+          }, 1500);
+        }}
+      />
     </div>
   );
 };

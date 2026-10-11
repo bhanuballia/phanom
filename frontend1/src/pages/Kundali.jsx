@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 import Navigation from '../components/Navigation';
 import KundaliChart from '../components/KundaliChart';
@@ -55,6 +56,45 @@ const Kundali = () => {
   const [planetaryPositions, setPlanetaryPositions] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      let userCity = user.city || '';
+      let userState = user.state || '';
+      let userCountry = user.country || '';
+      let placeOfBirth = user.placeOfBirth || userCity || '';
+
+      if (user.placeOfBirth && (!userCity || !userState || !userCountry)) {
+        const parts = user.placeOfBirth.split(',').map(p => p.trim());
+        if (parts.length === 3) {
+          placeOfBirth = parts[0];
+          userState = parts[1];
+          userCountry = parts[2];
+        } else if (parts.length > 0) {
+          placeOfBirth = parts[0];
+        }
+      }
+
+      let dateOfBirth = user.dateOfBirth || '';
+      if (dateOfBirth && dateOfBirth.includes('T')) {
+        dateOfBirth = dateOfBirth.split('T')[0];
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        dateOfBirth: dateOfBirth || prev.dateOfBirth,
+        timeOfBirth: user.timeOfBirth || prev.timeOfBirth,
+        placeOfBirth: placeOfBirth || prev.placeOfBirth,
+        email: user.email || prev.email,
+        phoneNumber: user.phone || prev.phoneNumber,
+        country: userCountry || prev.country,
+        state: userState || prev.state
+      }));
+    }
+  }, [user]);
+
 
 
   useEffect(() => {
@@ -714,106 +754,85 @@ const Kundali = () => {
   // Main Form State
   return (
     <div
-      className="relative min-h-screen bg-cover bg-center bg-fixed overflow-hidden"
+      className="relative min-h-screen bg-cover bg-center bg-fixed"
       style={{ backgroundImage: "url('/images/our1.jpeg')" }}
     >
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col min-h-screen">
         <Navigation />
-        <div className="py-12 px-4 sm:px-6 lg:px-8">
-          {/* Header Section */}
-          <section className="py-10">
-            <div className="relative max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12 p-10 rounded-[36px] border border-black/10 bg-white/85 backdrop-blur-lg shadow-[0_30px_90px_rgba(0,0,0,0.2)] overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/60 to-transparent pointer-events-none"></div>
-              <div className="relative z-10 flex-1 space-y-6 text-center lg:text-left">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-black/5 border border-black/10">
-                  <Sparkles className="h-10 w-10 text-astro-gold" />
-                </div>
-                <p className="text-sm uppercase tracking-[0.3em] text-black/70">वैदिक ज्योतिष</p>
-                <h1 className="text-4xl md:text-5xl font-cinzel font-bold text-black leading-tight">
-                  जन्म कुंडली <span className="text-astro-gold">Generation</span>
-                </h1>
-                <p className="text-black/80 text-lg">
-                  Get your detailed Hindu astrology birth chart generated instantly and delivered securely to your mobile or email.
-                </p>
-                <div className="flex flex-wrap justify-center lg:justify-start gap-3 text-xs uppercase tracking-[0.3em] text-black">
-                  <span className="px-4 py-2 rounded-full bg-black/5">Instant PDF</span>
-                  <span className="px-4 py-2 rounded-full bg-black/5">Email & SMS</span>
-                  <span className="px-4 py-2 rounded-full bg-black/5">Hindi Output</span>
-                </div>
-              </div>
-              <div className="relative z-10 flex-1 w-full grid grid-cols-2 gap-4">
-                <div className="p-6 rounded-3xl bg-white/90 border border-black/5 shadow-lg">
-                  <p className="text-xs uppercase tracking-[0.4em] text-black/60 mb-2">Accuracy</p>
-                  <p className="text-4xl font-bold text-black">99.2%</p>
-                  <p className="text-black/70 text-sm">Verified against traditional scripts.</p>
-                </div>
-                <div className="p-6 rounded-3xl bg-white/90 border border-black/5 shadow-lg">
-                  <p className="text-xs uppercase tracking-[0.4em] text-black/60 mb-2">Delivery</p>
-                  <p className="text-4xl font-bold text-black">60s</p>
-                  <p className="text-black/70 text-sm">Average time to receive your chart.</p>
-                </div>
-                <div className="p-6 rounded-3xl bg-white/90 border border-black/5 shadow-lg col-span-2">
-                  <p className="text-xs uppercase tracking-[0.4em] text-black/60 mb-2">VedAstro Engine</p>
-                  <p className="text-black">
-                    Powered by VedAstro - accurate calculations using Swiss Ephemeris for precise planetary positions and Vedic astrology principles.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
 
-          {/* Main Form Card */}
-          <div id="kundali-form" className="max-w-5xl mx-auto">
-            <div className="rounded-[32px] border border-black/10 bg-white/90 backdrop-blur-lg shadow-[0_35px_110px_rgba(0,0,0,0.25)] p-8 md:p-10">
-              <form onSubmit={handleSubmit} className="space-y-6 text-black">
-                {error && (
-                  <div className="bg-red-100 border border-red-200 text-red-700 px-6 py-4 rounded-xl text-center">
-                    {error}
+        <div className="flex-1 flex items-center justify-center p-3 sm:p-4 lg:p-6">
+          <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+            {/* Left Info & Settings Panel */}
+            <div className="lg:col-span-4 flex flex-col justify-between rounded-3xl border border-black/10 bg-white/85 backdrop-blur-lg shadow-xl p-5 sm:p-6">
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-full bg-astro-gold/15 border border-astro-gold/40 flex items-center justify-center">
+                    <Sparkles className="h-5 w-5 text-astro-gold" />
                   </div>
-                )}
+                  <div>
+                    <p className="text-[11px] uppercase tracking-widest text-black/70 font-semibold">वैदिक ज्योतिष</p>
+                    <h1 className="text-xl sm:text-2xl font-cinzel font-bold text-black leading-tight">
+                      जन्म कुंडली <span className="text-astro-gold">Generation</span>
+                    </h1>
+                  </div>
+                </div>
+
+                <p className="text-xs text-black/75 mb-3 leading-relaxed">
+                  Generate your authentic Vedic birth chart instantly with planetary positions and divisional charts.
+                </p>
+
+                {/* Quick stats pills */}
+                <div className="grid grid-cols-3 gap-2 mb-4 text-center">
+                  <div className="p-2 rounded-xl bg-black/5 border border-black/5">
+                    <p className="text-xs font-bold text-black">99.2%</p>
+                    <p className="text-[10px] text-black/60 uppercase">Accuracy</p>
+                  </div>
+                  <div className="p-2 rounded-xl bg-black/5 border border-black/5">
+                    <p className="text-xs font-bold text-black">Swiss</p>
+                    <p className="text-[10px] text-black/60 uppercase">Ephemeris</p>
+                  </div>
+                  <div className="p-2 rounded-xl bg-black/5 border border-black/5">
+                    <p className="text-xs font-bold text-black">Instant</p>
+                    <p className="text-[10px] text-black/60 uppercase">PDF Chart</p>
+                  </div>
+                </div>
 
                 {/* Generation Mode Selector */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                    <User className="h-4 w-4 mr-2 text-astro-gold" />
+                <div className="mb-3">
+                  <label className="block text-xs font-semibold text-black mb-1.5 flex items-center">
+                    <User className="h-3.5 w-3.5 mr-1.5 text-astro-gold" />
                     कुंडली मोड (Generation Mode)
                   </label>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
                       onClick={() => setGenerationMode('accurate')}
-                      className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all ${generationMode === 'accurate' ? 'border-astro-gold bg-astro-gold/10' : 'border-black/10 bg-white hover:border-black/20'}`}
+                      className={`flex flex-col items-center justify-center py-2 px-2 rounded-xl border-2 transition-all cursor-pointer ${generationMode === 'accurate' ? 'border-astro-gold bg-amber-200 shadow-sm' : 'border-black/10 bg-white hover:border-black/20'}`}
                     >
-                      <Sparkles className={`h-5 w-5 mb-2 ${generationMode === 'accurate' ? 'text-astro-gold' : 'text-black/40'}`} />
-                      <span className="font-bold text-black">Accurate</span>
-                      <span className="text-[10px] text-black/60 uppercase tracking-widest">Full Details</span>
+                      <Sparkles className={`h-4 w-4 mb-0.5 ${generationMode === 'accurate' ? 'text-astro-gold' : 'text-black/40'}`} />
+                      <span className="font-bold text-[16px] text-black">Accurate</span>
+                      <span className="text-[14px] text-amber-900 uppercase tracking-wider">Full Details</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setGenerationMode('quick')}
-                      className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all ${generationMode === 'quick' ? 'border-astro-gold bg-astro-gold/10' : 'border-black/10 bg-white hover:border-black/20'}`}
+                      className={`flex flex-col items-center justify-center py-2 px-2 rounded-xl border-2 transition-all cursor-pointer ${generationMode === 'quick' ? 'border-astro-gold bg-emerald-200 shadow-sm' : 'border-black/10 bg-white hover:border-black/20'}`}
                     >
-                      <Clock className={`h-5 w-5 mb-2 ${generationMode === 'quick' ? 'text-astro-gold' : 'text-black/40'}`} />
-                      <span className="font-bold text-black">Quick</span>
-                      <span className="text-[10px] text-black/60 uppercase tracking-widest">DOB Only</span>
+                      <Clock className={`h-4 w-4 mb-0.5 ${generationMode === 'quick' ? 'text-astro-gold' : 'text-black/40'}`} />
+                      <span className="font-bold text-[16px] text-black">Quick</span>
+                      <span className="text-[14px] text-red-900 uppercase tracking-wider">DOB Only</span>
                     </button>
                   </div>
-                  <p className="text-xs text-black/60 mt-2 text-center">
-                    {generationMode === 'accurate'
-                      ? 'Best for detailed predictions. All birth details required.'
-                      : 'Fast generation using default time (12:00 PM) and location (India).'}
-                  </p>
                 </div>
 
-                {/* VedAstro Toggle */}
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-4 rounded-2xl border border-black/10 bg-gradient-to-r from-green-50 to-blue-50">
-                  <div className="flex items-start gap-3">
-                    <Star className="h-5 w-5 text-astro-gold mt-1" />
+                {/* VedAstro Engine Toggle */}
+                <div className="p-2.5 rounded-xl border border-black/10 bg-gradient-to-r from-green-50 to-blue-50 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Star className="h-4 w-4 text-astro-gold flex-shrink-0" />
                     <div>
-                      <label className="text-sm font-semibold text-black">
-                        Use VedAstro for Accurate Calculations
-                      </label>
-                      <p className="text-xs text-black/70">Powered by Swiss Ephemeris - Industry standard for astronomical calculations</p>
+                      <p className="text-xs font-semibold text-black leading-tight">VedAstro Calculations</p>
+                      <p className="text-[10px] text-black/60">Swiss Ephemeris precision</p>
                     </div>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -823,27 +842,44 @@ const Kundali = () => {
                       onChange={(e) => setUseVedAstro(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-14 h-7 bg-black/10 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-black/10 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-500"></div>
+                    <div className="w-10 h-5 bg-black/15 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
                   </label>
                 </div>
+              </div>
 
-                {/* Divisional Chart Type Selector */}
-                <div className="md:col-span-2">
+              {/* Bottom Security Note */}
+              <div className="mt-3 pt-2.5 border-t border-black/10 flex items-center gap-2 text-[16px] text-black">
+                <Shield className="h-3.5 w-3.5 text-black flex-shrink-0" />
+                <span>वैदिक ज्योतिष अनुसार शुद्ध गणितीय गणना</span>
+              </div>
+            </div>
 
-                </div>
+            {/* Right Generate Kundali Form Card */}
+            <div id="kundali-form" className="lg:col-span-8 flex flex-col justify-between rounded-3xl border border-black/10 bg-white/95 backdrop-blur-lg shadow-xl p-5 sm:p-6">
+              <form onSubmit={handleSubmit} className="flex flex-col justify-between h-full space-y-3 text-black">
+                {error && (
+                  <div className="bg-red-100 border border-red-200 text-red-700 px-4 py-2 rounded-xl text-xs sm:text-sm text-center">
+                    {error}
+                  </div>
+                )}
 
-                {/* Chart Style Selector */}
-                <div className="md:col-span-2">
-
+                <div className="flex items-center justify-between pb-1.5 border-b border-black/10">
+                  <h2 className="text-base sm:text-lg font-bold font-cinzel text-black flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-astro-gold" />
+                    जन्म विवरण (Birth Details Form)
+                  </h2>
+                  <span className="text-[11px] font-medium text-black/60 bg-black/5 px-2.5 py-1 rounded-full">
+                    {generationMode === 'accurate' ? 'Mode: Accurate (सटीक)' : 'Mode: Quick (त्वरित)'}
+                  </span>
                 </div>
 
                 {/* Form Fields Grid */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Name Field - Always show but optional in Quick */}
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                      <User className="h-4 w-4 mr-2 text-astro-gold" />
-                      पूरा नाम (Full Name) {generationMode === 'accurate' && <span className="text-red-500 ml-1">*</span>}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* Name Field */}
+                  <div className={generationMode === 'quick' ? 'md:col-span-1' : ''}>
+                    <label className="block text-xs font-semibold text-black mb-1 flex items-center">
+                      <User className="h-3.5 w-3.5 mr-1 text-astro-gold" />
+                      पूरा नाम (Full Name) {generationMode === 'accurate' && <span className="text-red-500 ml-0.5">*</span>}
                     </label>
                     <input
                       type="text"
@@ -851,16 +887,16 @@ const Kundali = () => {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
+                      className="w-full px-3.5 py-2 bg-white border border-black/15 rounded-xl text-sm text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold"
                       placeholder="अपना पूरा नाम दर्ज करें"
                     />
                   </div>
 
-                  {/* Date of Birth - Essential for both */}
+                  {/* Date of Birth */}
                   <div>
-                    <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                      <Calendar className="h-4 w-4 mr-2 text-astro-gold" />
-                      जन्म तिथि (Date of Birth) <span className="text-red-500 ml-1">*</span>
+                    <label className="block text-xs font-semibold text-black mb-1 flex items-center">
+                      <Calendar className="h-3.5 w-3.5 mr-1 text-astro-gold" />
+                      जन्म तिथि (Date of Birth) <span className="text-red-500 ml-0.5">*</span>
                     </label>
                     <input
                       type="date"
@@ -868,34 +904,35 @@ const Kundali = () => {
                       value={formData.dateOfBirth}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
+                      className="w-full px-3.5 py-2 bg-white border border-black/15 rounded-xl text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold"
                     />
                   </div>
+
                   {generationMode !== 'quick' && (
                     <>
-                      {/* Time of Birth - Always show */}
+                      {/* Time of Birth */}
                       <div>
-                        <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                          <Clock className="h-4 w-4 mr-2 text-astro-gold" />
-                          जन्म समय (Time of Birth)
+                        <label className="block text-xs font-semibold text-black mb-1 flex items-center justify-between">
+                          <span className="flex items-center">
+                            <Clock className="h-3.5 w-3.5 mr-1 text-astro-gold" />
+                            जन्म समय (Birth Time)
+                          </span>
+                          <span className="text-[10px] text-black/50">Defaults 12:00 PM</span>
                         </label>
                         <input
                           type="time"
                           name="timeOfBirth"
                           value={formData.timeOfBirth}
                           onChange={handleInputChange}
-                          className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
+                          className="w-full px-3.5 py-2 bg-white border border-black/15 rounded-xl text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold"
                         />
-                        <p className="text-xs text-black/60 mt-2">
-                          यदि समय पता नहीं है तो 12:00 दोपहर माना जाएगा (Defaults to 12:00 PM)
-                        </p>
                       </div>
 
-                      {/* Place of Birth - Always show */}
+                      {/* Place of Birth */}
                       <div>
-                        <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                          <MapPin className="h-4 w-4 mr-2 text-astro-gold" />
-                          जन्म स्थान (Place of Birth) <span className="text-red-500 ml-1">*</span>
+                        <label className="block text-xs font-semibold text-black mb-1 flex items-center">
+                          <MapPin className="h-3.5 w-3.5 mr-1 text-astro-gold" />
+                          जन्म स्थान (City/Place) <span className="text-red-500 ml-0.5">*</span>
                         </label>
                         <input
                           type="text"
@@ -903,37 +940,16 @@ const Kundali = () => {
                           value={formData.placeOfBirth}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                          placeholder="शहर का नाम (e.g. New Delhi)"
-                        />
-                      </div>
-                    </>
-                  )}
-
-                  {generationMode === 'accurate' && (
-                    <>
-                      {/* country of  birth */}
-                      <div>
-                        <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                          <MapPin className="h-4 w-4 mr-2 text-astro-gold" />
-                          Country <span className="text-red-500 ml-1">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="country"
-                          value={formData.country}
-                          onChange={handleInputChange}
-                          required={generationMode === 'accurate'}
-                          className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                          placeholder="देश"
+                          className="w-full px-3.5 py-2 bg-white border border-black/15 rounded-xl text-sm text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                          placeholder="e.g. New Delhi"
                         />
                       </div>
 
-                      {/* state of  birth */}
+                      {/* State */}
                       <div>
-                        <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                          <MapPin className="h-4 w-4 mr-2 text-astro-gold" />
-                          State  <span className="text-red-500 ml-1">*</span>
+                        <label className="block text-xs font-semibold text-black mb-1 flex items-center">
+                          <MapPin className="h-3.5 w-3.5 mr-1 text-astro-gold" />
+                          राज्य (State) <span className="text-red-500 ml-0.5">*</span>
                         </label>
                         <input
                           type="text"
@@ -941,135 +957,100 @@ const Kundali = () => {
                           value={formData.state}
                           onChange={handleInputChange}
                           required={generationMode === 'accurate'}
-                          className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                          placeholder="राज्य"
+                          className="w-full px-3.5 py-2 bg-white border border-black/15 rounded-xl text-sm text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                          placeholder="e.g. Delhi"
+                        />
+                      </div>
+
+                      {/* Country */}
+                      <div>
+                        <label className="block text-xs font-semibold text-black mb-1 flex items-center">
+                          <MapPin className="h-3.5 w-3.5 mr-1 text-astro-gold" />
+                          देश (Country) <span className="text-red-500 ml-0.5">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="country"
+                          value={formData.country}
+                          onChange={handleInputChange}
+                          required={generationMode === 'accurate'}
+                          className="w-full px-3.5 py-2 bg-white border border-black/15 rounded-xl text-sm text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                          placeholder="e.g. India"
                         />
                       </div>
 
                       {/* Coordinates */}
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                          <Globe className="h-4 w-4 mr-2 text-astro-gold" />
-                          निर्देशांक (Coordinates)
-                        </label>
-                        <div className="flex flex-col md:flex-row gap-4">
-                          <input
-                            type="text"
-                            name="coordinates"
-                            value={formData.coordinates}
-                            onChange={handleInputChange}
-                            className="flex-1 px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                            placeholder="Latitude, Longitude (e.g. 28.6139, 77.2090)"
-                          />
+                      <div>
+                        <label className="block text-xs font-semibold text-black mb-1 flex items-center justify-between">
+                          <span className="flex items-center">
+                            <Globe className="h-3.5 w-3.5 mr-1 text-astro-gold" /> निर्देशांक (Coordinates)
+                          </span>
                           <button
                             type="button"
                             onClick={handleFetchCoordinates}
                             disabled={isFetchingCoords}
-                            className="px-5 py-3.5 rounded-xl bg-gradient-to-r from-astro-gold to-divine-orange text-astro-dark font-semibold shadow-lg hover:shadow-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="text-[11px] font-semibold text-amber-700 hover:text-amber-800 disabled:opacity-50 cursor-pointer"
                           >
-                            {isFetchingCoords ? 'Fetching...' : 'Get Coordinates'}
+                            {isFetchingCoords ? 'Fetching...' : '⚡ Get Coords'}
                           </button>
-                        </div>
-                        <p className="text-xs text-black/60 mt-2">
-                          देश, राज्य और जन्म स्थान के आधार पर अक्षांश और देशांतर स्वतः प्राप्त होंगे।
-                        </p>
+                        </label>
+                        <input
+                          type="text"
+                          name="coordinates"
+                          value={formData.coordinates}
+                          onChange={handleInputChange}
+                          className="w-full px-3.5 py-2 bg-white border border-black/15 rounded-xl text-sm text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                          placeholder="e.g. 28.6139, 77.2090"
+                        />
                       </div>
 
                       {/* Timezone */}
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                          <Clock className="h-4 w-4 mr-2 text-astro-gold" />
-                          टाइमज़ोन (Timezone)
-                        </label>
-                        <div className="flex flex-col md:flex-row gap-4">
-                          <input
-                            type="text"
-                            name="timezone"
-                            value={formData.timezone}
-                            onChange={handleInputChange}
-                            className="flex-1 px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                            placeholder="Timezone (e.g. Asia/Kolkata)"
-                          />
+                      <div>
+                        <label className="block text-xs font-semibold text-black mb-1 flex items-center justify-between">
+                          <span className="flex items-center">
+                            <Clock className="h-3.5 w-3.5 mr-1 text-astro-gold" /> टाइमज़ोन (Timezone)
+                          </span>
                           <button
                             type="button"
                             onClick={handleFetchTimezone}
                             disabled={isFetchingTimezone}
-                            className="px-5 py-3.5 rounded-xl bg-gradient-to-r from-astro-gold to-divine-orange text-astro-dark font-semibold shadow-lg hover:shadow-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="text-[11px] font-semibold text-amber-700 hover:text-amber-800 disabled:opacity-50 cursor-pointer"
                           >
-                            {isFetchingTimezone ? 'Fetching...' : 'Get Timezone'}
+                            {isFetchingTimezone ? 'Fetching...' : '⚡ Get Timezone'}
                           </button>
-                        </div>
-                        <p className="text-xs text-black/60 mt-2">
-                          दिए गए स्थान और निर्देशांक के आधार पर टाइमज़ोन स्वतः प्राप्त होगा।
-                        </p>
+                        </label>
+                        <input
+                          type="text"
+                          name="timezone"
+                          value={formData.timezone}
+                          onChange={handleInputChange}
+                          className="w-full px-3.5 py-2 bg-white border border-black/15 rounded-xl text-sm text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                          placeholder="e.g. Asia/Kolkata"
+                        />
                       </div>
-
                     </>
                   )}
-
-                  {/* Email - Show for both */}
-                  <div className={generationMode === 'quick' ? 'md:col-span-1' : ''}>
-                    <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                      <Mail className="h-4 w-4 mr-2 text-astro-gold" />
-                      ईमेल (Email)
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-
-                  {/* Phone Number */}
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-3 flex items-center">
-                      <Phone className="h-4 w-4 mr-2 text-astro-gold" />
-                      मोबाइल नंबर (Phone Number)
-                    </label>
-                    <input
-                      type="tel"
-                      name="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handleInputChange}
-                      className="w-full px-5 py-3.5 bg-white border border-black/15 rounded-xl text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-transparent"
-                      placeholder="+91 XXXXX XXXXX"
-                    />
-                  </div>
                 </div>
 
                 {/* Submit Button */}
-                <div className="pt-4">
+                <div className="pt-2">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full px-8 py-4 bg-gradient-to-r from-astro-gold via-divine-orange to-astro-gold text-astro-dark font-bold text-lg rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                    className="w-full px-6 py-3 bg-gradient-to-r from-astro-gold via-divine-orange to-astro-gold text-astro-dark font-bold text-base rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {loading ? (
                       <>
-                        <Loader className="h-6 w-6 animate-spin" />
+                        <Loader className="h-5 w-5 animate-spin" />
                         <span>{useVedAstro ? 'VedAstro के साथ कुंडली बनाई जा रही है...' : 'कुंडली बनाई जा रही है...'}</span>
                       </>
                     ) : (
                       <>
-                        <Send className="h-6 w-6" />
+                        <Send className="h-5 w-5" />
                         <span>{useVedAstro ? 'VedAstro के साथ कुंडली बनाएं (Generate with VedAstro)' : 'कुंडली बनाएं (Generate Kundali)'}</span>
                       </>
                     )}
                   </button>
-                </div>
-
-                {/* Info Text */}
-                <div className="pt-4 border-t border-black/10">
-                  <div className="flex items-start gap-3 p-4 bg-black/5 rounded-2xl">
-                    <Shield className="h-5 w-5 text-astro-gold mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-black">
-                      <p className="mb-1 font-semibold">🕉 आपकी कुंडली हिंदी में वैदिक ज्योतिष के अनुसार तैयार की जाएगी</p>
-                      <p className="text-black/70">Your Kundali will be prepared in Hindi according to Vedic astrology principles.</p>
-                    </div>
-                  </div>
                 </div>
               </form>
             </div>

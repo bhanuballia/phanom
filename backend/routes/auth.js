@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Astrologer = require('../models/Astrologer');
+const Review = require('../models/Review');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -351,14 +352,144 @@ router.get('/astrologers', async (req, res) => {
         pricing: profile.pricing || 100,
         rating: profile.rating || 0,
         totalReviews: profile.totalReviews || 0,
-        isAvailable: profile.isAvailable !== false
+        followersCount: profile.followersCount || (profile.followers ? profile.followers.length : 0),
+        followers: profile.followers || [],
+        isAvailable: profile.isAvailable !== false,
+        isLive: profile.isLive || false
       };
     });
+
+    console.log('--- GET /astrologers called ---');
+    console.log('Total returned:', astrologers.length);
+    console.log('Live Astrologers:', astrologers.filter(a => a.isLive).length);
 
     res.json({ astrologers });
   } catch (error) {
     console.error('Astrologers fetch error:', error);
     res.status(500).json({ message: 'Server error fetching astrologers' });
+  }
+});
+
+// Get reviews for an astrologer
+router.get('/astrologers/:id/reviews', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const reviews = await Review.find({ astrologerId: id })
+      .sort({ createdAt: -1 })
+      .limit(50);
+
+    res.json({ reviews });
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ message: 'Error fetching reviews' });
+  }
+});
+
+// Submit / update review and rating for an astrologer
+router.post('/astrologers/:id/reviews', protect, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rating, comment } = req.body;
+
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+    }
+    if (!comment || !comment.trim()) {
+      return res.status(400).json({ message: 'Comment is required' });
+    }
+
+    // Find astrologer profile
+    let astrologerProfile = await Astrologer.findOne({ userId: id });
+    if (!astrologerProfile) {
+      // In case id was passed as Astrologer._id
+      astrologerProfile = await Astrologer.findById(id);
+    }
+    if (!astrologerProfile) {
+      return res.status(404).json({ message: 'Astrologer profile not found' });
+    }
+
+    const astrologerUserId = astrologerProfile.userId;
+
+    // Create or update review
+    const review = await Review.findOneAndUpdate(
+      { astrologerId: astrologerUserId, userId: req.user._id },
+      {
+        astrologerId: astrologerUserId,
+        userId: req.user._id,
+        userName: req.user.name || 'Anonymous User',
+        rating: Number(rating),
+        comment: comment.trim()
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    // Recalculate average rating and totalReviews
+    const allReviews = await Review.find({ astrologerId: astrologerUserId });
+    const totalReviews = allReviews.length;
+    const avgRating = totalReviews > 0
+      ? Number((allReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1))
+      : 0;
+
+    astrologerProfile.rating = avgRating;
+    astrologerProfile.totalReviews = totalReviews;
+    await astrologerProfile.save();
+
+    res.json({
+      message: 'Review submitted successfully',
+      review,
+      rating: avgRating,
+      totalReviews
+    });
+  } catch (error) {
+    console.error('Error submitting review:', error);
+    res.status(500).json({ message: 'Error submitting review' });
+  }
+});
+
+// Follow / Unfollow an astrologer
+router.post('/astrologers/:id/follow', protect, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    let astrologerProfile = await Astrologer.findOne({ userId: id });
+    if (!astrologerProfile) {
+      astrologerProfile = await Astrologer.findById(id);
+    }
+    if (!astrologerProfile) {
+      return res.status(404).json({ message: 'Astrologer profile not found' });
+    }
+
+    if (!Array.isArray(astrologerProfile.followers)) {
+      astrologerProfile.followers = [];
+    }
+
+    const followerIndex = astrologerProfile.followers.findIndex(
+      fId => fId.toString() === userId.toString()
+    );
+
+    let isFollowing = false;
+    if (followerIndex > -1) {
+      // Unfollow
+      astrologerProfile.followers.splice(followerIndex, 1);
+      isFollowing = false;
+    } else {
+      // Follow
+      astrologerProfile.followers.push(userId);
+      isFollowing = true;
+    }
+
+    astrologerProfile.followersCount = astrologerProfile.followers.length;
+    await astrologerProfile.save();
+
+    res.json({
+      message: isFollowing ? 'Followed successfully' : 'Unfollowed successfully',
+      isFollowing,
+      followersCount: astrologerProfile.followersCount
+    });
+  } catch (error) {
+    console.error('Error toggling follow:', error);
+    res.status(500).json({ message: 'Error toggling follow' });
   }
 });
 

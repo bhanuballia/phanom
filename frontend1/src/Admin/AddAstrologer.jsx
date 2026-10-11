@@ -26,7 +26,6 @@ const AddAstrologer = () => {
     email: '',
     password: '',
     phone: '',
-    phone: '',
     specialization: [],
     experience: '',
     languages: ['Hindi', 'English'],

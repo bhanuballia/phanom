@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authAPI, appointmentsAPI } from '../services/api';
+import { authAPI, appointmentsAPI, walletAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, Clock, User, FileText, DollarSign, Star, MapPin, Cake, Sparkles } from 'lucide-react';
+import { Calendar, Clock, User, FileText, IndianRupee, Star, MapPin, Cake, Sparkles, Hand, Upload, CheckCircle } from 'lucide-react';
 
 const TOPICS_AND_QUESTIONS = {
   "Love & Romance - Love Life": [
@@ -378,7 +378,7 @@ const TOPICS_AND_QUESTIONS = {
     "Is this business deal favorable?",
     "Will this court case end in my favor?"
   ],
-  "AI Personalized Questions": [
+  " Personalized Questions": [
     "What is the most important event coming in my life?",
     "Which area of my life needs attention?",
     "What are my biggest strengths?",
@@ -397,8 +397,8 @@ const BookAppointment = () => {
   const [appointmentDate, setAppointmentDate] = useState('');
   const [availableSlots, setAvailableSlots] = useState([]);
   const [selectedTime, setSelectedTime] = useState('');
-  const [consultationType, setConsultationType] = useState('birth_chart');
-  const [duration, setDuration] = useState(60);
+  const [consultationType, setConsultationType] = useState('custom_questions');
+  const [duration, setDuration] = useState(15);
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -406,23 +406,121 @@ const BookAppointment = () => {
 
   // New fields
   const [name, setName] = useState('');
-  const [age, setAge] = useState('');
+  const [birthTime, setBirthTime] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [placeOfBirth, setPlaceOfBirth] = useState('');
   const [state, setState] = useState('');
   const [country, setCountry] = useState('India');
+  const [useDefaultBirthDetails, setUseDefaultBirthDetails] = useState(false);
   const [astrologerCategory, setAstrologerCategory] = useState('');
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [checkingFirstTime, setCheckingFirstTime] = useState(true);
+  const [walletBalance, setWalletBalance] = useState(0);
 
   const [selectedTopic, setSelectedTopic] = useState('');
   const [selectedQuestion, setSelectedQuestion] = useState('');
   const [selectedQuestions, setSelectedQuestions] = useState([]);
 
+  // Palmistry images states
+  const [palmImages, setPalmImages] = useState({
+    rightHandImage: null,
+    leftHandImage: null
+  });
+  const [palmImagePreviews, setPalmImagePreviews] = useState({
+    rightHandImage: null,
+    leftHandImage: null
+  });
+
+  const handlePalmImageChange = (e, hand) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setError(`Please upload a valid image file for ${hand} hand`);
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setError(`Image size should be less than 10MB for ${hand} hand`);
+        return;
+      }
+      setPalmImages(prev => ({
+        ...prev,
+        [`${hand}HandImage`]: file
+      }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPalmImagePreviews(prev => ({
+          ...prev,
+          [`${hand}HandImage`]: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+      setError('');
+    }
+  };
+
 
 
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Auto-fill user details if available
+  useEffect(() => {
+    if (user) {
+      // Detect if user registered using default birth time & location
+      const userBirthTimeVal = user.birthTime || user.timeOfBirth || '';
+      const userPlaceVal = (user.placeOfBirth || user.city || '').toLowerCase();
+      const isDefaultRegistered =
+        (userBirthTimeVal === '12:00' || userBirthTimeVal === '12:00:00') &&
+        (userPlaceVal.includes('delhi') || !userPlaceVal);
+
+      if (isDefaultRegistered) {
+        setUseDefaultBirthDetails(true);
+      }
+
+      if (user.name) setName(user.name);
+      else if (user.firstName || user.lastName) {
+        setName(`${user.firstName || ''} ${user.lastName || ''}`.trim());
+      }
+      if (user.birthTime) {
+        setBirthTime(user.birthTime);
+      } else if (user.timeOfBirth) {
+        setBirthTime(user.timeOfBirth);
+      } else if (isDefaultRegistered) {
+        setBirthTime('12:00');
+      }
+
+      if (user.dateOfBirth) {
+        try {
+          const dateStr = user.dateOfBirth.split('T')[0];
+          setDateOfBirth(dateStr);
+        } catch (e) {
+          setDateOfBirth(user.dateOfBirth);
+        }
+      }
+
+      if (user.placeOfBirth) {
+        setPlaceOfBirth(user.placeOfBirth);
+        // Extract State and Country from "City, State, Country" format
+        const parts = user.placeOfBirth.split(',').map(p => p.trim());
+        if (parts.length >= 3) {
+          setState(parts[1]);
+          setCountry(parts[parts.length - 1]);
+        } else if (parts.length === 2) {
+          setState(parts[0]);
+          setCountry(parts[1]);
+        }
+      } else {
+        if (isDefaultRegistered) {
+          setPlaceOfBirth('New Delhi');
+          setState('Delhi');
+          setCountry('India');
+        } else {
+          if (user.state) setState(user.state);
+          if (user.country) setCountry(user.country);
+        }
+      }
+    }
+  }, [user]);
 
   // Astrologer categories
   const astrologerCategories = [
@@ -472,13 +570,14 @@ const BookAppointment = () => {
 
   // Consultation types with prices
   const consultationTypes = {
-    birth_chart: { label: 'Birth Chart Reading', price: 150 },
+    custom_questions: { label: 'Custom Questions (₹251 for 10 questions, ₹501 for 20 questions)', price: 251 },
+    birth_chart: { label: 'Birth Chart Reading', price: 2100 },
     relationship: { label: 'Relationship Compatibility', price: 120 },
     career: { label: 'Career Guidance', price: 100 },
     health: { label: 'Health & Wellness', price: 130 },
     general: { label: 'General Consultation', price: 80 },
-    vastu_consultation: { label: 'Vastu Consultation', price: 200 },
-    marriage_consultation: { label: 'Marriage Consultation', price: 180 },
+    vastu_consultation: { label: 'Vastu Consultation', price: 2100 },
+    marriage_consultation: { label: 'Marriage Consultation', price: 2100 },
     finance_consultation: { label: 'Finance Consultation', price: 150 },
     business_consultation: { label: 'Business Consultation', price: 170 },
     study_consultation: { label: 'Study Consultation', price: 120 },
@@ -486,7 +585,7 @@ const BookAppointment = () => {
     horoscope_monthly: { label: 'Horoscope Monthly Consultation', price: 150 },
     horoscope_yearly: { label: 'Horoscope Yearly Consultation', price: 250 },
     lalkitab_consultation: { label: 'Lalkitab Consultation', price: 180 },
-    numerology_consultation: { label: 'Numerology Consultation', price: 140 },
+    numerology_consultation: { label: 'Numerology Consultation', price: 2100 },
     palmistry: { label: 'Palmistry', price: 130 },
     special_pooja: { label: 'Special Pooja Vidhi for Hindu Festival', price: 200 },
     negative_energy: { label: 'नकारात्मक शक्ति का प्रभाव (Negative Energy Removal)', price: 220 },
@@ -523,9 +622,12 @@ const BookAppointment = () => {
     });
   }, [astrologers, astrologerCategory]);
 
-  // Reset selected astrologer when category changes
+  // Reset selected astrologer and update consultationType when category changes
   useEffect(() => {
     setSelectedAstrologer('');
+    if (astrologerCategory === 'palmistry') {
+      setConsultationType('palmistry');
+    }
   }, [astrologerCategory]);
 
   // Check if this is a first-time booking
@@ -545,7 +647,20 @@ const BookAppointment = () => {
         setCheckingFirstTime(false);
       }
     };
+
+    const fetchWallet = async () => {
+      if (user) {
+        try {
+          const response = await walletAPI.getBalance();
+          setWalletBalance(response.data.balance || 0);
+        } catch (error) {
+          console.error('Error fetching wallet balance:', error);
+        }
+      }
+    };
+
     checkFirstTimeBooking();
+    fetchWallet();
   }, [user]);
 
   // Handle first-time booking duration restriction
@@ -554,6 +669,27 @@ const BookAppointment = () => {
       setDuration(10);
     }
   }, [isFirstTime]);
+
+  // Adjust duration if fixed price types, custom questions, horoscope weekly, monthly, or yearly is selected
+  useEffect(() => {
+    if (!isFirstTime) {
+      if (['birth_chart', 'vastu_consultation', 'marriage_consultation', 'numerology_consultation'].includes(consultationType)) {
+        if (duration !== 60 && duration !== 90) {
+          setDuration(60);
+        }
+      } else if (consultationType === 'horoscope_weekly') {
+        setDuration(15);
+      } else if (consultationType === 'horoscope_monthly') {
+        setDuration(30);
+      } else if (consultationType === 'horoscope_yearly') {
+        setDuration(60);
+      } else if (consultationType === 'custom_questions') {
+        if (duration !== 15 && duration !== 30) {
+          setDuration(15);
+        }
+      }
+    }
+  }, [consultationType, isFirstTime]);
 
   // Fetch astrologers on component mount
   useEffect(() => {
@@ -589,15 +725,54 @@ const BookAppointment = () => {
     return today.toISOString().split('T')[0];
   };
 
+  // 1. Consultation types that have a FIXED price (Birth Chart, Vastu, Marriage, Numerology)
+  const FIXED_PRICE_TYPES = [
+    'birth_chart',            // Birth Chart Reading (Rs. 150)
+    'vastu_consultation',     // Vastu Consultation (Rs. 200)
+    'marriage_consultation',  // Marriage Consultation (Rs. 180)
+    'numerology_consultation',// Numerology Consultation (Rs. 140)
+    'custom_questions'        // Custom Questions package (Rs. 251 / 501)
+  ];
+
+  const isFixedPrice = FIXED_PRICE_TYPES.includes(consultationType);
+
+  // Retrieve selected astrologer object and per-minute rate
+  const selectedAstroObj = astrologers.find(a => a._id === selectedAstrologer);
+  const astroPerMinuteRate = Number(selectedAstroObj?.pricing) > 0
+    ? Number(selectedAstroObj.pricing)
+    : (Number(selectedAstroObj?.callRate) > 0 ? Number(selectedAstroObj.callRate) : 16);
+
   // Calculate total price
   const calculatePrice = () => {
     if (isFirstTime) return 0; // First consultation is FREE!
-    const basePrice = consultationTypes[consultationType].price;
-    const durationMultiplier = duration / 60;
-    return Math.round(basePrice * durationMultiplier);
+
+    // Custom questions package
+    if (consultationType === 'custom_questions') {
+      return duration > 15 ? 501 : 251;
+    }
+
+    // Fixed Price Consultations (Birth Chart Reading, Vastu, Marriage, Numerology)
+    if (['birth_chart', 'vastu_consultation', 'marriage_consultation', 'numerology_consultation'].includes(consultationType)) {
+      const basePrice = consultationTypes[consultationType]?.price || 150;
+      return duration === 90 ? Math.round(basePrice * 1.5) : basePrice;
+    }
+
+    if (isFixedPrice) {
+      return consultationTypes[consultationType]?.price || 150;
+    }
+
+    // All other consultations (Relationship Compatibility, Career Guidance, Health & Wellness, General Consultation, Finance, Business, Study, Horoscope, Lal Kitab, Palmistry, Special Pooja, Negative Energy Removal, etc.):
+    // Calculated at Astrologer Per-Minute Call Price
+    return Math.round(astroPerMinuteRate * (duration || 15));
   };
 
   const getQuestionLimit = (dur) => {
+    if (consultationType === 'custom_questions') {
+      if (dur === 15) return 10;
+      if (dur === 30) return 20;
+      if (dur <= 15) return 10;
+      return 20;
+    }
     if (dur === 10) return 5;
     if (dur === 15) return 10;
     if (dur === 30) return 15;
@@ -617,36 +792,63 @@ const BookAppointment = () => {
     }
 
     try {
-      const appointmentData = {
-        astrologerId: selectedAstrologer,
-        appointmentDate,
-        appointmentTime: selectedTime,
-        duration,
-        consultationType,
-        notes,
-        price: calculatePrice(),
-        // New user information fields
-        clientName: name,
-        clientAge: age,
-        clientDateOfBirth: dateOfBirth,
-        clientPlaceOfBirth: placeOfBirth,
-        clientState: state,
-        clientCountry: country,
-        astrologerCategory: astrologerCategory,
-        selectedTopic,
-        selectedQuestion,
-        selectedQuestions,
-      };
+      const effectiveBirthTime = useDefaultBirthDetails ? (birthTime || '12:00') : birthTime;
+      const effectivePlaceOfBirth = useDefaultBirthDetails ? (placeOfBirth || 'New Delhi') : placeOfBirth;
+      const effectiveState = useDefaultBirthDetails ? (state || 'Delhi') : state;
+      const effectiveCountry = useDefaultBirthDetails ? (country || 'India') : country;
 
+      let appointmentPayload;
+      if (palmImages.rightHandImage || palmImages.leftHandImage) {
+        const formData = new FormData();
+        formData.append('astrologerId', selectedAstrologer);
+        formData.append('appointmentDate', appointmentDate);
+        formData.append('appointmentTime', selectedTime);
+        formData.append('duration', duration);
+        formData.append('consultationType', consultationType);
+        formData.append('notes', notes);
+        formData.append('price', calculatePrice());
+        formData.append('clientName', name);
+        formData.append('clientBirthTime', effectiveBirthTime);
+        formData.append('clientDateOfBirth', dateOfBirth);
+        formData.append('clientPlaceOfBirth', effectivePlaceOfBirth);
+        formData.append('clientState', effectiveState);
+        formData.append('clientCountry', effectiveCountry);
+        formData.append('astrologerCategory', astrologerCategory);
+        formData.append('selectedTopic', selectedTopic);
+        formData.append('selectedQuestion', selectedQuestion);
+        formData.append('selectedQuestions', JSON.stringify(selectedQuestions));
+        if (palmImages.rightHandImage) {
+          formData.append('rightHandImage', palmImages.rightHandImage);
+        }
+        if (palmImages.leftHandImage) {
+          formData.append('leftHandImage', palmImages.leftHandImage);
+        }
+        appointmentPayload = formData;
+      } else {
+        appointmentPayload = {
+          astrologerId: selectedAstrologer,
+          appointmentDate,
+          appointmentTime: selectedTime,
+          duration,
+          consultationType,
+          notes,
+          price: calculatePrice(),
+          // New user information fields
+          clientName: name,
+          clientBirthTime: effectiveBirthTime,
+          clientDateOfBirth: dateOfBirth,
+          clientPlaceOfBirth: effectivePlaceOfBirth,
+          clientState: effectiveState,
+          clientCountry: effectiveCountry,
+          astrologerCategory,
+          selectedTopic,
+          selectedQuestion,
+          selectedQuestions,
+        };
+      }
 
-
-      await appointmentsAPI.create(appointmentData);
+      await appointmentsAPI.create(appointmentPayload);
       setSuccess(true);
-
-      // Redirect to dashboard after 2 seconds
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 2000);
     } catch (error) {
       setError(error.response?.data?.message || 'Failed to book appointment');
     } finally {
@@ -655,23 +857,51 @@ const BookAppointment = () => {
   };
 
   if (success) {
+    const bookedAstrologer = astrologers.find(a => a._id === selectedAstrologer);
+
     return (
       <div
-        className="relative min-h-screen bg-cover bg-center bg-fixed overflow-hidden flex items-center justify-center px-4"
-        style={{ backgroundImage: "url('/images/dash1.png')" }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       >
-        <div className="relative z-10 max-w-md w-full p-8 bg-white/90 rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.25)] border border-black/10 text-center">
-          <div className="mx-auto h-16 w-16 bg-gradient-to-br from-astro-gold to-divine-orange rounded-full flex items-center justify-center mb-4 shadow-inner">
-            <Star className="h-8 w-8 text-astro-dark" />
+        <div className="relative max-w-md w-full p-8 bg-white rounded-3xl shadow-2xl border border-black/10">
+          <div className="mx-auto h-16 w-16 bg-gradient-to-br from-astro-gold to-divine-orange rounded-full flex items-center justify-center mb-6 shadow-lg">
+            <Star className="h-8 w-8 text-white" />
           </div>
-          <h2 className="text-2xl font-cinzel font-bold text-black mb-2">
+
+          <h2 className="text-2xl font-cinzel font-bold text-center text-black mb-6">
             Appointment Booked!
           </h2>
-          <p className="text-black mb-2">Your sacred consultation has been successfully scheduled.</p>
-          <p className="text-astro-gold font-hindi text-sm mb-4">
-            धन्यवाद (Thank you)
+
+          <div className="bg-gray-50 rounded-xl p-5 mb-6 space-y-4 border border-gray-100">
+            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+              <span className="text-sm text-gray-500 font-medium">Astrologer</span>
+              <span className="text-sm text-black font-bold">{bookedAstrologer?.name || 'Astrologer'}</span>
+            </div>
+            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+              <span className="text-sm text-gray-500 font-medium">Date</span>
+              <span className="text-sm text-black font-bold">{appointmentDate}</span>
+            </div>
+            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+              <span className="text-sm text-gray-500 font-medium">Time</span>
+              <span className="text-sm text-black font-bold">{selectedTime}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-500 font-medium">Duration</span>
+              <span className="text-sm text-black font-bold">{duration} Minutes</span>
+            </div>
+          </div>
+
+          <p className="text-center text-gray-600 mb-2">Thank you for booking your sacred consultation.</p>
+          <p className="text-center text-astro-gold font-hindi text-lg font-bold mb-8">
+            धन्यवाद
           </p>
-          <p className="text-sm text-black/70">Redirecting to dashboard...</p>
+
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="w-full py-3.5 bg-black hover:bg-gray-800 text-white font-bold rounded-xl shadow-md transition-colors"
+          >
+            Close & Go to Dashboard
+          </button>
         </div>
       </div>
     );
@@ -679,75 +909,166 @@ const BookAppointment = () => {
 
   return (
     <div
-      className="relative min-h-screen bg-cover bg-center bg-fixed overflow-hidden py-12 px-4 sm:px-6 lg:px-8"
+      className="relative min-h-screen bg-cover bg-center bg-fixed py-3 sm:py-4 px-3 sm:px-6"
       style={{ backgroundImage: "url('/images/dash1.png')" }}
     >
-      <div className="relative z-10 max-w-4xl mx-auto space-y-10">
-        <section className="relative p-10 rounded-[36px] border border-black/10 bg-white/85 backdrop-blur-lg shadow-[0_25px_80px_rgba(0,0,0,0.2)] overflow-hidden flex flex-col md:flex-row items-center gap-10">
-          <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/60 to-transparent pointer-events-none"></div>
-          <div className="relative z-10 flex-1 text-center md:text-left space-y-4">
-            <p className="text-astro-gold font-hindi text-sm tracking-[0.3em] uppercase">
-              आपका भाग्य जानें
-            </p>
-            <h1 className="text-4xl md:text-5xl font-cinzel font-bold text-black leading-tight">
-              Book a Sacred <span className="text-astro-gold">Consultation</span>
-            </h1>
-            <p className="text-black">
-              Schedule your divine astrology session with our most trusted gurus and receive guided remedies crafted for you.
-            </p>
-            <div className="flex flex-wrap justify-center md:justify-start gap-3 text-xs uppercase tracking-[0.3em] text-black">
-              <span className="px-4 py-2 rounded-full bg-black/5">Instant Slots</span>
-              <span className="px-4 py-2 rounded-full bg-black/5">Trusted Advisors</span>
-              <span className="px-4 py-2 rounded-full bg-black/5">Secure Booking</span>
-            </div>
-          </div>
-          <div className="relative z-10 flex-1 w-full grid grid-cols-2 gap-4">
-            <div className="p-5 rounded-3xl bg-white/90 border border-black/5 shadow-lg">
-              <p className="text-xs uppercase tracking-[0.3em] text-black/70 mb-2">Average Rating</p>
-              <p className="text-4xl font-bold text-black">4.9<span className="text-2xl">/5</span></p>
-              <p className="text-black/70 text-sm">Based on 10k+ verified sessions.</p>
-            </div>
-            <div className="p-5 rounded-3xl bg-white/90 border border-black/5 shadow-lg">
-              <p className="text-xs uppercase tracking-[0.3em] text-black/70 mb-2">Availability</p>
-              <p className="text-4xl font-bold text-black">24/7</p>
-              <p className="text-black/70 text-sm">Choose a time that fits your schedule.</p>
-            </div>
-            <div className="p-5 rounded-3xl bg-white/90 border border-black/5 shadow-lg col-span-2">
-              <p className="text-xs uppercase tracking-[0.3em] text-black/70 mb-2">Custom Remedies</p>
-              <p className="text-black">Detailed guidance, rituals, and gemstone advice delivered post-session.</p>
-            </div>
-          </div>
-        </section>
+      <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
-        {/* Free Consultation Banner */}
-        <div className="relative bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 rounded-2xl px-6 py-4 shadow-lg overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-green-600/20 via-emerald-600/20 to-teal-600/20 pointer-events-none"></div>
-          <div className="relative z-10 flex items-center justify-center">
-            <Star className="h-6 w-6 text-white mr-3 animate-pulse" />
-            <p className="text-center text-xl md:text-2xl font-bold text-white">
-              Book Your First Consultation FREE! 🎉
+        {/* Left Column: Overview, Trust Badges, Free Consultation Banner, Astrologer Highlight & Wallet */}
+        <div className="lg:col-span-4 flex flex-col justify-between rounded-3xl border border-black/10 bg-white/85 backdrop-blur-lg shadow-xl p-5 sm:p-6">
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-astro-gold/15 border border-astro-gold/40 flex items-center justify-center">
+                <Star className="h-5 w-5 text-astro-gold" />
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-widest text-astro-gold font-semibold">
+                  आपका भाग्य जानें
+                </p>
+                <h1 className="text-xl sm:text-2xl font-cinzel font-bold text-black leading-tight">
+                  Book a Sacred <span className="text-astro-gold">Consultation</span>
+                </h1>
+              </div>
+            </div>
+
+            <p className="text-xs text-black mb-3 leading-relaxed">
+              Schedule your divine astrology session with trusted Vedic gurus and receive guided remedies crafted for you.
             </p>
-            <Star className="h-6 w-6 text-white ml-3 animate-pulse" />
+
+            {/* Free Consultation Banner if First Time */}
+            {isFirstTime && (
+              <div className="mb-3 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 rounded-xl p-3 text-white shadow-md flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-300 animate-pulse flex-shrink-0" />
+                <div>
+                  <p className="text-[14px] font-bold leading-tight">Your First Consultation is FREE! 🎉</p>
+                  <p className="text-[12px] text-white/90">10 minutes introductory session included</p>
+                </div>
+              </div>
+            )}
+
+            {/* Quick stats pills */}
+            <div className="grid grid-cols-3 gap-2 mb-3 text-center">
+              <div className="p-2 rounded-xl bg-black/5 border border-black/5">
+                <p className="text-[14px] font-bold text-black">4.9/5</p>
+                <p className="text-[12px] text-amber-900 uppercase">10k+ Sessions</p>
+              </div>
+              <div className="p-2 rounded-xl bg-black/5 border border-black/5">
+                <p className="text-[14px] font-bold text-black">24/7</p>
+                <p className="text-[12px] text-amber-900 uppercase">Instant Slots</p>
+              </div>
+              <div className="p-2 rounded-xl bg-black/5 border border-black/5">
+                <p className="text-[14px] font-bold text-black">Verified</p>
+                <p className="text-[12px] text-amber-900 uppercase">Top Gurus</p>
+              </div>
+            </div>
+
+            {/* Selected Astrologer Quick Highlight Card */}
+            {selectedAstrologer ? (() => {
+              const astro = astrologers.find(a => a._id === selectedAstrologer);
+              if (!astro) return null;
+              return (
+                <div className="p-3 bg-astro-gold/10 border border-astro-gold/30 rounded-xl mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-astro-gold/20 flex items-center justify-center font-bold text-astro-purple text-xs flex-shrink-0">
+                      {astro.name?.charAt(0) || 'A'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[16px] font-bold text-black flex items-center justify-between">
+                        <span className="truncate">{astro.name}</span>
+                        {astro.experience && (
+                          <span className="text-[14px] text-gray-900">{astro.experience}+ yrs</span>
+                        )}
+                      </div>
+                      <p className="text-[16px] text-amber-900 font-medium truncate">
+                        ₹{astro.pricing || astro.callRate || 16}/min live call
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })() : (
+              <div className="p-2.5 bg-black/5 rounded-xl border border-black/5 mb-3 text-center">
+                <p className="text-xs text-black/60">Choose your Astrologer from the form</p>
+              </div>
+            )}
+
+            {/* Wallet Overview Box */}
+            <div className="p-3 bg-white/70 border border-black/10 rounded-xl flex items-center justify-between">
+              <div>
+                <p className="text-[14px] uppercase tracking-wider text-black">Wallet Balance</p>
+                <p className={`text-base font-bold ${walletBalance >= calculatePrice() ? 'text-green-600' : 'text-amber-800'}`}>
+                  ₹{walletBalance.toFixed(2)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate('/dashboard')}
+                className="text-xs font-semibold px-2.5 py-1 bg-black/5 hover:bg-black/10 rounded-lg text-black transition cursor-pointer"
+              >
+                + Recharge
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-3 pt-2.5 border-t border-black/10 flex items-center gap-2 text-[14px] text-black">
+            <CheckCircle className="h-3.5 w-3.5 text-green-900 flex-shrink-0" />
+            <span>100% Confidential &amp; Verified Consultation</span>
           </div>
         </div>
 
-        <div className="bg-white/90 rounded-3xl shadow-[0_30px_90px_rgba(0,0,0,0.25)] border border-black/10 p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Right Column: Book Consultation Form */}
+        <div className="lg:col-span-8 flex flex-col justify-between rounded-3xl border border-black/10 bg-white/95 backdrop-blur-lg shadow-xl p-5 sm:p-6 max-h-[calc(100vh-5.5rem)] overflow-y-auto">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-red-100/80 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              <div className="bg-red-100/80 border border-red-200 text-red-700 px-4 py-2.5 rounded-lg text-sm">
                 {error}
               </div>
             )}
 
             {/* Personal Information Section */}
-            <div className="border-b border-black/10 pb-6">
-              <h3 className="text-lg font-semibold text-black mb-4">Personal Information</h3>
+            <div className="border-b border-black/10 pb-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-base font-bold text-black flex items-center gap-2">
+                  <User className="h-4 w-4 text-astro-gold" />
+                  Personal Information
+                </h3>
+              </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              {/* Checkbox banner: I don't know my exact birth time or location */}
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-2.5 mb-3">
+                <label className="flex items-center space-x-2.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    id="bookApptDefaultBirthDetailsCheckbox"
+                    checked={useDefaultBirthDetails}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setUseDefaultBirthDetails(checked);
+                      if (checked) {
+                        setBirthTime('12:00');
+                        setPlaceOfBirth('New Delhi');
+                        setState('Delhi');
+                        setCountry('India');
+                      }
+                    }}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
+                  />
+                  <span className="text-xs sm:text-sm font-semibold text-gray-900">
+                    I don't know my exact birth time or location (Use default time &amp; location)
+                  </span>
+                </label>
+                {useDefaultBirthDetails && (
+                  <p className="text-[11px] text-gray-700 mt-1 pl-6">
+                    Default time (12:00 PM) and location (New Delhi, India) will be used for your consultation.
+                  </p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    <User className="inline h-4 w-4 mr-1" />
+                  <label className="block text-xs font-semibold text-black mb-1">
+                    <User className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
                     Full Name *
                   </label>
                   <input
@@ -755,32 +1076,15 @@ const BookAppointment = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
+                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold"
                     placeholder="Enter your full name"
-                  />
-                </div>
-
-                {/* Age */}
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    Age *
-                  </label>
-                  <input
-                    type="number"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    required
-                    min="1"
-                    max="120"
-                    className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
-                    placeholder="Enter your age"
                   />
                 </div>
 
                 {/* Date of Birth */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    <Cake className="inline h-4 w-4 mr-1" />
+                  <label className="block text-xs font-semibold text-black mb-1">
+                    <Cake className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
                     Date of Birth *
                   </label>
                   <input
@@ -789,142 +1093,217 @@ const BookAppointment = () => {
                     onChange={(e) => setDateOfBirth(e.target.value)}
                     required
                     max={getMinDate()}
-                    className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
+                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold"
                   />
                 </div>
 
-                {/* Place of Birth */}
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    <MapPin className="inline h-4 w-4 mr-1" />
-                    Place of Birth *
-                  </label>
-                  <input
-                    type="text"
-                    value={placeOfBirth}
-                    onChange={(e) => setPlaceOfBirth(e.target.value)}
-                    required
-                    className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
-                    placeholder="City, Town, or Village"
-                  />
-                </div>
+                {!useDefaultBirthDetails ? (
+                  <>
+                    {/* Birth Time */}
+                    <div>
+                      <label className="block text-xs font-semibold text-black mb-1">
+                        <Clock className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
+                        Birth Time *
+                      </label>
+                      <input
+                        type="time"
+                        value={birthTime}
+                        onChange={(e) => setBirthTime(e.target.value)}
+                        required
+                        className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                      />
+                    </div>
 
-                {/* State */}
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    State *
-                  </label>
-                  <input
-                    type="text"
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
-                    required
-                    className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
-                    placeholder="Enter your state"
-                  />
-                </div>
+                    {/* Place of Birth */}
+                    <div>
+                      <label className="block text-xs font-semibold text-black mb-1">
+                        <MapPin className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
+                        Place of Birth *
+                      </label>
+                      <input
+                        type="text"
+                        value={placeOfBirth}
+                        onChange={(e) => setPlaceOfBirth(e.target.value)}
+                        required
+                        className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                        placeholder="City, Town, or Village"
+                      />
+                    </div>
 
-                {/* Country */}
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    Country *
-                  </label>
-                  <input
-                    type="text"
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    required
-                    className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
-                    placeholder="Enter your country"
-                  />
-                </div>
+                    {/* State */}
+                    <div>
+                      <label className="block text-xs font-semibold text-black mb-1">
+                        State *
+                      </label>
+                      <input
+                        type="text"
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                        required
+                        className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                        placeholder="Enter your state"
+                      />
+                    </div>
+
+                    {/* Country */}
+                    <div>
+                      <label className="block text-xs font-semibold text-black mb-1">
+                        Country *
+                      </label>
+                      <input
+                        type="text"
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        required
+                        className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                        placeholder="Enter your country"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <div className="md:col-span-2 bg-amber-50/80 border border-amber-200/80 rounded-lg p-2.5 text-xs text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold text-amber-950">Birth Details Applied:</span>
+                      <span className="text-amber-800">12:00 PM (Default) • New Delhi, Delhi, India (Default)</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setUseDefaultBirthDetails(false)}
+                      className="text-[11px] font-semibold text-amber-700 hover:text-amber-900 underline whitespace-nowrap cursor-pointer"
+                    >
+                      Change to exact time &amp; place
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Appointment Details Section */}
-            <div className="border-b border-black/10 pb-6">
-              <h3 className="text-lg font-semibold text-black mb-4">Appointment Details</h3>
+            <div className="border-b border-black/10 pb-4">
+              <h3 className="text-base font-bold text-black mb-3 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-astro-gold" />
+                Appointment Details
+              </h3>
 
-              {/* Astrologer Category */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-black mb-2">
-                  <Sparkles className="inline h-4 w-4 mr-1" />
-                  Astrologer Category *
-                </label>
-                <select
-                  value={astrologerCategory}
-                  onChange={(e) => setAstrologerCategory(e.target.value)}
-                  required
-                  className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
-                >
-                  <option value="">Select a category</option>
-                  {astrologerCategories.map((category) => (
-                    <option key={category.value} value={category.value}>
-                      {category.label} - {category.description}
-                    </option>
-                  ))}
-                </select>
-                {astrologerCategory && (
-                  <p className="mt-2 text-sm text-gray-600">
-                    {astrologerCategories.find(c => c.value === astrologerCategory)?.description}
-                  </p>
-                )}
-              </div>
-
-              {/* Astrologer Selection */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-black mb-2">
-                  <User className="inline h-4 w-4 mr-1" />
-                  Select Astrologer *
-                </label>
-                <select
-                  value={selectedAstrologer}
-                  onChange={(e) => setSelectedAstrologer(e.target.value)}
-                  required
-                  disabled={!astrologerCategory}
-                  className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <option value="">
-                    {astrologerCategory ? 'Choose an astrologer' : 'Please select a category first'}
-                  </option>
-                  {filteredAstrologers.map((astrologer) => (
-                    <option key={astrologer._id} value={astrologer._id}>
-                      {astrologer.name} - {astrologer.specialization?.join(', ')}
-                    </option>
-                  ))}
-                </select>
-                {astrologerCategory && filteredAstrologers.length === 0 && (
-                  <p className="mt-2 text-sm text-red-600">
-                    No astrologers available for this category
-                  </p>
-                )}
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                {/* Consultation Type */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                {/* Astrologer Category */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    <Star className="inline h-4 w-4 mr-1" />
-                    Consultation Type *
+                  <label className="block text-xs font-semibold text-black mb-1">
+                    <Sparkles className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
+                    Astrologer Category *
                   </label>
                   <select
-                    value={consultationType}
-                    onChange={(e) => setConsultationType(e.target.value)}
+                    value={astrologerCategory}
+                    onChange={(e) => setAstrologerCategory(e.target.value)}
                     required
-                    className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
+                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold"
                   >
-                    {Object.entries(consultationTypes).map(([key, type]) => (
-                      <option key={key} value={key}>
-                        {type.label} - Rs. {type.price}
+                    <option value="">Select a category</option>
+                    {astrologerCategories.map((category) => (
+                      <option key={category.value} value={category.value}>
+                        {category.label} - {category.description}
                       </option>
                     ))}
                   </select>
                 </div>
 
+                {/* Astrologer Selection */}
+                <div>
+                  <label className="block text-xs font-semibold text-black mb-1">
+                    <User className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
+                    Select Astrologer *
+                  </label>
+                  <select
+                    value={selectedAstrologer}
+                    onChange={(e) => setSelectedAstrologer(e.target.value)}
+                    required
+                    disabled={!astrologerCategory}
+                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <option value="">
+                      {astrologerCategory ? 'Choose an astrologer' : 'Please select category first'}
+                    </option>
+                    {filteredAstrologers.map((astrologer) => {
+                      const specs = astrologer.specialization || [];
+                      const topSpecs = specs.slice(0, 2).join(', ');
+                      const extraCount = specs.length > 2 ? ` +${specs.length - 2} more` : '';
+                      const rate = astrologer.pricing || astrologer.callRate || 16;
+                      const label = specs.length > 0
+                        ? `${astrologer.name} (${topSpecs}${extraCount}) - ₹${rate}/min`
+                        : `${astrologer.name} - ₹${rate}/min`;
+
+                      return (
+                        <option key={astrologer._id} value={astrologer._id} title={`${astrologer.name} - ${specs.join(', ')} - ₹${rate}/min`}>
+                          {label}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+
+                {/* Consultation Type */}
+                <div>
+                  <label className="block text-xs font-semibold text-black mb-1">
+                    <Star className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
+                    Consultation Type *
+                  </label>
+                  <select
+                    value={consultationType}
+                    onChange={(e) => {
+                      const newType = e.target.value;
+                      setConsultationType(newType);
+                      if (['birth_chart', 'vastu_consultation', 'marriage_consultation', 'numerology_consultation'].includes(newType)) {
+                        if (duration !== 60 && duration !== 90) {
+                          setDuration(60);
+                        }
+                      } else if (newType === 'horoscope_weekly') {
+                        setDuration(15);
+                      } else if (newType === 'horoscope_monthly') {
+                        setDuration(30);
+                      } else if (newType === 'horoscope_yearly') {
+                        setDuration(60);
+                      } else if (newType === 'custom_questions' && duration !== 15 && duration !== 30) {
+                        setDuration(15);
+                      }
+                    }}
+                    required
+                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold"
+                  >
+                    {Object.entries(consultationTypes)
+                      .filter(([key]) => {
+                        if (astrologerCategory === 'palmistry') {
+                          return key === 'palmistry';
+                        }
+                        return true;
+                      })
+                      .map(([key, type]) => {
+                        const isFixed = FIXED_PRICE_TYPES.includes(key);
+                        let labelText;
+                        if (isFixed) {
+                          if (key === 'custom_questions') {
+                            labelText = `${type.label} - Fixed: ₹${duration > 15 ? 501 : 251}`;
+                          } else {
+                            labelText = `${type.label} - Fixed: ₹${type.price}`;
+                          }
+                        } else {
+                          labelText = selectedAstrologer
+                            ? `${type.label} - Video Chat: ₹${astroPerMinuteRate}/min`
+                            : `${type.label} - Astrologer Video Chat Rate`;
+                        }
+
+                        return (
+                          <option key={key} value={key}>
+                            {labelText}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </div>
+
                 {/* Duration */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    <Clock className="inline h-4 w-4 mr-1" />
+                  <label className="block text-xs font-semibold text-black mb-1">
+                    <Clock className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
                     Duration *
                   </label>
                   <select
@@ -932,10 +1311,26 @@ const BookAppointment = () => {
                     onChange={(e) => setDuration(parseInt(e.target.value))}
                     required
                     disabled={isFirstTime}
-                    className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     {isFirstTime ? (
                       <option value={10}>10 minutes (Locked for Free Session)</option>
+                    ) : ['birth_chart', 'vastu_consultation', 'marriage_consultation', 'numerology_consultation'].includes(consultationType) ? (
+                      <>
+                        <option value={60}>60 minutes - ₹{consultationTypes[consultationType]?.price || 150}</option>
+                        <option value={90}>90 minutes - ₹{Math.round((consultationTypes[consultationType]?.price || 150) * 1.5)}</option>
+                      </>
+                    ) : consultationType === 'horoscope_weekly' ? (
+                      <option value={15}>15 minutes</option>
+                    ) : consultationType === 'horoscope_monthly' ? (
+                      <option value={30}>30 minutes</option>
+                    ) : consultationType === 'horoscope_yearly' ? (
+                      <option value={60}>60 minutes</option>
+                    ) : consultationType === 'custom_questions' ? (
+                      <>
+                        <option value={15}>15 minutes - Rs. 251 (Max 10 questions)</option>
+                        <option value={30}>30 minutes - Rs. 501 (Max 20 questions)</option>
+                      </>
                     ) : (
                       durationOptions.filter(opt => opt.value !== 10).map((option) => (
                         <option key={option.value} value={option.value}>
@@ -944,17 +1339,12 @@ const BookAppointment = () => {
                       ))
                     )}
                   </select>
-                  {isFirstTime && (
-                    <p className="mt-1 text-xs text-astro-purple font-medium">
-                      * Free consultations are limited to 10 minutes.
-                    </p>
-                  )}
                 </div>
 
-                {/* Date Selection */}
+                {/* Appointment Date */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    <Calendar className="inline h-4 w-4 mr-1" />
+                  <label className="block text-xs font-semibold text-black mb-1">
+                    <Calendar className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
                     Appointment Date *
                   </label>
                   <input
@@ -963,201 +1353,282 @@ const BookAppointment = () => {
                     onChange={(e) => setAppointmentDate(e.target.value)}
                     min={getMinDate()}
                     required
-                    className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
+                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold"
                   />
+                </div>
+
+                {/* Time Slots */}
+                <div>
+                  <label className="block text-xs font-semibold text-black mb-1">
+                    <Clock className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
+                    Select Time Slot *
+                  </label>
+                  <select
+                    value={selectedTime}
+                    onChange={(e) => setSelectedTime(e.target.value)}
+                    required
+                    disabled={!appointmentDate || !selectedAstrologer}
+                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-astro-gold disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <option value="">
+                      {!appointmentDate || !selectedAstrologer ? 'Choose date & astrologer first' : 'Choose a time'}
+                    </option>
+                    {availableSlots.length > 0 ? (
+                      availableSlots.map((slot) => (
+                        <option key={slot} value={slot}>
+                          {slot}
+                        </option>
+                      ))
+                    ) : (
+                      appointmentDate && selectedAstrologer && (
+                        <option disabled>No available slots for this date</option>
+                      )
+                    )}
+                  </select>
                 </div>
               </div>
             </div>
 
-            {/* Time Slots Dropdown */}
-            {appointmentDate && selectedAstrologer && (
-              <div>
-                <label className="block text-sm font-medium text-black mb-2">
-                  <Clock className="inline h-4 w-4 mr-1" />
-                  Select Time Slot *
-                </label>
-                <select
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  required
-                  className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
-                >
-                  <option value="">Choose a time</option>
-                  {availableSlots.length > 0 ? (
-                    availableSlots.map((slot) => (
-                      <option key={slot} value={slot}>
-                        {slot}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>No available slots for this date</option>
-                  )}
-                </select>
-              </div>
-            )}
-
-            {/* Question Selection */}
-            <div className="bg-black/5 rounded-2xl p-5 border border-black/10 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-black text-base flex items-center gap-1.5">
-                  <Sparkles className="h-5 w-5 text-astro-gold animate-spin-slow" />
-                  Select Questions for Session
-                </span>
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${selectedQuestions.length >= getQuestionLimit(duration) ? 'bg-red-100 text-red-700' : 'bg-astro-purple/10 text-astro-purple'}`}>
-                  Questions: {selectedQuestions.length} / Max {getQuestionLimit(duration)}
-                </span>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-black/70 mb-1.5">
-                    Select Topic
-                  </label>
-                  <select
-                    value={selectedTopic}
-                    onChange={(e) => {
-                      setSelectedTopic(e.target.value);
-                      setSelectedQuestion('');
-                    }}
-                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-1 focus:ring-astro-gold"
-                  >
-                    <option value="">-- Choose a Topic --</option>
-                    {Object.keys(TOPICS_AND_QUESTIONS).map((topic) => (
-                      <option key={topic} value={topic}>
-                        {topic}
-                      </option>
-                    ))}
-                  </select>
+            {/* Question Selection for custom_questions */}
+            {consultationType === 'custom_questions' && (
+              <div className="bg-black/5 rounded-2xl p-4 border border-black/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-black text-sm flex items-center gap-1.5">
+                    <Sparkles className="h-4 w-4 text-astro-gold" />
+                    Select Questions for Session
+                  </span>
+                  <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${selectedQuestions.length >= getQuestionLimit(duration) ? 'bg-red-100 text-red-700' : 'bg-astro-purple/10 text-astro-purple'}`}>
+                    Questions: {selectedQuestions.length} / Max {getQuestionLimit(duration)}
+                  </span>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-black/70 mb-1.5">
-                    Select Question
-                  </label>
-                  <select
-                    value={selectedQuestion}
-                    onChange={(e) => setSelectedQuestion(e.target.value)}
-                    disabled={!selectedTopic}
-                    className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-1 focus:ring-astro-gold disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <option value="">
-                      {selectedTopic ? '-- Choose a Question --' : 'Select a topic first'}
-                    </option>
-                    {selectedTopic &&
-                      TOPICS_AND_QUESTIONS[selectedTopic].map((question) => (
-                        <option key={question} value={question}>
-                          {question}
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-medium text-black/70 mb-1">
+                      Select Topic
+                    </label>
+                    <select
+                      value={selectedTopic}
+                      onChange={(e) => {
+                        setSelectedTopic(e.target.value);
+                        setSelectedQuestion('');
+                      }}
+                      className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-[14px] text-black focus:outline-none focus:ring-1 focus:ring-astro-gold"
+                    >
+                      <option value="">-- Choose a Topic --</option>
+                      {Object.keys(TOPICS_AND_QUESTIONS).map((topic) => (
+                        <option key={topic} value={topic}>
+                          {topic}
                         </option>
                       ))}
-                  </select>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-medium text-black/70 mb-1">
+                      Select Question
+                    </label>
+                    <select
+                      value={selectedQuestion}
+                      onChange={(e) => setSelectedQuestion(e.target.value)}
+                      disabled={!selectedTopic}
+                      className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-[14px] text-black focus:outline-none focus:ring-1 focus:ring-astro-gold disabled:opacity-50"
+                    >
+                      <option value="">
+                        {selectedTopic ? '-- Choose a Question --' : 'Select a topic first'}
+                      </option>
+                      {selectedTopic &&
+                        TOPICS_AND_QUESTIONS[selectedTopic].map((question) => (
+                          <option key={question} value={question}>
+                            {question}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  disabled={!selectedTopic || !selectedQuestion || selectedQuestions.length >= getQuestionLimit(duration)}
-                  onClick={() => {
-                    // Check duplicate
-                    const isDuplicate = selectedQuestions.some(
-                      (q) => q.topic === selectedTopic && q.question === selectedQuestion
-                    );
-                    if (isDuplicate) {
-                      alert('This question has already been added to the session!');
-                      return;
-                    }
-                    setSelectedQuestions((prev) => [...prev, { topic: selectedTopic, question: selectedQuestion }]);
-                    setSelectedTopic('');
-                    setSelectedQuestion('');
-                  }}
-                  className="px-4 py-2 bg-astro-gold hover:bg-amber-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-medium rounded-lg text-sm transition duration-200"
-                >
-                  Add Question
-                </button>
-              </div>
+                <div className="flex justify-end items-center">
+                  <button
+                    type="button"
+                    disabled={!selectedTopic || !selectedQuestion || selectedQuestions.length >= getQuestionLimit(duration)}
+                    onClick={() => {
+                      const isDuplicate = selectedQuestions.some(
+                        (q) => q.topic === selectedTopic && q.question === selectedQuestion
+                      );
+                      if (isDuplicate) {
+                        alert('This question has already been added to the session!');
+                        return;
+                      }
+                      setSelectedQuestions((prev) => [...prev, { topic: selectedTopic, question: selectedQuestion }]);
+                      setSelectedTopic('');
+                      setSelectedQuestion('');
+                    }}
+                    className="px-3 py-1.5 bg-astro-gold hover:bg-amber-600 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold rounded-lg text-xs transition cursor-pointer"
+                  >
+                    Add Question +
+                  </button>
+                </div>
 
-              {/* List of Added Questions */}
-              {selectedQuestions.length > 0 && (
-                <div className="mt-4 border-t border-black/10 pt-4 space-y-2">
-                  <p className="text-xs font-semibold text-black/70">Added Questions:</p>
-                  <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                {selectedQuestions.length > 0 && (
+                  <div className="border-t border-black/10 pt-2 space-y-1.5 max-h-32 overflow-y-auto">
                     {selectedQuestions.map((q, idx) => (
-                      <div key={idx} className="flex items-start justify-between bg-white p-2.5 rounded-lg border border-black/5 shadow-sm gap-2">
-                        <div className="text-xs text-black">
-                          <span className="font-bold text-astro-purple">[{q.topic}]</span>: {q.question}
-                        </div>
+                      <div key={idx} className="flex items-start justify-between bg-white p-2 rounded-lg border border-black/5 text-xs">
+                        <span className="text-black truncate mr-2"><strong className="text-astro-purple">[{q.topic}]</strong> {q.question}</span>
                         <button
                           type="button"
-                          onClick={() => {
-                            setSelectedQuestions((prev) => prev.filter((_, i) => i !== idx));
-                          }}
-                          className="text-[10px] text-red-500 hover:text-red-700 hover:underline font-semibold flex-shrink-0"
+                          onClick={() => setSelectedQuestions((prev) => prev.filter((_, i) => i !== idx))}
+                          className="text-[10px] text-red-500 hover:text-red-700 font-semibold flex-shrink-0"
                         >
                           Remove
                         </button>
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
+            {/* Palmistry Palm Images Upload Section */}
+            {(astrologerCategory === 'palmistry' || consultationType === 'palmistry') && (
+              <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-amber-500/10 rounded-2xl p-4 border border-purple-300/40 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Hand className="h-5 w-5 text-purple-700" />
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-900">Upload Palm Images for Analysis</h4>
+                    <p className="text-[11px] text-gray-600">Upload clear photos of right and left palms for reading.</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-gray-800 mb-1">Right Hand Palm</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handlePalmImageChange(e, 'right')}
+                      className="hidden"
+                      id="rightHandPalmUpload"
+                    />
+                    <label
+                      htmlFor="rightHandPalmUpload"
+                      className="block w-full p-2.5 bg-white border border-dashed border-purple-300 rounded-lg cursor-pointer text-center text-xs hover:border-purple-500"
+                    >
+                      {palmImagePreviews.rightHandImage ? (
+                        <span className="text-green-600 font-semibold flex items-center justify-center gap-1">
+                          <CheckCircle className="h-3.5 w-3.5" /> Right Palm Uploaded (Change)
+                        </span>
+                      ) : (
+                        <span className="text-gray-600">Click to upload right palm</span>
+                      )}
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-gray-800 mb-1">Left Hand Palm</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handlePalmImageChange(e, 'left')}
+                      className="hidden"
+                      id="leftHandPalmUpload"
+                    />
+                    <label
+                      htmlFor="leftHandPalmUpload"
+                      className="block w-full p-2.5 bg-white border border-dashed border-purple-300 rounded-lg cursor-pointer text-center text-xs hover:border-purple-500"
+                    >
+                      {palmImagePreviews.leftHandImage ? (
+                        <span className="text-green-600 font-semibold flex items-center justify-center gap-1">
+                          <CheckCircle className="h-3.5 w-3.5" /> Left Palm Uploaded (Change)
+                        </span>
+                      ) : (
+                        <span className="text-gray-600">Click to upload left palm</span>
+                      )}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Notes */}
             <div>
-
-              <label className="block text-sm font-medium text-black mb-2">
-                <FileText className="inline h-4 w-4 mr-1" />
+              <label className="block text-xs font-semibold text-black mb-1">
+                <FileText className="inline h-3.5 w-3.5 mr-1 text-astro-gold" />
                 Additional Notes (Optional)
               </label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                rows={3}
-                className="w-full px-3 py-3 bg-white border border-black/15 rounded-lg text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold focus:border-astro-gold"
+                rows={2}
+                className="w-full px-3 py-2 bg-white border border-black/15 rounded-lg text-sm text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-astro-gold"
                 placeholder="Any specific questions or areas you'd like to focus on..."
               />
             </div>
 
             {/* Price Display */}
             {consultationType && (
-              <div className={`bg-gradient-to-r ${isFirstTime ? 'from-green-500/20 to-emerald-500/20 border-green-400/40' : 'from-astro-purple/15 to-mystic-indigo/10 border-astro-purple/30'} border rounded-xl p-4`}>
+              <div className={`bg-gradient-to-r ${isFirstTime ? 'from-green-500/15 to-emerald-500/15 border-green-400/40' : 'from-astro-purple/10 to-mystic-indigo/10 border-astro-purple/20'} border rounded-xl p-3.5`}>
                 <div className="flex items-center justify-between text-black">
-                  <span className="text-black font-medium">
-                    <DollarSign className="inline h-4 w-4 mr-1" />
-                    Total Price:
+                  <span className="text-xs sm:text-sm font-semibold flex items-center">
+                    <IndianRupee className="inline h-4 w-4 mr-1 text-astro-gold" />
+                    Total Consultation Price:
                   </span>
-                  <span className="text-2xl font-bold text-black">
-                    {isFirstTime ? (
-                      <span className="text-green-600 flex items-center gap-2">
-                        FREE 🎉
-                        <span className="text-sm font-normal">(First Consultation)</span>
+                  <div className="text-right">
+                    <span className="text-xl font-bold text-black">
+                      {isFirstTime ? (
+                        <span className="text-green-600 flex items-center gap-1.5">
+                          FREE 🎉 <span className="text-xs font-normal">(1st Session)</span>
+                        </span>
+                      ) : (
+                        `₹${calculatePrice()}`
+                      )}
+                    </span>
+                    {!isFirstTime && (
+                      <span className="block text-[11px] font-medium text-gray-700">
+                        {isFixedPrice ? `Fixed (${duration} mins)` : `₹${astroPerMinuteRate}/min live call`}
                       </span>
-                    ) : (
-                      `Rs. ${calculatePrice()}`
                     )}
-                  </span>
+                  </div>
                 </div>
-                {isFirstTime && (
-                  <p className="text-sm text-green-700 mt-2 text-center font-semibold">
-                    🌟 Congratulations! Your first consultation is absolutely FREE! 🌟
-                  </p>
-                )}
               </div>
             )}
 
             {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading || !selectedTime}
-              className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
-            >
-              {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              ) : (
-                'Book Appointment'
-              )}
-            </button>
+            {!isFirstTime && (
+              isFixedPrice
+                ? walletBalance < calculatePrice()
+                : walletBalance < astroPerMinuteRate * 2
+            ) ? (
+              <div className="text-center pt-1">
+                <p className="text-red-500 text-xs mb-2">
+                  {isFixedPrice
+                    ? `Insufficient balance (₹${walletBalance.toFixed(2)}). Package requires ₹${calculatePrice()}. Please recharge.`
+                    : `Insufficient balance (₹${walletBalance.toFixed(2)}). At least 2 minutes (₹${astroPerMinuteRate * 2}) required.`}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => navigate('/dashboard')}
+                  className="w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-green-600 hover:bg-green-700 transition cursor-pointer"
+                >
+                  Go to Wallet to Recharge
+                </button>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                disabled={loading || !selectedTime}
+                className="w-full flex justify-center py-3 px-4 border border-transparent text-sm sm:text-base font-bold rounded-xl text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : isFirstTime ? (
+                  'Book Free Appointment'
+                ) : isFixedPrice ? (
+                  `Pay ₹${calculatePrice()} from Wallet & Book`
+                ) : (
+                  `Book Appointment (₹${astroPerMinuteRate}/min Deducted During Video Call)`
+                )}
+              </button>
+            )}
           </form>
         </div>
       </div>

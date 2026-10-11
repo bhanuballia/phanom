@@ -31,6 +31,7 @@ const protect = async (req, res, next) => {
 
     if (!token) {
       console.log('Auth failed: No token provided in header');
+      require('fs').appendFileSync('debug.log', `Auth failed: No token provided for ${req.url}\n`);
       return res.status(401).json({ message: 'Access denied. No token provided.' });
     }
 
@@ -53,6 +54,7 @@ const protect = async (req, res, next) => {
       next();
     } catch (jwtError) {
       console.error('JWT Verification Error:', jwtError.message);
+      require('fs').appendFileSync('debug.log', `Auth failed: ${jwtError.message}\n`);
       return res.status(401).json({ message: 'Invalid or expired token.' });
     }
   } catch (error) {

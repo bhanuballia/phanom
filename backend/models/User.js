@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
     enum: ['client', 'astrologer', 'admin'],
     default: 'client'
   },
+  walletBalance: {
+    type: Number,
+    default: 0
+  },
   profilePicture: {
     type: String,
     default: ''

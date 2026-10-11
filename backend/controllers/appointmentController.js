@@ -1,5 +1,6 @@
 const Appointment = require('../models/Appointment');
 const User = require('../models/User');
+const WalletTransaction = require('../models/WalletTransaction');
 const nodemailer = require('nodemailer');
 const twilio = require('twilio');
 
@@ -347,7 +348,87 @@ const createAppointment = async (req, res) => {
     });
 
     const isFirstTime = previousAppointments === 0;
-    const finalPrice = isFirstTime ? 0 : (price || 100);
+
+    // Fixed consultation types list
+    const FIXED_CONSULTATION_TYPES = [
+      'birth_chart',
+      'vastu_consultation',
+      'marriage_consultation',
+      'numerology_consultation',
+      'custom_questions'
+    ];
+    const isFixedPackage = FIXED_CONSULTATION_TYPES.includes(consultationType);
+    const astroRate = Number(astrologer.pricing) > 0 ? Number(astrologer.pricing) : 9;
+
+    // Billing type determination:
+    // If first time -> 0 price (free 10-min trial)
+    // If fixed package -> prepaid fixed fee deducted upfront
+    // If live call type -> per_minute billing (deducted in real-time during video chat)
+    const billingType = isFixedPackage || isFirstTime ? 'fixed' : 'per_minute';
+    const finalPrice = isFirstTime ? 0 : (price || (isFixedPackage ? 150 : Math.round(astroRate * (duration || 15))));
+
+    // Wallet Balance Check
+    const clientUser = await User.findById(req.user._id);
+    if (!clientUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (isFirstTime) {
+      // Free consultation: no deduction upfront
+    } else if (billingType === 'fixed') {
+      // Deduct full fixed package price upfront
+      if (clientUser.walletBalance < finalPrice) {
+        return res.status(400).json({ message: `Insufficient wallet balance. Required: ₹${finalPrice}. Please recharge.` });
+      }
+
+      clientUser.walletBalance -= finalPrice;
+      await clientUser.save();
+
+      await WalletTransaction.create({
+        user: clientUser._id,
+        type: 'debit',
+        amount: finalPrice,
+        balanceAfter: clientUser.walletBalance,
+        description: `Booked fixed consultation with ${astrologer.name}`,
+        status: 'success'
+      });
+    } else {
+      // Live Call Rate (per-minute deduction):
+      // Require at least 2 minutes of balance to secure the appointment booking
+      const minRequired = astroRate * 2;
+      if (clientUser.walletBalance < minRequired) {
+        return res.status(400).json({
+          message: `Insufficient wallet balance. You need at least ₹${minRequired} (minimum balance for ${astrologer.name}'s rate of ₹${astroRate}/min) to book this live consultation.`
+        });
+      }
+      // Upfront deduction is ₹0! Per-minute deductions occur during the live video chat after 1 min grace.
+    }
+
+    // Extract files if uploaded
+    let rightHandImagePath = '';
+    let leftHandImagePath = '';
+    if (req.files) {
+      if (req.files.rightHandImage && req.files.rightHandImage[0]) {
+        rightHandImagePath = req.files.rightHandImage[0].path;
+      }
+      if (req.files.leftHandImage && req.files.leftHandImage[0]) {
+        leftHandImagePath = req.files.leftHandImage[0].path;
+      }
+    }
+
+    // Parse selectedQuestions if it's sent as a JSON string via FormData
+    let parsedSelectedQuestions = [];
+    if (selectedQuestions) {
+      if (typeof selectedQuestions === 'string') {
+        try {
+          parsedSelectedQuestions = JSON.parse(selectedQuestions);
+        } catch (e) {
+          parsedSelectedQuestions = [];
+        }
+      } else if (Array.isArray(selectedQuestions)) {
+        parsedSelectedQuestions = selectedQuestions;
+      }
+    }
 
     // Sanitize client information to handle empty strings (preventing Mongoose casting errors)
     const sanitizedClientDateOfBirth = clientDateOfBirth && clientDateOfBirth !== "" ? new Date(clientDateOfBirth) : undefined;
@@ -363,6 +444,9 @@ const createAppointment = async (req, res) => {
       consultationType,
       notes,
       price: finalPrice,
+      billingType,
+      perMinuteRate: astroRate,
+      paymentStatus: (billingType === 'fixed' || isFirstTime) ? 'completed' : 'pending',
       isFirstTimeBooking: isFirstTime,
       clientName,
       clientAge: sanitizedClientAge,
@@ -373,10 +457,10 @@ const createAppointment = async (req, res) => {
       astrologerCategory,
       selectedTopic,
       selectedQuestion,
-      selectedQuestions: selectedQuestions || [],
+      selectedQuestions: parsedSelectedQuestions,
+      rightHandImage: rightHandImagePath,
+      leftHandImage: leftHandImagePath,
       notificationsSent: {
-
-
         oneHour: false,
         thirtyMinutes: false,
         fifteenMinutes: false,

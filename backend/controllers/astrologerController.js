@@ -140,7 +140,8 @@ exports.getProfile = async (req, res) => {
         pricing: astrologerUser.astrologerProfile.pricing,
         rating: astrologerUser.astrologerProfile.rating,
         totalReviews: astrologerUser.astrologerProfile.totalReviews,
-        isAvailable: astrologerUser.astrologerProfile.isAvailable
+        isAvailable: astrologerUser.astrologerProfile.isAvailable,
+        isLive: astrologerUser.astrologerProfile.isLive
       });
     }
 
@@ -162,6 +163,10 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const updates = req.body;
+    console.log('--- updateProfile called ---');
+    console.log('User ID:', req.user._id);
+    console.log('Updates received:', updates);
+    require('fs').appendFileSync('debug.log', `--- updateProfile called ---\nUser ID: ${req.user._id}\nUpdates: ${JSON.stringify(updates)}\n\n`);
 
     // Remove sensitive fields from updates
     delete updates.password;
@@ -173,7 +178,7 @@ exports.updateProfile = async (req, res) => {
     const astrologerUpdateFields = {};
 
     const userFields = ['name', 'dateOfBirth', 'timeOfBirth', 'placeOfBirth', 'profilePicture', 'latitude', 'longitude', 'timezone'];
-    const astrologerFields = ['phone', 'specialization', 'experience', 'languages', 'bio', 'pricing', 'rating', 'totalReviews', 'isAvailable'];
+    const astrologerFields = ['phone', 'specialization', 'experience', 'languages', 'bio', 'pricing', 'rating', 'totalReviews', 'isAvailable', 'isLive'];
 
     Object.keys(updates).forEach(key => {
       if (userFields.includes(key)) {
@@ -208,8 +213,16 @@ exports.updateProfile = async (req, res) => {
       astrologerUser.astrologerProfile = profile._id;
       await astrologerUser.save();
     } else {
-      Object.assign(profile, astrologerUpdateFields);
+      for (const key in astrologerUpdateFields) {
+        profile[key] = astrologerUpdateFields[key];
+      }
       await profile.save();
+      
+      // Ensure link exists in User model
+      if (!astrologerUser.astrologerProfile || astrologerUser.astrologerProfile.toString() !== profile._id.toString()) {
+        astrologerUser.astrologerProfile = profile._id;
+        await astrologerUser.save();
+      }
     }
 
     // Merge for frontend compatibility
@@ -223,7 +236,8 @@ exports.updateProfile = async (req, res) => {
       pricing: profile.pricing,
       rating: profile.rating,
       totalReviews: profile.totalReviews,
-      isAvailable: profile.isAvailable
+      isAvailable: profile.isAvailable,
+      isLive: profile.isLive
     });
 
     res.json({

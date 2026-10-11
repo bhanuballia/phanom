@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import io from 'socket.io-client';
 import Navigation from '../components/Navigation';
 import { useAuth } from '../context/AuthContext';
-import { liveChatAPI, buildAssetUrl } from '../services/api';
+import { liveChatAPI, walletAPI, authAPI, buildAssetUrl } from '../services/api';
 import {
     Send,
     User,
@@ -30,396 +30,14 @@ import {
     Settings,
     LogOut,
     Check,
-    CheckCheck
+    CheckCheck,
+    Heart
 } from 'lucide-react';
 
 
-const TOPICS_AND_QUESTIONS = {
-    "Love & Romance - Love Life": [
-        "Will I fall in love?",
-        "When will I find true love?",
-        "Is love marriage indicated in my horoscope?",
-        "Will I have a successful love relationship?",
-        "How many serious relationships are indicated?",
-        "What kind of partner will I attract?",
-        "Why am I unlucky in love?",
-        "Why do my relationships fail?",
-        "Is true love destined for me?",
-        "Is my soulmate already in my life?"
-    ],
-    "Love & Romance - Current Relationship": [
-        "Does my partner truly love me?",
-        "Is this relationship genuine?",
-        "Is my relationship stable?",
-        "Will our relationship become stronger?",
-        "Is my partner loyal?",
-        "Is there a future in this relationship?",
-        "Will we stay together?",
-        "Are we emotionally compatible?",
-        "Are we spiritually connected?",
-        "What is the karmic purpose of this relationship?"
-    ],
-    "Love & Romance - Marriage from Love": [
-        "Will my love relationship turn into marriage?",
-        "Will my family accept our relationship?",
-        "Will my partner's family accept me?",
-        "Is there any obstacle to our marriage?",
-        "Will we have a happy married life?",
-        "What is the best time to marry my partner?",
-        "Will our love survive family opposition?",
-        "Is inter-caste marriage indicated?",
-        "Is inter-religion marriage indicated?",
-        "Will we marry against our parents' wishes?"
-    ],
-    "Love & Romance - Love Timing": [
-        "When will I meet my soulmate?",
-        "When will my love life improve?",
-        "Which Dasha favors love?",
-        "Which transit activates romance?",
-        "When will I enter a relationship?",
-        "What is the best year for love?",
-        "What is the best age for marriage?",
-        "When will I receive a marriage proposal?",
-        "Is this year favorable for love?"
-    ],
-    "Love & Romance - Compatibility": [
-        "Are we compatible?",
-        "Is our relationship karmic?",
-        "Is this person my soulmate?",
-        "Are we destined to be together?",
-        "Are we emotionally compatible?",
-        "Are we mentally compatible?",
-        "Are we physically compatible?",
-        "Are we spiritually compatible?",
-        "Is our relationship long-lasting?",
-        "Will we remain together forever?"
-    ],
-    "Love & Romance - Breakup & Separation": [
-        "Will my breakup heal?",
-        "Can my ex return?",
-        "Will we reconcile?",
-        "Should I move on?",
-        "Why did this relationship end?",
-        "Is separation permanent?",
-        "Will we reunite?",
-        "Is another relationship coming soon?",
-        "What lessons should I learn from this breakup?"
-    ],
-    "Love & Romance - Ex-Partner": [
-        "Will my ex contact me again?",
-        "Does my ex still think about me?",
-        "Does my ex still love me?",
-        "Will my ex marry someone else?",
-        "Should I wait for my ex?",
-        "Is reconciliation possible?",
-        "Will we meet again?",
-        "Is there unfinished karma with my ex?"
-    ],
-    "Love & Romance - Long-Distance Relationships": [
-        "Will our long-distance relationship succeed?",
-        "Can distance separate us?",
-        "Will we eventually live together?",
-        "Is relocation indicated after marriage?",
-        "Will my partner move abroad?",
-        "Will we settle in another country?"
-    ],
-    "Love & Romance - Hidden Relationships": [
-        "Is there a secret relationship in my horoscope?",
-        "Is my partner hiding something?",
-        "Is there another person involved?",
-        "Can I trust my partner?",
-        "Is there deception in my relationship?",
-        "Will I discover the truth?",
-        "Is infidelity indicated?",
-        "Is emotional cheating possible?"
-    ],
-    "Love & Romance - Love Triangle": [
-        "Am I in a love triangle?",
-        "Will my partner choose me?",
-        "Is there another person influencing my relationship?",
-        "Who is better for me?",
-        "Should I continue this relationship?",
-        "Which relationship has better long-term potential?"
-    ],
-    "Love & Romance - Romantic Personality": [
-        "How do I express love?",
-        "What attracts people to me?",
-        "Why do people fall in love with me?",
-        "What type of partner suits me?",
-        "What is my love language?",
-        "What emotional needs do I have?",
-        "What are my relationship strengths?",
-        "What are my relationship weaknesses?"
-    ],
-    "Love & Romance - Physical & Intimacy": [
-        "Is physical compatibility good?",
-        "Will we have a passionate relationship?",
-        "Is our intimacy balanced?",
-        "Will our attraction remain strong?",
-        "Is Venus strong in my chart?",
-        "Is Mars causing relationship conflicts?"
-    ],
-    "Love & Romance - Karmic Relationships": [
-        "Is this relationship from a past life?",
-        "Do we share karmic debts?",
-        "Why are we repeatedly meeting?",
-        "Are we twin souls?",
-        "Are we soulmates?",
-        "What karmic lesson are we learning together?",
-        "Is this relationship spiritually significant?"
-    ],
-    "Love & Romance - Love Obstacles": [
-        "What is delaying my love life?",
-        "Is Manglik Dosha affecting my relationship?",
-        "Is Saturn delaying love?",
-        "Is Rahu causing confusion?",
-        "Is Ketu causing detachment?",
-        "Which planet is creating relationship problems?",
-        "Which remedy will improve my love life?"
-    ],
-    "Love & Romance - Future Love": [
-        "Will I find love after divorce?",
-        "Will I marry again?",
-        "Will I fall in love twice?",
-        "Will my second marriage be happier?",
-        "Is a new relationship approaching?",
-        "Will I find true happiness in love?"
-    ],
-    "Love & Romance - AI Deep Analysis": [
-        "What does my horoscope reveal about my love life?",
-        "What is the biggest challenge in my relationships?",
-        "What kind of soulmate is destined for me?",
-        "How can I improve my relationships?",
-        "What lessons should I learn before marriage?",
-        "Which years are most favorable for romance?",
-        "Which Dasha will transform my love life?",
-        "What remedies can strengthen my relationship?",
-        "What is the probability that my current relationship will lead to marriage?",
-        "What does my Navamsha reveal about my future spouse?"
-    ],
-    "Marriage & Relationship": [
-        "When will I get married?",
-        "At what age will I get married?",
-        "Is marriage promised in my horoscope?",
-        "Will my marriage be early or delayed?",
-        "What is causing the delay in my marriage?",
-        "Will I have a love marriage or an arranged marriage?",
-        "Will I marry someone from a different caste or religion?",
-        "Will I marry someone from another country?",
-        "How many marriages are indicated?",
-        "Is there a possibility of remarriage?",
-        "What will my spouse look like?",
-        "What will be my spouse's nature?",
-        "Will my spouse be caring?",
-        "Will my spouse be wealthy?",
-        "Will my spouse be spiritual?",
-        "Will my spouse support my career?",
-        "What profession will my spouse have?",
-        "Will my spouse be older or younger than me?",
-        "Where is my spouse likely to come from?",
-        "Will my marriage be happy?",
-        "Will there be misunderstandings?",
-        "Will we live together happily?",
-        "Will we settle abroad after marriage?",
-        "Will my married life improve financially?",
-        "Will my in-laws support me?",
-        "Is divorce indicated?",
-        "Is separation possible?",
-        "How long will my marriage last?",
-        "Which Dasha is favorable for marriage?",
-        "Are we compatible?",
-        "What is our compatibility score?",
-        "Is Manglik matching favorable?",
-        "How strong is our emotional compatibility?",
-        "Are we spiritually compatible?",
-        "Is our physical compatibility good?",
-        "Will we have children?",
-        "What remedies can improve our relationship?"
-    ],
-    "Career & Job": [
-        "Which career suits me best?",
-        "What profession is indicated?",
-        "Should I work in government or private sector?",
-        "Am I suitable for business?",
-        "Should I become self-employed?",
-        "Which industry is best for me?",
-        "Can I become an entrepreneur?",
-        "Should I pursue freelancing?",
-        "When will I get a job?",
-        "Will I change my job?",
-        "Is promotion indicated?",
-        "Will I get my desired job?",
-        "Will I receive salary growth?",
-        "Should I resign?",
-        "Will I get a government job?",
-        "Will I work abroad?",
-        "Is foreign settlement possible?",
-        "When will my career improve?",
-        "Which Dasha favors career?",
-        "Which transit supports promotion?",
-        "Why am I facing career obstacles?",
-        "What is my highest career potential?",
-        "Will I become famous?",
-        "Can I become a CEO?",
-        "Will I be successful in IT?",
-        "Is public service suitable for me?"
-    ],
-    "Business": [
-        "Should I start a business?",
-        "Which business is suitable?",
-        "Is partnership good?",
-        "Who should be my business partner?",
-        "When should I start my business?",
-        "Will my business expand?",
-        "Is this year good for investment?",
-        "Will I receive funding?",
-        "Is export business favorable?",
-        "Will I own multiple businesses?"
-    ],
-    "Wealth & Finance": [
-        "Will I become wealthy?",
-        "When will I earn good money?",
-        "Which Dasha gives wealth?",
-        "Will I inherit property?",
-        "Can I invest in the stock market?",
-        "Is real estate favorable?",
-        "Should I invest in gold?",
-        "Will I receive sudden wealth?",
-        "Is lottery luck indicated?",
-        "Will I become financially independent?"
-    ],
-    "Health": [
-        "How is my overall health?",
-        "Which diseases should I be careful about?",
-        "Is surgery indicated?",
-        "Will I recover soon?",
-        "Is chronic illness shown?",
-        "What is my immunity like?",
-        "Which Dasha affects health?",
-        "Are accidents indicated?",
-        "How can I improve my health?",
-        "Which remedies help my health?"
-    ],
-    "Children": [
-        "Will I have children?",
-        "When will I have my first child?",
-        "Will I have a son or daughter?",
-        "Are childbirth delays indicated?",
-        "Will fertility treatment be needed?",
-        "Will my children be successful?",
-        "How many children are indicated?",
-        "What is my relationship with my children?"
-    ],
-    "Education": [
-        "Which course is suitable?",
-        "Should I study abroad?",
-        "Will I complete higher education?",
-        "Can I clear competitive exams?",
-        "Will I get admission to my preferred college?",
-        "Which field matches my horoscope?",
-        "Will I receive scholarships?"
-    ],
-    "Foreign Travel & Settlement": [
-        "Will I travel abroad?",
-        "Will I settle overseas?",
-        "Which country suits me?",
-        "When will I receive a visa?",
-        "Is immigration indicated?",
-        "Will foreign business succeed?",
-        "Will I return to my homeland?"
-    ],
-    "Property & Real Estate": [
-        "When will I buy a house?",
-        "Should I buy land?",
-        "Is this property beneficial?",
-        "Will I inherit family property?",
-        "Is property litigation indicated?",
-        "Which direction is lucky for my home?",
-        "Should I renovate my house?"
-    ],
-    "Litigation & Enemies": [
-        "Will I win my court case?",
-        "Is litigation favorable?",
-        "Do I have hidden enemies?",
-        "Who is causing obstacles?",
-        "Will legal issues end soon?",
-        "Is police involvement indicated?",
-        "How can I overcome my enemies?"
-    ],
-    "Spirituality": [
-        "What is my spiritual path?",
-        "Am I inclined toward meditation?",
-        "Which deity should I worship?",
-        "Which mantra is suitable?",
-        "What is my karmic purpose?",
-        "Is Moksha indicated?",
-        "Which pilgrimage is favorable?"
-    ],
-    "Parents & Family": [
-        "How is my relationship with my father?",
-        "How is my relationship with my mother?",
-        "Will family disputes end?",
-        "Will I inherit ancestral wealth?",
-        "Is family harmony indicated?",
-        "Should I live separately?"
-    ],
-    "Daily Life": [
-        "Is today favorable?",
-        "What should I avoid today?",
-        "Which color is lucky today?",
-        "Which direction is lucky today?",
-        "Which Hora is favorable?",
-        "Which Choghadiya is best?",
-        "Which Muhurta is suitable today?"
-    ],
-    "Muhurta": [
-        "Which day is best for marriage?",
-        "When should I start my business?",
-        "Which Muhurta is best for housewarming?",
-        "Which date is auspicious for surgery?",
-        "When should I buy a vehicle?",
-        "Which date is best for signing contracts?"
-    ],
-    "Dasha & Transit": [
-        "Which Mahadasha am I running?",
-        "What will this Mahadasha bring?",
-        "How will Saturn transit affect me?",
-        "Is Sade Sati active?",
-        "How will Jupiter transit help me?",
-        "Which transit activates marriage?",
-        "Which transit activates career?"
-    ],
-    "Remedies": [
-        "Which gemstone should I wear?",
-        "Which Rudraksha is suitable?",
-        "Which mantra should I chant?",
-        "Which fast (Vrat) is beneficial?",
-        "Which donation will help me?",
-        "Which Yantra should I keep?",
-        "Which deity should I worship?"
-    ],
-    "Horary (Prashna)": [
-        "Will my lost item be found?",
-        "Will this relationship succeed?",
-        "Will I get the job I interviewed for?",
-        "Should I invest now?",
-        "Will my visa be approved?",
-        "Will I receive the payment?",
-        "Is this business deal favorable?",
-        "Will this court case end in my favor?"
-    ],
-    "AI Personalized Questions": [
-        "What is the most important event coming in my life?",
-        "Which area of my life needs attention?",
-        "What are my biggest strengths?",
-        "What are my biggest weaknesses?",
-        "What opportunities are approaching?",
-        "What challenges should I prepare for?",
-        "What is my life purpose?",
-        "Which year will be most successful?",
-        "Which remedies will give the fastest results?"
-    ]
-};
+import { TOPICS_AND_QUESTIONS } from '../utils/chatTopics';
+
+
 
 const LiveChat = () => {
     const { user, isAuthenticated } = useAuth();
@@ -452,6 +70,7 @@ const LiveChat = () => {
     const [isDakshinaPaid, setIsDakshinaPaid] = useState(false);
     const [showDakshinaModal, setShowDakshinaModal] = useState(false);
     const [questionsRemaining, setQuestionsRemaining] = useState(0);
+    const [walletBalance, setWalletBalance] = useState(0);
 
     // Live chat audio stream states & refs
     const [isVoiceActive, setIsVoiceActive] = useState(false);
@@ -461,8 +80,11 @@ const LiveChat = () => {
     // End Chat & Astrologer Rating States
     const [showEndChatModal, setShowEndChatModal] = useState(false);
     const [userRating, setUserRating] = useState(5);
+    const [userExperience, setUserExperience] = useState('Very Good');
     const [reviewComment, setReviewComment] = useState('');
     const [remediesFeedback, setRemediesFeedback] = useState('');
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [followLoading, setFollowLoading] = useState(false);
     const [isSubmittingRating, setIsSubmittingRating] = useState(false);
     const [ratingSubmitted, setRatingSubmitted] = useState(false);
 
@@ -587,8 +209,18 @@ const LiveChat = () => {
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login', { state: { from: '/live-chat' } });
+        } else if (user) {
+            const fetchWallet = async () => {
+                try {
+                    const response = await walletAPI.getBalance();
+                    setWalletBalance(response.data.balance || 0);
+                } catch (error) {
+                    console.error('Error fetching wallet balance:', error);
+                }
+            };
+            fetchWallet();
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, user, navigate]);
 
     // Initialize Socket.io
     useEffect(() => {
@@ -1508,6 +1140,10 @@ const LiveChat = () => {
                             <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto leading-relaxed">
                                 To ask custom questions or access quick queries, please offer Guru Dakshina to the astrologer.
                             </p>
+                            <div className="mt-4 p-2 bg-white/5 rounded-lg border border-white/10 inline-block px-4">
+                                <span className="text-xs text-slate-300">Wallet Balance: </span>
+                                <span className={`font-bold ${walletBalance > 0 ? 'text-amber-400' : 'text-red-400'}`}>₹{walletBalance.toFixed(2)}</span>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-3 mb-6">
@@ -1523,20 +1159,25 @@ const LiveChat = () => {
                                     key={amount}
                                     type="button"
                                     onClick={async () => {
+                                        if (walletBalance < amount) {
+                                            alert(`Insufficient Wallet Balance. You need ₹${amount} but have ₹${walletBalance}. Please recharge in Dashboard.`);
+                                            navigate('/dashboard');
+                                            return;
+                                        }
+
                                         try {
-                                            const response = await liveChatAPI.createDakshinaPayment(selectedAstrologer._id, amount);
-                                            const paymentData = response.data;
-                                            const payment = paymentData.payment || paymentData;
-
-                                            if (!payment || !payment._id) {
-                                                throw new Error('No payment ID returned from gateway.');
+                                            const response = await liveChatAPI.payDakshinaWithWallet(selectedAstrologer._id, amount);
+                                            const { success, newBalance } = response.data;
+                                            
+                                            if (success) {
+                                                setWalletBalance(newBalance);
+                                                setIsDakshinaPaid(true);
+                                                setShowDakshinaModal(false);
+                                                alert(`Successfully paid ₹${amount} from Wallet!`);
                                             }
-
-                                            // Redirect to mock payment page
-                                            navigate(`/payment?paymentId=${payment._id}&amount=${amount}&astroName=${encodeURIComponent(selectedAstrologer.name)}&astrologerId=${selectedAstrologer._id}`);
                                         } catch (err) {
                                             console.error('Error creating payment:', err);
-                                            alert(err.message || 'Failed to initialize payment.');
+                                            alert(err.response?.data?.message || err.message || 'Failed to initialize payment.');
                                         }
                                     }}
                                     className="bg-white/5 hover:bg-amber-500 hover:text-slate-950 border border-white/5 rounded-2xl py-3 text-xs font-extrabold text-white transition-all duration-200 active:scale-95 flex flex-col items-center justify-center gap-0.5"
@@ -1704,6 +1345,23 @@ const LiveChat = () => {
                                         </p>
                                     </div>
 
+                                    {/* Experience Dropdown */}
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                                            Experience
+                                        </label>
+                                        <select
+                                            value={userExperience}
+                                            onChange={(e) => setUserExperience(e.target.value)}
+                                            className="w-full bg-slate-800 border border-white/10 text-white rounded-xl p-3 text-xs focus:ring-2 focus:ring-amber-500 outline-none cursor-pointer"
+                                        >
+                                            <option value="Very Good">Very Good</option>
+                                            <option value="Good">Good</option>
+                                            <option value="Satisfactory">Satisfactory</option>
+                                            <option value="Bad">Bad</option>
+                                        </select>
+                                    </div>
+
                                     {/* Optional Review Text */}
                                     <div>
                                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
@@ -1716,6 +1374,33 @@ const LiveChat = () => {
                                             rows="2"
                                             className="w-full bg-slate-800 border border-white/10 text-white rounded-xl p-3 text-xs focus:ring-2 focus:ring-amber-500 outline-none resize-none placeholder-slate-500"
                                         />
+                                    </div>
+
+                                    {/* Follow Astrologer Button */}
+                                    <div>
+                                        <button
+                                            type="button"
+                                            disabled={followLoading}
+                                            onClick={async () => {
+                                                try {
+                                                    setFollowLoading(true);
+                                                    const res = await authAPI.followAstrologer(selectedAstrologer?._id);
+                                                    setIsFollowing(res.data.isFollowing);
+                                                } catch (err) {
+                                                    console.error('Follow error:', err);
+                                                } finally {
+                                                    setFollowLoading(false);
+                                                }
+                                            }}
+                                            className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-md ${
+                                                isFollowing
+                                                    ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40'
+                                                    : 'bg-slate-800 text-slate-200 border border-white/10 hover:bg-slate-700'
+                                            }`}
+                                        >
+                                            <Heart className={`w-4 h-4 ${isFollowing ? 'fill-current text-emerald-400' : 'text-slate-400'}`} />
+                                            <span>{isFollowing ? 'Following Astrologer ✓' : `Follow ${selectedAstrologer?.name}`}</span>
+                                        </button>
                                     </div>
 
                                     {/* Optional Remedies Summary */}
@@ -1748,12 +1433,21 @@ const LiveChat = () => {
                                             onClick={async () => {
                                                 try {
                                                     setIsSubmittingRating(true);
+                                                    const combinedComment = `[Experience: ${userExperience}] ${reviewComment}`.trim();
                                                     await liveChatAPI.submitRating({
                                                         astrologerId: selectedAstrologer?._id,
                                                         rating: userRating,
-                                                        reviewText: reviewComment,
+                                                        reviewText: combinedComment,
                                                         remediesSummary: remediesFeedback
                                                     });
+                                                    // Also persist to general review model
+                                                    try {
+                                                        await authAPI.submitReview(selectedAstrologer?._id, {
+                                                            rating: userRating,
+                                                            comment: combinedComment
+                                                        });
+                                                    } catch (e) {}
+
                                                     setRatingSubmitted(true);
                                                 } catch (err) {
                                                     console.error('Rating submit error:', err);

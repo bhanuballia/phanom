@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
@@ -42,6 +42,8 @@ import Palmistry from './pages/Palmistry';
 import VastuShastra from './pages/VastuShastra';
 import AIAstrologer from './pages/AIAstrologer';
 import LiveChat from './pages/LiveChat';
+import LiveStream from './pages/LiveStream';
+import LiveAstrologers from './pages/LiveAstrologers';
 import PaymentPage from './pages/PaymentPage';
 import LiveChatHistory from './Admin/LiveChatHistory';
 import AuditReport from './Admin/AuditReport';
@@ -99,32 +101,12 @@ function App() {
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/live-astrologers" element={<LiveAstrologers />} />
 
             {/* Protected Routes - Require Authentication */}
-            <Route
-              path="/about"
-              element={
-                <ProtectedRoute>
-                  <AboutUs />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/astrologers"
-              element={
-                <ProtectedRoute>
-                  <OurAstrologers />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/astrologers/:id"
-              element={
-                <ProtectedRoute>
-                  <AstrologerProfile />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/astrologers" element={<OurAstrologers />} />
+            <Route path="/astrologers/:id" element={<AstrologerProfile />} />
             <Route path="/zodiac" element={<ZodiacSigns />} />
             <Route
               path="/kundali"
@@ -175,14 +157,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/contact"
-              element={
-                <ProtectedRoute>
-                  <ContactUs />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/contact" element={<ContactUs />} />
             <Route
               path="/booking"
               element={
@@ -212,6 +187,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LiveChat />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/live/:astrologerId"
+              element={
+                <ProtectedRoute>
+                  <LiveStream />
                 </ProtectedRoute>
               }
             />
@@ -436,6 +419,9 @@ function App() {
 
           {/* AI Chatbot - Available on all pages except dedicated AI Astrologer page */}
           <ChatbotWrapper />
+          
+          {/* Live Astrologers Floating Button */}
+          <LiveFloatingButton />
 
           {/* Firefox Compatibility Notice */}
           <FirefoxCompatibilityNotice />
@@ -448,12 +434,30 @@ function App() {
   );
 }
 
-// Wrapper to handle path-based rendering since we need useLocation
 const ChatbotWrapper = () => {
   const location = useLocation();
   // Don't show floating chatbot on the dedicated AI Astrologer page
   if (location.pathname === '/ai-astrologer') return null;
   return <AIChatbot />;
+};
+
+function LiveFloatingButton() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    navigate('/live-astrologers');
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className="fixed bottom-6 left-6 z-50 flex items-center justify-center gap-2 bg-slate-900/90 hover:bg-slate-800 text-white border border-red-500/50 shadow-lg shadow-red-500/20 px-5 py-3 rounded-full font-bold transition-all hover:scale-105"
+    >
+      <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+      LIVE
+    </button>
+  );
 };
 
 export default App;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { walletAPI } from '../services/api';
 import {
   Menu,
   X,
@@ -17,12 +18,14 @@ import {
   BookOpen,
   Calculator,
   Home as HomeIcon,
-  MessageCircle
+  MessageCircle,
+  Wallet
 } from 'lucide-react';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showScrollDown, setShowScrollDown] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(0);
   // Removed dropdown state as all items are now displayed directly
   const { isAuthenticated, user, logout } = useAuth();
   const location = useLocation();
@@ -43,6 +46,21 @@ const Navigation = () => {
     // Cleanup
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Fetch wallet balance if authenticated
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (isAuthenticated) {
+        try {
+          const res = await walletAPI.getBalance();
+          setWalletBalance(res.data.balance || 0);
+        } catch (error) {
+          console.error("Failed to fetch wallet balance:", error);
+        }
+      }
+    };
+    fetchBalance();
+  }, [isAuthenticated]);
 
   const scrollToContent = () => {
     window.scrollTo({
@@ -139,6 +157,18 @@ const Navigation = () => {
           >
             <Calendar className="h-4 w-4 mb-1" />
             <span style={twoLineTextStyles}>Book Session</span>
+          </Link>
+        )
+      },
+      {
+        key: 'wallet',
+        element: (
+          <Link
+            to="/dashboard#wallet"
+            className={`${actionButtonBase} text-black text-[16px] border-green-400/40 bg-white`}
+          >
+            <Wallet className="h-6 w-8 mb-1" />
+            <span style={twoLineTextStyles}>₹{walletBalance}</span>
           </Link>
         )
       },

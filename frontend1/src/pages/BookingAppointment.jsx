@@ -9,7 +9,7 @@ const BookingAppointment = () => {
       <Navigation />
 
       {/* Main Content - BookAppointment Component */}
-      <div className="relative z-10 pt-20">
+      <div className="relative z-10 pt-16">
         <BookAppointment />
       </div>
     </div>

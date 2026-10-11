@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AstrologerLogin from './components/AstrologerLogin';
 import AstrologerDashboard from './pages/AstrologerDashboard';
+import LiveStreamStudio from './pages/LiveStreamStudio';
 
 const App = () => {
   const isAuthenticated = () => {
@@ -31,6 +32,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <AstrologerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/livestream"
+          element={
+            <ProtectedRoute>
+              <LiveStreamStudio />
             </ProtectedRoute>
           }
         />

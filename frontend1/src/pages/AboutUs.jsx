@@ -36,7 +36,7 @@ const AboutUs = () => {
   return (
     <div className="min-h-screen relative overflow-x-hidden">
       {/* Full Page Background Image - Fixed */}
-      <div 
+      <div
         className="fixed inset-0 -z-20"
         style={{
           backgroundImage: 'url(/images/om3.jpeg)',
@@ -60,33 +60,33 @@ const AboutUs = () => {
           {/* Gayatri Mantra Display */}
           <div className="mb-12">
             <div className="glass-card rounded-2xl p-8 mb-8 border border-astro-gold/30 mystical-glow bg-white">
-              <p className="text-astro-gold font-hindi text-2xl mb-4 leading-relaxed">
-                ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं<br/>
+              <p className="text-amber-900 font-hindi text-2xl mb-4 leading-relaxed">
+                ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं<br />
                 भर्गो देवस्य धीमहि धियो योनः प्रचोदयात्
               </p>
-              <p className="text-gray-700 text-sm italic">
-                "We meditate on the glory of the Creator who has created the Universe,<br/>
-                who is worthy of Worship, who is the embodiment of Knowledge and Light,<br/>
+              <p className="text-gray-900 text-16px italic">
+                "We meditate on the glory of the Creator who has created the Universe,<br />
+                who is worthy of Worship, who is the embodiment of Knowledge and Light,<br />
                 who is the remover of all Sin and Ignorance. May He enlighten our Intellect."
               </p>
               <div className="w-32 h-1 bg-gradient-to-r from-astro-gold to-divine-orange mx-auto rounded-full mt-4"></div>
             </div>
           </div>
-          
+
           <div className="mb-8">
-            <p className="text-astro-gold font-hindi text-xl mb-2">सत्यं शिवं सुन्दरम्</p>
-            <p className="text-gray-300 text-sm">Truth, Goodness, Beauty</p>
+            <p className="text-amber-900 font-hindi text-[20px] mb-2">सत्यं शिवं सुन्दरम्</p>
+            <p className="text-gray-900 text-[18px]">Truth, Goodness, Beauty</p>
           </div>
-          
-          <h1 className="text-5xl md:text-6xl font-cinzel font-bold text-red-700 mb-6">
+
+          <h1 className="text-5xl md:text-6xl font-cinzel font-bold text-amber-900 mb-6">
             About <span className="text-black-300">Our Sacred Journey</span>
           </h1>
-          
+
           <p className="text-xl text-black-200 mb-8 leading-relaxed">
-            Founded on the timeless principles of Vedic astrology, we bridge ancient wisdom 
+            Founded on the timeless principles of Vedic astrology, we bridge ancient wisdom
             with modern technology to bring you authentic astrological guidance.
           </p>
-          
+
           <div className="w-24 h-1 bg-gradient-to-r from-astro-gold to-divine-orange mx-auto rounded-full"></div>
         </div>
       </section>
@@ -96,28 +96,28 @@ const AboutUs = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="order-2 lg:order-1">
-              <h2 className="text-4xl font-cinzel font-bold text-white mb-6">
+              <h2 className="text-4xl font-cinzel font-bold text-amber-900 mb-6">
                 Our <span className="text-black-300">Divine Mission</span>
               </h2>
-              <div className="space-y-6 text-gray-200 leading-relaxed">
+              <div className="space-y-6 text-black-900 text-[20px] leading-relaxed">
                 <p>
-                  For over a decade, we have dedicated ourselves to preserving and sharing 
-                  the profound wisdom of Hindu astrology. Our platform was born from a vision 
+                  For over a decade, we have dedicated ourselves to preserving and sharing
+                  the profound wisdom of Hindu astrology. Our platform was born from a vision
                   to make authentic Vedic consultations accessible to seekers worldwide.
                 </p>
                 <p>
-                  We believe that every soul deserves guidance on their spiritual journey. 
-                  Through the ancient science of Jyotish Shastra, we help individuals understand 
+                  We believe that every soul deserves guidance on their spiritual journey.
+                  Through the ancient science of Jyotish Shastra, we help individuals understand
                   their cosmic purpose and navigate life's challenges with divine insight.
                 </p>
                 <p>
-                  Our commitment extends beyond mere predictions. We focus on empowering 
-                  individuals with knowledge, helping them align with their highest potential 
+                  Our commitment extends beyond mere predictions. We focus on empowering
+                  individuals with knowledge, helping them align with their highest potential
                   and find peace in their life's journey.
                 </p>
               </div>
             </div>
-            
+
             <div className="order-1 lg:order-2">
               <div className="glass-card rounded-2xl p-8 border border-astro-gold/20 mystical-glow relative overflow-hidden bg-white">
                 {/* Subtle Gayatri Mantra background */}
@@ -126,19 +126,19 @@ const AboutUs = () => {
                     ॐ गायत्री मंत्र ॐ
                   </p>
                 </div>
-                
+
                 <div className="text-center mb-6 relative z-10">
                   <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 mystical-glow">
                     <span className="text-3xl">🕉</span>
                   </div>
-                  <h3 className="text-2xl font-cinzel font-bold divine-text mb-2">Our Founder's Vision</h3>
+                  <h3 className="text-[22px] font-cinzel font-bold  text-amber-900 mb-2">Our Founder's Vision</h3>
                 </div>
-                <blockquote className="text-gray-700 italic text-center leading-relaxed relative z-10">
-                  "To illuminate the path of dharma through the sacred science of astrology, 
-                  helping every soul discover their divine purpose and live in harmony with 
+                <blockquote className="text-black italic text-center leading-relaxed relative z-10">
+                  "To illuminate the path of dharma through the sacred science of astrology,
+                  helping every soul discover their divine purpose and live in harmony with
                   the cosmic order, guided by the eternal wisdom of the Gayatri Mantra."
                 </blockquote>
-                <p className="text-astro-gold font-hindi text-center mt-4 relative z-10">
+                <p className="text-amber-900 font-hindi text-center mt-4 relative z-5">
                   - आध्यात्मिक मार्गदर्शन (Spiritual Guidance)
                 </p>
               </div>
@@ -151,12 +151,12 @@ const AboutUs = () => {
       <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-cinzel font-bold text-white mb-4">
-              Our Sacred <span className="text-astro-gold">Values</span>
+            <h2 className="text-4xl font-cinzel font-bold text-amber-900 mb-4">
+              Our Sacred <span className="text-amber-900">Values</span>
             </h2>
-            <p className="text-xl text-gray-200">The principles that guide our spiritual service</p>
+            <p className="text-xl text-black">The principles that guide our spiritual service</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
               <div
@@ -168,8 +168,8 @@ const AboutUs = () => {
                     {value.icon}
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-astro-gold mb-3">{value.title}</h3>
-                <p className="text-gray-700 leading-relaxed flex-1">{value.description}</p>
+                <h3 className="text-xl font-semibold text-amber-900 mb-3">{value.title}</h3>
+                <p className="text-black leading-relaxed flex-1">{value.description}</p>
               </div>
             ))}
           </div>
@@ -180,18 +180,18 @@ const AboutUs = () => {
       <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-cinzel font-bold text-white mb-4">
-              Our <span className="text-astro-gold">Sacred Impact</span>
+            <h2 className="text-3xl font-cinzel font-bold text-amber-900 mb-4">
+              Our <span className="text-amber-900">Sacred Impact</span>
             </h2>
           </div>
-          
+
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="glass-card rounded-xl p-6 text-center border border-astro-gold/20 bg-white hover:shadow-mystical transition-all duration-300">
                 <div className="text-4xl lg:text-5xl font-bold text-amber-600 mb-2">
                   {stat.number}
                 </div>
-                <div className="text-gray-700 font-medium">{stat.label}</div>
+                <div className="text-black font-medium">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -206,18 +206,18 @@ const AboutUs = () => {
             <div className="absolute inset-0 opacity-3">
               <div className="w-full h-full bg-gradient-to-br from-astro-gold/5 to-astro-purple/5 transform rotate-12"></div>
             </div>
-            
+
             <div className="relative z-10">
               <div className="mb-6">
-                <p className="text-astro-gold font-hindi text-lg mb-2">ॐ तमसो मा ज्योतिर्गमय ॐ</p>
-                <p className="text-gray-600 text-sm italic">"Lead us from darkness to light"</p>
+                <p className="text-amber-900 font-hindi text-lg mb-2">ॐ तमसो मा ज्योतिर्गमय ॐ</p>
+                <p className="text-black text-[18px] italic">"Lead us from darkness to light"</p>
               </div>
-              
-              <h2 className="text-3xl font-cinzel font-bold text-gray-800 mb-4">
-                Begin Your <span className="text-astro-gold">Spiritual Journey</span>
+
+              <h2 className="text-3xl font-cinzel font-bold text-amber-900 mb-4">
+                Begin Your <span className="text-amber-900">Spiritual Journey</span>
               </h2>
-              <p className="text-xl text-gray-700 mb-8">
-                Connect with our expert astrologers and discover the cosmic wisdom that awaits you,<br/>
+              <p className="text-xl text-black mb-8">
+                Connect with our expert astrologers and discover the cosmic wisdom that awaits you,<br />
                 guided by ancient Vedic principles and the sacred Gayatri Mantra.
               </p>
               <a

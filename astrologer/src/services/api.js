@@ -1,11 +1,5 @@
 const getBaseUrl = () => {
-  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL;
-  }
-  if (window.location.hostname === 'localhost') {
-    return 'http://localhost:5000/api';
-  }
-  return 'https://astrology-run-backend.onrender.com/api';
+  return 'http://localhost:5000/api';
 };
 
 const API_BASE_URL = getBaseUrl();
@@ -133,6 +127,12 @@ class AstrologerAPI {
     return await this.request('/astrologer/profile', {
       method: 'PUT',
       body: JSON.stringify(data),
+    });
+  }
+
+  async getAgoraToken(channelName, role = 'publisher', uid = 0) {
+    return await this.request(`/agora/token?channelName=${channelName}&role=${role}&uid=${uid}`, {
+      method: 'GET',
     });
   }
 

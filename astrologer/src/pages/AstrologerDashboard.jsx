@@ -36,7 +36,8 @@ import {
   Volume2,
   VolumeX,
   Settings,
-  CheckCheck
+  CheckCheck,
+  Video
 } from 'lucide-react';
 
 import { generateAstroPDF } from '../services/pdfGenerator';
@@ -927,6 +928,13 @@ const AstrologerDashboard = () => {
             <Compass className="w-5 h-5" />
             Astro Tools
           </button>
+          <button
+            onClick={() => navigate('/livestream')}
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all bg-white text-gray-600 hover:bg-red-50 hover:text-red-600"
+          >
+            <Video className="w-5 h-5" />
+            Go Live
+          </button>
         </div>
 
         {activeTab === 'dashboard' ? (
@@ -1370,6 +1378,39 @@ const AstrologerDashboard = () => {
                                           </li>
                                         ))}
                                       </ul>
+                                    </div>
+                                  )}
+                                  {(appointment.rightHandImage || appointment.leftHandImage) && (
+                                    <div className="mt-2 p-2 bg-amber-50 rounded border border-amber-200 text-xs max-w-xs">
+                                      <div className="font-bold text-amber-900 mb-1 flex items-center gap-1">
+                                        ✋ Palm Images Attached:
+                                      </div>
+                                      <div className="flex gap-2 mt-1">
+                                        {appointment.rightHandImage && (
+                                          <div className="text-center">
+                                            <span className="text-[10px] text-gray-500 block">Right</span>
+                                            <img
+                                              src={buildAssetUrl(appointment.rightHandImage)}
+                                              alt="Right Palm"
+                                              className="w-12 h-14 object-cover rounded border border-amber-300 cursor-pointer hover:opacity-80 shadow-sm"
+                                              onClick={() => window.open(buildAssetUrl(appointment.rightHandImage), '_blank')}
+                                              title="Click to view full image"
+                                            />
+                                          </div>
+                                        )}
+                                        {appointment.leftHandImage && (
+                                          <div className="text-center">
+                                            <span className="text-[10px] text-gray-500 block">Left</span>
+                                            <img
+                                              src={buildAssetUrl(appointment.leftHandImage)}
+                                              alt="Left Palm"
+                                              className="w-12 h-14 object-cover rounded border border-amber-300 cursor-pointer hover:opacity-80 shadow-sm"
+                                              onClick={() => window.open(buildAssetUrl(appointment.leftHandImage), '_blank')}
+                                              title="Click to view full image"
+                                            />
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
                                   )}
                                 </div>

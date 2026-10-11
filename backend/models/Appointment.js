@@ -79,6 +79,15 @@ const appointmentSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
+  billingType: {
+    type: String,
+    enum: ['fixed', 'per_minute'],
+    default: 'fixed'
+  },
+  perMinuteRate: {
+    type: Number,
+    default: 0
+  },
   paymentStatus: {
     type: String,
     enum: ['pending', 'completed', 'failed', 'refunded'],
@@ -137,6 +146,14 @@ const appointmentSchema = new mongoose.Schema({
       question: String
     }],
     default: []
+  },
+  rightHandImage: {
+    type: String,
+    default: ''
+  },
+  leftHandImage: {
+    type: String,
+    default: ''
   },
 
 

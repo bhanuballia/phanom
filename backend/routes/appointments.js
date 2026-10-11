@@ -3,11 +3,27 @@ const Appointment = require('../models/Appointment');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 const appointmentController = require('../controllers/appointmentController');
+const multer = require('multer');
+const { createStorage } = require('../config/cloudinary');
+
+const storage = createStorage('palmistry');
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 }
+});
 
 const router = express.Router();
 
-// Create new appointment with automatic reminders
-router.post('/', protect, appointmentController.createAppointment);
+// Create new appointment with automatic reminders (supports optional palm images)
+router.post(
+  '/',
+  protect,
+  upload.fields([
+    { name: 'rightHandImage', maxCount: 1 },
+    { name: 'leftHandImage', maxCount: 1 }
+  ]),
+  appointmentController.createAppointment
+);
 
 // Check if this is a first-time booking (for free consultation)
 router.get('/check-first-time', protect, appointmentController.checkFirstTimeBooking);

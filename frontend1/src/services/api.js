@@ -14,19 +14,7 @@ const getEnvValue = (key) => {
 };
 
 const computeApiBaseUrl = () => {
-  const envUrl = getEnvValue('VITE_API_BASE_URL');
-  if (envUrl) {
-    return trimTrailingSlash(envUrl);
-  }
-  if (typeof window !== 'undefined' && window.location) {
-    const { hostname } = window.location;
-    if (isLocalhost(hostname)) {
-      return DEFAULT_API_BASE_URL;
-    }
-    // Relative path for unified deployment
-    return '/api';
-  }
-  return DEFAULT_API_BASE_URL;
+  return 'http://localhost:5000/api';
 };
 
 export const API_BASE_URL = computeApiBaseUrl();
@@ -152,6 +140,10 @@ export const authAPI = {
   getProfile: () => api.get('/auth/profile'),
   updateProfile: (userData) => api.put('/auth/profile', userData),
   getAstrologers: () => api.get('/auth/astrologers'),
+  getReviews: (astrologerId) => api.get(`/auth/astrologers/${astrologerId}/reviews`),
+  submitReview: (astrologerId, reviewData) => api.post(`/auth/astrologers/${astrologerId}/reviews`, reviewData),
+  followAstrologer: (astrologerId) => api.post(`/auth/astrologers/${astrologerId}/follow`),
+  getAgoraToken: (channelName, role = 'subscriber', uid = 0) => api.get(`/agora/token?channelName=${channelName}&role=${role}&uid=${uid}`),
 };
 
 // Appointments API
@@ -337,5 +329,13 @@ export const liveChatAPI = {
   getDakshinaStatus: (astrologerId) => api.get(`/live-chat/dakshina-status/${astrologerId}`),
   createDakshinaPayment: (astrologerId, amount) => api.post('/live-chat/dakshina-payment', { astrologerId, amount }),
   confirmDakshinaPayment: (paymentId) => api.post('/live-chat/dakshina-confirm', { paymentId }),
+  payDakshinaWithWallet: (astrologerId, amount) => api.post('/live-chat/dakshina-wallet-pay', { astrologerId, amount }),
 };
 
+// Wallet API
+export const walletAPI = {
+  getBalance: () => api.get('/wallet/balance'),
+  createOrder: (data) => api.post('/wallet/create-order', data),
+  verifyPayment: (data) => api.post('/wallet/verify', data),
+  deduct: (data) => api.post('/wallet/deduct', data)
+};

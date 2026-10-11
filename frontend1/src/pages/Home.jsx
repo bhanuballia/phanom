@@ -32,8 +32,10 @@ import {
   Sparkles,
   Star,
   Sun,
+  User,
   Users,
-  X
+  X,
+  Video
 } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import { useAuth } from '../context/AuthContext';
@@ -201,29 +203,29 @@ const heroShortcutItems = [
 ];
 
 const exploreServices = [
-  { name: 'Home', path: '/', icon: HomeIcon, color: 'from-yellow-400 to-orange-500' },
+  { name: 'Daily Calendar', path: `${VEDIC_ASTROLOGY_BASE_URL}/?panchang=true&hide_search=true`, icon: CalendarDays, color: 'from-indigo-400 to-purple-500', isExternal: true },
+  { name: 'Monthly Calendar', path: `${VEDIC_ASTROLOGY_BASE_URL}/?monthly_panchang=true&hide_search=true`, icon: Calendar, color: 'from-blue-400 to-indigo-500', isExternal: true },
   { name: 'About Us', path: '/about', icon: Info, color: 'from-blue-400 to-cyan-500' },
   { name: 'Astrologers', path: '/astrologers', icon: Users, color: 'from-purple-400 to-pink-500' },
-  { name: 'Booking', path: '/booking', icon: CalendarClock, color: 'from-green-400 to-emerald-500' },
+  { name: 'Consult Astrologer', path: '/booking', icon: CalendarClock, color: 'from-green-400 to-emerald-500' },
   { name: 'Kundali', path: '/kundali', icon: ScrollText, color: 'from-amber-400 to-yellow-500' },
-  { name: 'Kundali Matching', path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true`, icon: HeartHandshake, color: 'from-pink-400 to-rose-500', isExternal: true },
-  { name: 'Love Calculator', path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true`, icon: Heart, color: 'from-red-400 to-rose-500', isExternal: true },
-  { name: 'Relationship Horoscope', path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true&calculator=weekly-relationship`, icon: HeartHandshake, color: 'from-rose-400 to-pink-500', isExternal: true },
-  { name: 'Advanced Muhurt', path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_muhurt=true`, icon: Calendar, color: 'from-orange-400 to-amber-500', isExternal: true },
-  { name: 'Ask Prashna', path: `${VEDIC_ASTROLOGY_BASE_URL}/?prashna=true`, icon: MessageCircle, color: 'from-purple-400 to-indigo-500', isExternal: true },
-  { name: 'Ashtamangala Prasna', path: `${VEDIC_ASTROLOGY_BASE_URL}/?ashtamangala=true`, icon: Sparkles, color: 'from-amber-500 to-red-500', isExternal: true },
-  { name: 'KP Astrology', path: `${VEDIC_ASTROLOGY_BASE_URL}/?kp_astrology=true`, icon: Globe, color: 'from-blue-400 to-indigo-500', isExternal: true },
-  { name: 'Nadi Astrology', path: `${VEDIC_ASTROLOGY_BASE_URL}/?nadi=true`, icon: ScrollText, color: 'from-amber-400 to-orange-500', isExternal: true },
-  { name: 'Japa Mala (Mantras)', path: `${VEDIC_ASTROLOGY_BASE_URL}/?mantra=true`, icon: Sparkles, color: 'from-pink-500 to-rose-600', isExternal: true },
-  { name: 'Brahma Muhurt', path: `${VEDIC_ASTROLOGY_BASE_URL}/?brahma_muhurt=true`, icon: Sun, color: 'from-amber-400 to-orange-500', isExternal: true },
-  { name: 'Daily Calendar', path: `${VEDIC_ASTROLOGY_BASE_URL}/?panchang=true`, icon: CalendarDays, color: 'from-indigo-400 to-purple-500', isExternal: true },
-  { name: 'Monthly Calendar', path: `${VEDIC_ASTROLOGY_BASE_URL}/?monthly_panchang=true`, icon: Calendar, color: 'from-blue-400 to-indigo-500', isExternal: true },
-  { name: 'Adv. Nakshatra', path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_nakshatra=true&only_planetary=true`, icon: Star, color: 'from-amber-400 to-yellow-500', isExternal: true },
-  { name: 'Lal Kitab', path: '/lal-kitab', icon: BookOpen, color: 'from-red-400 to-orange-500' },
+  { name: 'Kundali Matching', path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true&hide_search=true`, icon: HeartHandshake, color: 'from-pink-400 to-rose-500', isExternal: true },
+  { name: 'Love Calculator', path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true&hide_search=true`, icon: Heart, color: 'from-red-400 to-rose-500', isExternal: true },
+  { name: 'Relationship Horoscope', path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true&calculator=weekly-relationship&hide_search=true`, icon: HeartHandshake, color: 'from-rose-400 to-pink-500', isExternal: true },
+  { name: 'Advanced Muhurt', path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_muhurt=true&hide_search=true`, icon: Calendar, color: 'from-orange-400 to-amber-500', isExternal: true },
+  { name: 'Ask Prashna', path: `${VEDIC_ASTROLOGY_BASE_URL}/?prashna=true&hide_search=true`, icon: MessageCircle, color: 'from-purple-400 to-indigo-500', isExternal: true },
+  { name: 'Ashtamangala Prasna', path: `${VEDIC_ASTROLOGY_BASE_URL}/?ashtamangala=true&hide_search=true`, icon: Sparkles, color: 'from-amber-500 to-red-500', isExternal: true },
+  { name: 'KP Astrology', path: `${VEDIC_ASTROLOGY_BASE_URL}/?kp_astrology=true&hide_search=true`, icon: Globe, color: 'from-blue-400 to-indigo-500', isExternal: true },
+  { name: 'Nadi Astrology', path: `${VEDIC_ASTROLOGY_BASE_URL}/?nadi=true&hide_search=true`, icon: ScrollText, color: 'from-amber-400 to-orange-500', isExternal: true },
+  { name: 'Japa Mala (Mantras)', path: `${VEDIC_ASTROLOGY_BASE_URL}/?mantra=true&hide_search=true`, icon: Sparkles, color: 'from-pink-500 to-rose-600', isExternal: true },
+  { name: 'Brahma Muhurt', path: `${VEDIC_ASTROLOGY_BASE_URL}/?brahma_muhurt=true&hide_search=true`, icon: Sun, color: 'from-amber-400 to-orange-500', isExternal: true },
+  { name: 'Adv. Nakshatra', path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_nakshatra=true&only_planetary=true&hide_search=true`, icon: Star, color: 'from-amber-400 to-yellow-500', isExternal: true },
   { name: 'Numerology', path: '/numerology', icon: Calculator, color: 'from-teal-400 to-cyan-500' },
   { name: 'Tarot Reading', path: '/tarot-reading', icon: Sparkles, color: 'from-purple-500 to-indigo-500' },
   { name: 'Palmistry', path: '/palmistry', icon: Hand, color: 'from-fuchsia-400 to-purple-500' },
+  { name: 'Face Reading', path: `${VEDIC_ASTROLOGY_BASE_URL}/?face_reading=true&hide_search=true`, icon: User, color: 'from-rose-400 to-pink-500', isExternal: true },
   { name: 'Vastu Shastra', path: '/vastu-shastra', icon: Building2, color: 'from-orange-400 to-amber-500' },
+  { name: 'Garg Shutra', path: `${VEDIC_ASTROLOGY_BASE_URL}/?garga=true&hide_search=true`, icon: BookOpen, color: 'from-purple-400 to-indigo-500', isExternal: true },
   { name: 'Zodiac Signs', path: '/zodiac', icon: MoonStar, color: 'from-violet-400 to-purple-500' },
   { name: 'Videos', path: '/community-videos', icon: PlayCircle, color: 'from-blue-500 to-indigo-500' },
   { name: 'Contact Us', path: '/contact', icon: PhoneCall, color: 'from-gray-400 to-slate-500' },
@@ -254,14 +256,14 @@ const testimonialsSeed = [
     location: 'Pune, India'
   },
   {
-    name: 'Jason Patel',
+    name: 'Vikas Rathi',
     text: 'Loved the AI preview summarizing my next 6 months. The astrologer built on it which saved a ton of time.',
-    location: 'Toronto, Canada'
+    location: 'Gurugram, India'
   },
   {
-    name: 'Ritika Sharma',
+    name: 'Jitender Shukla',
     text: 'Panchang, Muhurat and gemstone suggestions feel tailored. Premium yet intuitive.',
-    location: 'Delhi, India'
+    location: 'Lucknow, Uttar Pradesh'
   }
 ];
 
@@ -288,8 +290,8 @@ const trustBadges = [
 ];
 
 const consultationSlogans = [
-  'सावन में राशि के अनुसार पूजा कैसे करे',
-  'सावन में प्रतिदिन पूजा कैसे करे',
+  'दीपावली में राशि के अनुसार पूजा कैसे करे',
+  'कार्तिक में प्रतिदिन पूजा कैसे करे',
   'सितारों के राज खोलें!',
   'ब्रह्मांड के संकेत पहचानें!',
   'भविष्य की राह चुनें!',
@@ -370,7 +372,7 @@ const consultationButtons = [
 ];
 
 const Home = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [availableAstrologers, setAvailableAstrologers] = useState([]);
@@ -387,10 +389,35 @@ const Home = () => {
     timeOfBirth: '',
     placeOfBirth: ''
   });
+
+  // Automatically fetch name & date of birth from user sign up details
+  useEffect(() => {
+    if (user) {
+      let userName = user.name || '';
+      if (!userName && (user.firstName || user.lastName)) {
+        userName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+      }
+
+      let userDob = user.dateOfBirth || '';
+      if (userDob && userDob.includes('T')) {
+        userDob = userDob.split('T')[0];
+      }
+
+      setQuickKundaliData(prev => ({
+        ...prev,
+        name: userName || prev.name,
+        dateOfBirth: userDob || prev.dateOfBirth,
+        timeOfBirth: user.timeOfBirth || user.birthTime || prev.timeOfBirth,
+        placeOfBirth: user.placeOfBirth || user.city || prev.placeOfBirth
+      }));
+    }
+  }, [user]);
+
   const [sloganIndex, setSloganIndex] = useState(0);
   const [activeSideAnimation, setActiveSideAnimation] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [modalLine, setModalLine] = useState('');
+  const [modalAstrologerIndex, setModalAstrologerIndex] = useState(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const videos = useMemo(() => ['/images/sapt.mp4', '/images/home2.mp4'], []);
 
@@ -463,6 +490,25 @@ const Home = () => {
     setModalLine(posterLines[randomIndex]);
     setShowModal(true);
   }, []);
+
+  // Automatically cycle through all astrologers one by one, displaying 3 at a time in the pop-up modal
+  useEffect(() => {
+    if (!showModal || availableAstrologers.length <= 3) return;
+    const timer = setInterval(() => {
+      setModalAstrologerIndex((prev) => (prev + 1) % availableAstrologers.length);
+    }, 2500);
+    return () => clearInterval(timer);
+  }, [showModal, availableAstrologers.length]);
+
+  const modalAstrologers = useMemo(() => {
+    if (!availableAstrologers || availableAstrologers.length === 0) return [];
+    if (availableAstrologers.length <= 3) return availableAstrologers;
+    const list = [];
+    for (let i = 0; i < 3; i++) {
+      list.push(availableAstrologers[(modalAstrologerIndex + i) % availableAstrologers.length]);
+    }
+    return list;
+  }, [availableAstrologers, modalAstrologerIndex]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -794,6 +840,55 @@ const Home = () => {
             </div>
           </section>
         </div>
+
+        {/* Live Astrologers Section */}
+        {availableAstrologers.filter(a => a.isLive).length > 0 && (
+          <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-12">
+            <div className="max-w-7xl mx-auto">
+              <div className="relative bg-slate-900 border border-red-500/30 rounded-3xl p-8 backdrop-blur-xl shadow-lg shadow-red-500/20">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="h-4 w-4 rounded-full bg-red-500 animate-pulse"></div>
+                  <h2 className="text-3xl font-bold text-white">Live Astrologers</h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {availableAstrologers.filter(a => a.isLive).map((astrologer) => (
+                    <Link
+                      key={astrologer._id}
+                      to={`/live/${astrologer._id}`}
+                      className="group relative bg-white/5 rounded-2xl overflow-hidden hover:bg-white/10 transition-all border border-white/10"
+                    >
+                      <div className="aspect-[3/4] relative">
+                        {astrologer.profilePicture || astrologer.image || astrologer.imageUrl || astrologer.photo ? (
+                          <img
+                            src={buildAssetUrl(astrologer.profilePicture || astrologer.image || astrologer.imageUrl || astrologer.photo)}
+                            alt={astrologer.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-amber-400 to-pink-500 flex items-center justify-center text-5xl font-bold text-slate-900">
+                            {astrologer.name?.charAt(0)}
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                        <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md flex items-center gap-1">
+                          <PlayCircle className="w-3 h-3" /> LIVE
+                        </div>
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <h3 className="text-lg font-bold text-white mb-1 truncate">{astrologer.name}</h3>
+                          <p className="text-sm text-slate-300 line-clamp-1">{astrologer.specialization?.join(', ')}</p>
+                          <button className="w-full mt-3 bg-amber-500 hover:bg-amber-600 text-white py-2 rounded-lg font-semibold transition-colors">
+                            Join Stream
+                          </button>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Navigation Cards Section - Animation starts from bottom of Hero Video Section */}
         <section
           id="explore-our-services-section"
@@ -814,34 +909,34 @@ const Home = () => {
                 {/* Restructured Header Wrapper */}
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8 w-full">
                   {/* 1. Left Side Buttons */}
-                  <div className="grid grid-cols-2 gap-3 order-2 md:order-1">
+                  <div className="grid grid-cols-2 gap-2 order-2 md:order-1">
                     <Link
                       to="/booking"
-                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn text-center whitespace-nowrap"
                     >
                       GajKesari Yog
                     </Link>
                     <Link
                       to="/booking"
-                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn text-center whitespace-nowrap"
                     >
                       Raj Yog
                     </Link>
                     <Link
                       to="/booking"
-                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn text-center whitespace-nowrap"
                     >
                       Dhan Yog
                     </Link>
                     <Link
                       to="/booking"
-                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn text-center whitespace-nowrap"
                     >
                       Panch Mahapurush Yog
                     </Link>
                     <Link
                       to="/booking"
-                      className="col-span-2 text-center px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="col-span-2 text-center px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
                     >
                       Malvaya Yog
                     </Link>
@@ -858,59 +953,48 @@ const Home = () => {
                   </div>
 
                   {/* 3. Right Side Buttons */}
-                  <div className="grid grid-cols-2 gap-3 order-3">
+                  <div className="grid grid-cols-2 gap-2 order-3">
                     <Link
                       to="/booking"
-                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn text-center whitespace-nowrap"
                     >
                       Marriage
                     </Link>
                     <Link
                       to="/booking"
-                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn text-center whitespace-nowrap"
                     >
                       Carrier
                     </Link>
                     <Link
                       to="/booking"
-                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn text-center whitespace-nowrap"
                     >
                       Finance
                     </Link>
                     <Link
                       to="/booking"
-                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn text-center whitespace-nowrap"
                     >
                       Health
                     </Link>
                     <Link
                       to="/booking"
-                      className="col-span-2 text-center px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
+                      className="col-span-2 text-center px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm hover:opacity-90 transition animate-fadeIn"
                     >
                       Study Abroad
                     </Link>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
                   {exploreServices.map((item) => {
                     const IconComponent = item.icon;
                     const isExternal = item.isExternal;
 
                     const linkContent = (
-                      <>
-                        <div className={`w-14 h-14 mx-auto mb-4 rounded-xl bg-white-to-r ${item.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                          {item.iconImage ? (
-                            <img src={item.iconImage} alt={`${item.name} icon`} className="h-8 w-8 object-contain" />
-                          ) : IconComponent ? (
-                            <IconComponent className="h-7 w-7 text-white" />
-                          ) : (
-                            <Star className="h-7 w-7 text-white" />
-                          )}
-                        </div>
-                        <h3 className="text-center text-sm font-semibold text-white group-hover:text-amber-300 transition-colors">
-                          {item.name}
-                        </h3>
-                      </>
+                      <h3 className="text-center text-xs sm:text-[16px] font-medium text-amber-900 group-hover:text-amber-300 transition-colors">
+                        {item.name}
+                      </h3>
                     );
 
                     return isExternal ? (
@@ -919,7 +1003,7 @@ const Home = () => {
                         href={item.path}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-white/20 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-amber-400/20 block text-decoration-none"
+                        className="group relative bg-white border border-white/10 rounded-xl px-3 py-3 sm:px-4 sm:py-3.5 hover:bg-white/10 hover:border-white/20 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-amber-400/20 flex items-center justify-center text-decoration-none min-h-[52px]"
                       >
                         {linkContent}
                       </a>
@@ -927,7 +1011,7 @@ const Home = () => {
                       <Link
                         key={item.path}
                         to={item.path}
-                        className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-white/20 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-amber-400/20"
+                        className="group relative bg-white border border-white/10 rounded-xl px-3 py-3 sm:px-4 sm:py-3.5 hover:bg-white/10 hover:border-white/20 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-amber-400/20 flex items-center justify-center min-h-[52px]"
                       >
                         {linkContent}
                       </Link>
@@ -1040,7 +1124,7 @@ const Home = () => {
                 </div>
 
                 <div className="lg:col-span-6 space-y-5">
-                  <div className="bg-white/5 border border-white/15 rounded-3xl p-4 lg:p-5 backdrop-blur-xl shadow-2xl shadow-black/30">
+                  <div id="live-astrologers" className="bg-white/5 border border-white/15 rounded-3xl p-4 lg:p-5 backdrop-blur-xl shadow-2xl shadow-black/30">
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <p className="text-[10px] uppercase tracking-[0.5em] text-emerald-200/70 mb-1">Available Now</p>
@@ -1103,10 +1187,10 @@ const Home = () => {
                               return (
                                 <Link
                                   key={`${astrologer._id || astrologer.name}-${index}`}
-                                  to="/booking"
-                                  className="flex-1 min-w-[115px] max-w-[135px] bg-white/10 border border-white/10 rounded-2xl p-2.5 flex flex-col items-center text-center text-white hover:border-white/30 hover:bg-white/15 transition-all duration-200 shadow-md shadow-black/20"
+                                  to={astrologer.isLive ? `/live/${astrologer._id}` : "/booking"}
+                                  className={`flex-1 min-w-[115px] max-w-[135px] bg-white/10 border ${astrologer.isLive ? 'border-red-500/50 hover:border-red-500' : 'border-white/10 hover:border-white/30'} rounded-2xl p-2.5 flex flex-col items-center text-center text-white hover:bg-white/15 transition-all duration-200 shadow-md shadow-black/20`}
                                 >
-                                  <div className="relative w-20 h-20 rounded-2xl overflow-hidden border border-white/20 mb-2">
+                                  <div className={`relative w-20 h-20 rounded-2xl overflow-hidden border ${astrologer.isLive ? 'border-red-500/80' : 'border-white/20'} mb-2`}>
                                     {imageSrc ? (
                                       <img
                                         src={imageSrc}
@@ -1118,14 +1202,29 @@ const Home = () => {
                                         {astrologer.name?.charAt(0) || 'A'}
                                       </div>
                                     )}
-                                    <span className="absolute top-1.5 right-1.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-slate-900 shadow-[0_0_8px_rgba(16,185,129,0.9)]"></span>
+                                    {astrologer.isLive ? (
+                                      <div className="absolute bottom-0 inset-x-0 bg-red-600/90 text-white text-[9px] font-bold py-0.5 text-center uppercase tracking-widest flex items-center justify-center gap-1">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+                                        LIVE
+                                      </div>
+                                    ) : (
+                                      <span className="absolute top-1.5 right-1.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-slate-900 shadow-[0_0_8px_rgba(16,185,129,0.9)]"></span>
+                                    )}
                                   </div>
                                   <p className="text-sm font-semibold leading-tight truncate w-full">{astrologer.name}</p>
                                   <p className="text-[11px] text-slate-300 truncate w-full">{subtitle}</p>
-                                  <div className="mt-2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-400/15 text-emerald-200 text-[11px] font-semibold whitespace-nowrap">
-                                    <MessageCircle className="h-3.5 w-3.5" />
-                                    Chat Now
-                                  </div>
+
+                                  {astrologer.isLive ? (
+                                    <div className="mt-2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30 text-[11px] font-bold whitespace-nowrap">
+                                      <Video className="h-3.5 w-3.5" />
+                                      Join Stream
+                                    </div>
+                                  ) : (
+                                    <div className="mt-2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-400/15 text-emerald-200 text-[11px] font-semibold whitespace-nowrap">
+                                      <MessageCircle className="h-3.5 w-3.5" />
+                                      Chat Now
+                                    </div>
+                                  )}
                                 </Link>
                               );
                             })}
@@ -1570,8 +1669,8 @@ const Home = () => {
 
               {/* Astrologers Section */}
               <div className="w-full border-t border-slate-100 pt-4 mb-6">
-                <div className="flex justify-center gap-3 mb-3">
-                  {availableAstrologers.slice(0, 3).map((astrologer, idx) => {
+                <div className="flex justify-center items-start gap-3 mb-3">
+                  {modalAstrologers.map((astrologer, idx) => {
                     const rawImage =
                       astrologer.profilePicture ||
                       astrologer.image ||
@@ -1579,31 +1678,39 @@ const Home = () => {
                       astrologer.photo;
                     const imageSrc = rawImage ? buildAssetUrl(rawImage) : null;
                     return (
-                      <div key={idx} className="relative w-14 h-14 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md">
-                        {imageSrc ? (
-                          <img src={imageSrc} alt={astrologer.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-amber-400 to-pink-500 flex items-center justify-center text-slate-900 font-bold text-lg">
-                            {astrologer.name?.charAt(0) || 'A'}
-                          </div>
-                        )}
-                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                      <div
+                        key={`${astrologer._id || astrologer.name}-${modalAstrologerIndex}-${idx}`}
+                        className="flex flex-col items-center w-20 transition-all duration-500 animate-fadeIn"
+                      >
+                        <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md">
+                          {imageSrc ? (
+                            <img src={imageSrc} alt={astrologer.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-amber-400 to-pink-500 flex items-center justify-center text-slate-900 font-bold text-2xl">
+                              {astrologer.name?.charAt(0) || 'A'}
+                            </div>
+                          )}
+                          <span className="absolute bottom-0 right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                        </div>
+                        <p className="text-[11px] font-bold text-slate-800 mt-1.5 truncate w-full text-center">
+                          {astrologer.name}
+                        </p>
                       </div>
                     );
                   })}
-                  {availableAstrologers.length === 0 && (
+                  {modalAstrologers.length === 0 && (
                     <>
-                      <div className="relative w-14 h-14 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md flex items-center justify-center font-bold text-lg text-slate-600">
+                      <div className="relative w-20 h-20 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md flex items-center justify-center font-bold text-2xl text-slate-600">
                         A
-                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                        <span className="absolute bottom-0 right-1 w-4 h-4 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
                       </div>
-                      <div className="relative w-14 h-14 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md flex items-center justify-center font-bold text-lg text-slate-600">
+                      <div className="relative w-20 h-20 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md flex items-center justify-center font-bold text-2xl text-slate-600">
                         B
-                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                        <span className="absolute bottom-0 right-1 w-4 h-4 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
                       </div>
-                      <div className="relative w-14 h-14 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md flex items-center justify-center font-bold text-lg text-slate-600">
+                      <div className="relative w-20 h-20 rounded-full border-2 border-amber-300 overflow-hidden bg-slate-100 shadow-md flex items-center justify-center font-bold text-2xl text-slate-600">
                         C
-                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                        <span className="absolute bottom-0 right-1 w-4 h-4 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
                       </div>
                     </>
                   )}
@@ -1616,14 +1723,14 @@ const Home = () => {
               {/* Action Buttons */}
               <div className="flex gap-3 w-full">
                 <Link
-                  to="/booking"
+                  to="/live-astrologers"
                   onClick={() => setShowModal(false)}
                   className="flex-1 py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-center text-sm shadow-md transition-all active:scale-[0.98]"
                 >
-                  Call Now
+                  Live Astrologers
                 </Link>
                 <Link
-                  to="/booking"
+                  to="/live-chat"
                   onClick={() => setShowModal(false)}
                   className="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-center text-sm shadow-md transition-all active:scale-[0.98]"
                 >

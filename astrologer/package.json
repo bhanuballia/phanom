@@ -10,6 +10,8 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "agora-rtc-react": "^2.5.1",
+        "agora-rtc-sdk-ng": "^4.24.8",
         "jspdf": "^2.5.1",
         "jspdf-autotable": "^3.8.2",
         "lucide-react": "^0.544.0",
