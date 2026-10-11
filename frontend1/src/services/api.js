@@ -14,7 +14,17 @@ const getEnvValue = (key) => {
 };
 
 const computeApiBaseUrl = () => {
-  return 'http://localhost:5000/api';
+  const envUrl = getEnvValue('VITE_API_BASE_URL');
+  if (envUrl) {
+    return trimTrailingSlash(envUrl);
+  }
+  if (typeof window !== 'undefined' && window.location) {
+    const { hostname } = window.location;
+    if (isLocalhost(hostname)) {
+      return 'http://localhost:5000/api';
+    }
+  }
+  return 'https://astrology-run-backend.onrender.com/api';
 };
 
 export const API_BASE_URL = computeApiBaseUrl();

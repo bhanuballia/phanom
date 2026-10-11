@@ -53,13 +53,20 @@ const LiveStreamStudio = () => {
     if (!profile) return;
     
     // Initialize Socket
+    const isLocal = typeof window !== 'undefined' && /localhost|127\.0\.0\.1/.test(window.location.hostname);
+    const defaultBackend = isLocal ? 'http://localhost:5000' : 'https://astrology-run-backend.onrender.com';
     const socketUrl = import.meta.env.VITE_API_BASE_URL 
         ? import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '') 
-        : 'http://localhost:5000';
+        : defaultBackend;
     const newSocket = io(socketUrl);
     setSocket(newSocket);
 
-    newSocket.emit('join-stream-chat', profile._id);
+    const emitJoin = () => {
+      newSocket.emit('join-stream-chat', profile._id);
+    };
+
+    newSocket.on('connect', emitJoin);
+    emitJoin();
 
     newSocket.on('receive-stream-message', (msg) => {
       setMessages((prev) => [...prev, msg]);

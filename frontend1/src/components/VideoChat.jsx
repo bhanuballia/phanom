@@ -122,9 +122,11 @@ const VideoChat = () => {
     if (!appointment || !hasAcceptedConduct) return;
 
     // Initialize socket connection
+    const isLocal = typeof window !== 'undefined' && /localhost|127\.0\.0\.1/.test(window.location.hostname);
+    const defaultBackend = isLocal ? 'http://localhost:5000' : 'https://astrology-run-backend.onrender.com';
     const socketUrl = import.meta.env.VITE_API_BASE_URL
       ? import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '')
-      : 'http://localhost:5000';
+      : defaultBackend;
     socketRef.current = io(socketUrl);
 
     // Initialize local media

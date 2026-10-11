@@ -1,5 +1,14 @@
 const getBaseUrl = () => {
-  return 'http://localhost:5000/api';
+  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
+  }
+  if (typeof window !== 'undefined' && window.location) {
+    const { hostname } = window.location;
+    if (/localhost|127\.0\.0\.1/.test(hostname)) {
+      return 'http://localhost:5000/api';
+    }
+  }
+  return 'https://astrology-run-backend.onrender.com/api';
 };
 
 const API_BASE_URL = getBaseUrl();

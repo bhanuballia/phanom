@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-// Use backend proxy to avoid CORS issues
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL 
+  || (typeof window !== 'undefined' && !/localhost|127\.0\.0\.1/.test(window.location.hostname)
+      ? 'https://astrology-run-backend.onrender.com/api'
+      : 'http://localhost:5000/api');
 
 /**
  * VedAstro API Service (via Backend Proxy)
