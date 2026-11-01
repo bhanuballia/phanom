@@ -439,6 +439,8 @@ app.use('/api/audit', auditRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/agora', agoraRoutes);
 app.use('/api/translate', require('./routes/translate'));
+app.use('/api/conjunction', require('./routes/conjunction'));
+app.use('/api/kundali/api/conjunction', require('./routes/conjunction'));
 
 // Serve uploaded files - ensure paths work in Vercel
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
