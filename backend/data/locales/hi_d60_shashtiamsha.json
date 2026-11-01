@@ -1,0 +1,628 @@
+{
+  "lang": "hi",
+  "langName": "Hindi",
+  "ui": {
+    "sectionTitle": "षष्ट्यंश विश्लेषण (D60 - पूर्वजन्म कर्म एवं प्रारब्ध भाग्य)",
+    "sectionSubtitle": "पूर्वजन्म के संचित कर्म, प्रारब्ध भोग, सूक्ष्म संस्कार एवं चरम दैवीय भाग्य का भाववार विश्लेषण",
+    "houseBadge": "भाव",
+    "deityLabel": "षष्ट्यंश अधिष्ठाता",
+    "partLabel": "षष्ट्यंश भाग (1-60)",
+    "impactLabel": "D60 कर्म फल"
+  },
+  "intro": "वैदिक ज्योतिष में डी-60 (षष्टियांश) कुंडली सबसे गहरी और अत्यंत गहन वर्गीय कुंडली है। यह संचित पूर्वजन्म के कर्मों को उजागर करती है जो आपके वर्तमान जीवन का आधार बनाते हैं। महर्षि पराशर ने सभी वर्गीय कुंडलों में डी-60 को सर्वोच्च महत्व दिया है क्योंकि यह आपके जन्म की रूपरेखा के पीछे के \"क्यों\" (कारण) को स्पष्ट करती है।\n\nसारवली और जातक पारिजात जैसे शास्त्रीय ग्रंथों के अनुसार, डी-60 उन persistent (निरंतर बने रहने वाले) जीवन पैटर्नों की छिपी हुई जड़ों को उजागर करती है जो बदलाव का विरोध करते हैं। यह यह निर्धारित करने में अंतिम प्रमाण है कि जन्म कुंडली में किसी ग्रह का शुभ फल पूर्ण रूप से फलीभूत होगा या उसे गहरे बैठे हुए कार्मिक प्रतिरोध का सामना करना पड़ेगा।\n\nडी-60 के मुख्य उपयोग:\n- पूर्वजन्म के कर्म: पिछले जन्मों के वे विशिष्ट कर्म जो वर्तमान पहचान, स्वास्थ्य और भाग्य को प्रभावित करते हैं।\n- निरंतर बने रहने वाले पैटर्न: बार-बार होने वाले उन संबंध, करियर या वित्तीय संघर्षों की व्याख्या करता है जो तार्किक समाधानों को चुनौती देते हैं।\n- कुंडली पदानुक्रम: यह वह आधारभूत परत प्रदान करती है जो डी-1, डी-9 और डी-10 में दिखाई देने वाली संभावनाओं का समर्थन या उन्हें प्रतिबंधित करती है।\n- आध्यात्मिक संभावना: संचित आध्यात्मिक पुण्य और वर्तमान धार्मिक (धार्मिक/कर्तव्यगत) विकास की बाधाओं को उजागर करती है।",
+  "interpretations": {
+    "Sun": {
+      "1": {
+        "positive": "पिछले जन्मों के प्रगाढ़ पुण्यों के कारण एक अटल और राजसी आत्मा प्राप्त होती है। आपका जन्म अपार आध्यात्मिक प्राधिकार और एक स्पष्ट दिव्य उद्देश्य के साथ हुआ है।",
+        "neutral": "D60 (षष्टियांश) कुंडली के प्रथम भाव में सूर्य का होना पिछले जन्मों से चली आ रही आत्मा की मूल कार्मिक पहचान को उजागर करता है।",
+        "negative": "पीड़ित सूर्य पिछले जन्मों के गहरे अहंकार का कर्म लेकर आता है, जिसके परिणामस्वरूप एक अंतर्निहित अहंकार उत्पन्न होता है जो आत्मा की प्रगति को अवरुद्ध करता है।"
+      },
+      "2": {
+        "positive": "पिछले जन्म की उदारता इस जीवन में संसाधनों तक सहज पहुंच प्रदान करती है। आपकी वाणी में गहरा और प्राचीन प्राधिकार झलकता है।",
+        "neutral": "D60 (षष्टियांश) के दूसरे भाव में सूर्य आपके गहरे कार्मिक मूल्यों और वित्तीय भाग्य को पिछले जन्म के कर्मों से जोड़ता है।",
+        "negative": "पीड़ित सूर्य पिछले जन्म में धन या सत्ता के गंभीर दुरुपयोग का संकेत देता है, जिससे अस्पष्ट वित्तीय कार्मिक ऋण उत्पन्न होते हैं।"
+      },
+      "3": {
+        "positive": "एक योद्धा या रक्षक के रूप में पिछले जन्मों से प्राप्त असीम, आत्मीय साहस। आप कार्मिक बाधाओं को सहजता से पार कर लेते हैं।",
+        "neutral": "D60 (षष्टियांश) के तीसरे भाव में सूर्य कार्य करने की आत्मा की गहरी इच्छा और भाई-बहनों के साथ इसके कार्मिक संबंधों को उजागर करता है।",
+        "negative": "पीड़ित सूर्य भाई-बहनों के साथ साहस की कार्मिक कमी या पिछले जन्म के संघर्षों को वापस लाता है जो आत्मा की परीक्षा लेते हैं।"
+      },
+      "4": {
+        "positive": "पिछले जन्म के आध्यात्मिक अभ्यासों में निहित गहन, पूर्ण आंतरिक शांति। आपकी आत्मा एक दिव्य घर से गहराई से जुड़ी हुई है।",
+        "neutral": "D60 (षष्टियांश) के चौथे भाव में सूर्य कई जन्मों में निर्मित आत्मा की सबसे गहरी भावनात्मक नींव पर जोर देता है।",
+        "negative": "पीड़ित सूर्य 'घर' की अवधारणा से संबंधित तीव्र, अस्पष्ट आत्मीय अशांति और कार्मिक पीड़ा का कारण बनता है।"
+      },
+      "5": {
+        "positive": "सर्वोच्च पिछले जन्म का आध्यात्मिक पुण्य (पूर्व पुण्य) असाधारण, दिव्य बुद्धि और अत्यधिक विकसित संतान प्रदान करता है।",
+        "neutral": "D60 (षष्टियांश) के पांचवें भाव में सूर्य आत्मा के संचित पुण्यों और रचनात्मक कर्म का अंतिम सूचक है।",
+        "negative": "पीड़ित सूर्य संतानों के संबंध में भारी कार्मिक ऋण या पिछले जन्मों में दिव्य बुद्धि के दुरुपयोग को सामने लाता है।"
+      },
+      "6": {
+        "positive": "निःस्वार्थ सेवा के पिछले जन्म के कार्य कार्मिक रोगों के खिलाफ एक अजेय प्रतिरक्षा प्रणाली प्रदान करते हैं। आप प्राचीन शत्रुओं को परास्त करते हैं।",
+        "neutral": "D60 (षष्टियांश) के छठे भाव में सूर्य पिछले जन्मों से चले आ रहे सेवा, ऋण और स्वास्थ्य के कर्म को उजागर करता है।",
+        "negative": "पीड़ित सूर्य गंभीर, गहराई से जुड़े कार्मिक रोगों या शत्रुओं के साथ प्राचीन, अनसुलझे संघर्षों का संकेत देता है।"
+      },
+      "7": {
+        "positive": "पिछले जन्म के कर्मों द्वारा निर्धारित एक दिव्य, आत्मीय जीवनसाथी की साझेदारी। विवाह आत्मा को उसके सर्वोच्च उद्देश्य तक पहुँचाता है।",
+        "neutral": "D60 (षष्टियांश) के सातवें भाव में सूर्य आपकी आत्मा के सबसे गहरे कर्म को मिलन और प्रगाढ़ साझेदारियों की अवधारणा से जोड़ता है।",
+        "negative": "पीड़ित सूर्य विवाह में गंभीर, अनसुलझे कार्मिक संघर्ष लाता है, जो आपको कठोर पाठ सीखने के लिए पिछले जन्मों के साझेदारों से बांधता है।"
+      },
+      "8": {
+        "positive": "पिछले जन्मों से गूढ़ विद्या (ऑकल्ट) और जीवन-मृत्यु के चक्रों पर गहरा आधिपत्य। आप आत्मा का सहज रूप से कायापलट करते हैं।",
+        "neutral": "D60 (षष्टियांश) के आठवें भाव का सूर्य सबसे गहरे, सबसे छिपे हुए कार्मिक परिवर्तनों और अचानक होने वाली, भाग्यशाली घटनाओं से संबंधित है।",
+        "negative": "पीड़ित सूर्य गंभीर, भयानक कार्मिक संकटों, अचानक दर्दनाक भाग्यीय घटनाओं और गहरे अवचेतन भय का कारण बनता है।"
+      },
+      "9": {
+        "positive": "पिछले जन्म की भक्ति से सर्वोच्च दिव्य कृपा। आपकी आत्मा स्वाभाविक रूप से धर्म के साथ संरेखित है और ब्रह्मांडीय शक्तियों द्वारा सुरक्षित है।",
+        "neutral": "D60 (षष्टियांश) के नौवें भाव में सूर्य आपकी आत्मा की मूल विश्वास प्रणाली और अंतिम भाग्य को आपके पिछले जन्म के आध्यात्मिक प्रयासों से जोड़ता है।",
+        "negative": "पीड़ित सूर्य पिछले जन्म के धार्मिक पाखंड के कारण आस्था की दुखद हानि लाता है, जिससे गंभीर कार्मिक दुर्भाग्य पैदा होता है।"
+      },
+      "10": {
+        "positive": "पिछले जन्म के धर्मपरायण नेतृत्व द्वारा प्रदत्त नियति आधारित करियर की उन्नति और अपार सांसारिक शक्ति। आत्मा शासन करने के लिए बनी है।",
+        "neutral": "D60 (षष्टियांश) के दसवें भाव में सूर्य सार्वजनिक क्षेत्र में आत्मा के अंतिम कार्मिक उद्देश्य और इसके नियत प्राधिकार को उजागर करता है।",
+        "negative": "पीड़ित सूर्य पिछले जन्मों में शक्ति के दुरुपयोग के कारण नियति आधारित, शानदार पेशेवर पतन का कारण बनता है।"
+      },
+      "11": {
+        "positive": "पिछले जन्म के परोपकार के कारण आत्मीय स्तर की इच्छाओं की सहज पूर्ति। आप अत्यधिक विकसित, शक्तिशाली नेटवर्क को आकर्षित करते हैं।",
+        "neutral": "D60 (षष्टियांश) के ग्यारहवें भाव में सूर्य आत्मा की अंतिम आकांक्षाओं और नियत लाभों को पिछले जन्म के कर्म से जोड़ता है।",
+        "negative": "पीड़ित सूर्य मित्रों के माध्यम से गहरा कार्मिक दुख और पूर्व के लोभ के कारण गहरी इच्छाओं की पूर्ण निराशा लाता है।"
+      },
+      "12": {
+        "positive": "आत्मा परम आध्यात्मिक मुक्ति (मोक्ष) के कगार पर है। सभी कार्मिक चक्रों की प्रगाढ़ शांति और पूर्णता।",
+        "neutral": "D60 (षष्टियांश) के बारहवें भाव में सूर्य आत्मा के अंतिम उद्धार, गहरे अवचेतन कर्म और अनिवार्य हानियों पर ध्यान केंद्रित करता है।",
+        "negative": "पीड़ित सूर्य भयानक, अस्पष्ट कार्मिक अलगाव, गंभीर अवचेतन भय और भारी, भाग्यीय वित्तीय बर्बादी का कारण बनता है।"
+      }
+    },
+    "Moon": {
+      "1": {
+        "positive": "पिछले जन्मों से प्राप्त अगाध, शुद्ध भावनात्मक ज्ञान। यह आत्मा पूर्ण शांति, सहानुभूति और दैवीय प्रेम को प्रसारित करती है।",
+        "register": "D60 Shashtiamsha के प्रथम भाव (Lagna) में चंद्रमा आत्मा के मूल भावनात्मक सार और विभिन्न जन्मों में उसकी ग्रहणशीलता को दर्शाता है।",
+        "negative": "पीड़ित चंद्रमा पिछले जन्मों से जुड़ा गंभीर, गहरे स्तर का भावनात्मक आघात लाता है, जिससे तीव्र और अस्पष्ट अस्थिरता उत्पन्न होती है।"
+      },
+      "2": {
+        "positive": "प्राचीन और शुद्ध पारिवारिक संस्कारों से जुड़ी गहरी भावनात्मक सुरक्षा। पूर्व जन्म के पोषण के कारण आपकी वाणी आत्माओं को हील (संतुलित) करती है।",
+        "register": "D60 Shashtiamsha के द्वितीय भाव में चंद्रमा आपकी आत्मा की वित्तीय नियति और आहार-संबंधित कर्म को पिछले भावनात्मक पैटर्न्स से जोड़ता है।",
+        "negative": "पीड़ित चंद्रमा पूर्व जन्म की भावनात्मक लालसा और गंभीर karmic पारिवारिक कलह के कारण भाग्यवश वित्तीय अस्थिरता का कारण बनता है।"
+      },
+      "3": {
+        "positive": "अत्यंत सहानुभूतिपूर्ण और रचनात्मक स्तर पर आत्मा का संवाद। आप रिश्तेदारों के साथ पूर्व जन्म के karmic मतभेदों को सहजता से सुधार लेते हैं।",
+        "register": "D60 Shashtiamsha के तृतीय भाव में चंद्रमा आत्मा की यात्रा के दौरान संचित मानसिक कर्म और भावनात्मक साहस को उजागर करता है।",
+        "negative": "पीड़ित चंद्रमा गंभीर, भाग्यवश मिलने वाली तंत्रिका (नर्वस) चिंता, कपटी संवाद और भाई-बहनों के साथ गहरे भावनात्मक मतभेद लाता है।"
+      },
+      "4": {
+        "positive": "पूर्ण आंतरिक शांति और एक निर्धारित, अत्यंत आध्यात्मिक घरेलू वातावरण। आत्मा पूर्व जन्म के पुण्यों के आराम में विश्राम करती है।",
+        "register": "D60 Shashtiamsha के चतुर्थ भाव में चंद्रमा एक मुख्य स्थिति है जो आत्मा की सबसे गहरी भावनात्मक नींव और karmic मातृ-संबंधों को दर्शाती है।",
+        "negative": "पीड़ित चंद्रमा आत्मा की आंतरिक शांति को नष्ट कर देता है, जिससे घर-परिवार के संबंध में तीव्र, अस्पष्ट दुख और karmic कष्ट उत्पन्न होते हैं।"
+      },
+      "5": {
+        "positive": "अत्यधिक सहज ज्ञानी (इंट्यूइटीव), लगभग पारलौकिक (साइकोक) आत्म-बुद्धिमत्ता। पूर्व जन्म के पुण्य नियतिवश अत्यंत स्नेही संतान दिलाते हैं।",
+        "register": "D60 Shashtiamsha के पंचम भाव में चंद्रमा आत्मा के पिछले भावनात्मक कर्म को उसकी वास्तविक बुद्धिमत्ता और संतान (प्रोजेनी) से जोड़ता है।",
+        "negative": "पीड़ित चंद्रमा संतानों के संबंध में गंभीर, भाग्यवश मिलने वाली भावनात्मक पीड़ा और पूर्व जन्म के प्रेम-प्रसंगों में गहरे भ्रम (इल्यूजन) लाता है।"
+      },
+      "6": {
+        "positive": "आत्मा ने पिछले जन्म की सेवा के माध्यम से उपचार (हीलिंग) की कला में महारत हासिल कर ली है। आप दैवीय सहानुभूति से संघर्षों को सहजता से पार कर लेते हैं।",
+        "register": "D60 Shashtiamsha के षष्ठ भाव में चंद्रमा आत्मा के भावनात्मक स्वास्थ्य को karmic ऋण, रोगों और दैनिक सेवा से जोड़ता है।",
+        "negative": "पीड़ित चंद्रमा पूर्व जन्म के अपराध बोध के कारण अस्पष्ट मनोदैहिक (साइकोसोमैटिक) बीमारियां और शत्रुओं से गंभीर भावनात्मक थकावट पैदा करता है।"
+      },
+      "7": {
+        "positive": "एक निर्धारित, अत्यंत गहन रूप से पोषण करने वाला सोलमेट (आत्मा का साथी) संबंध। पूर्व जन्म का कर्म आपके विवाह को शुद्ध दैवीय प्रेम से आशीर्वादित करता है।",
+        "register": "D60 Shashtiamsha के सप्तम भाव में चंद्रमा पिछले जन्मों से चले आ रहे साझेदारियों के सबसे गहरे भावनात्मक गतिशीलता (डाइनैमिक्स) को उजागर करता है।",
+        "negative": "पीड़ित चंद्रमा विवाह में गंभीर, भाग्यवश मिलने वाली भावनात्मक यातना लाता है, जो आपको पिछले जन्मों के अस्थिर साथियों से बांध देता है।"
+      },
+      "8": {
+        "positive": "प्रगाढ़ भावनात्मक परिवर्तन और गहरी गूढ़ (ऑकल्ट) अंतर्दृष्टि। आत्मा पूर्ण शांति के साथ डरावने संकटों से पार पाती है।",
+        "register": "D60 Shashtiamsha के अष्टम भाव का संबंध सबसे छिपे हुए भावनात्मक आघातों और आत्मा की मनोवैज्ञानिक विरासत से है।",
+        "negative": "पीड़ित चंद्रमा गंभीर, पंगु बना देने वाले भावनात्मक भय, गहरे karmic आघात और अत्यधिक मनोवैज्ञानिक संकटों का कारण बनता है।"
+      },
+      "9": {
+        "positive": "सर्वोच्च आध्यात्मिक दर्शन में गहरा, शुद्ध भावनात्मक सुकून। पूर्व जन्म की भक्ति आत्मा के निर्धारित मार्ग का मार्गदर्शन करती है।",
+        "register": "D60 Shashtiamsha के नवम भाव में चंद्रमा आत्मा की विश्वास प्रणाली को उसकी आस्था की प्रगाढ़ भावनात्मक क्षमता से जोड़ता है।",
+        "negative": "पीड़ित चंद्रमा धर्म के प्रति भाग्यवश मोहभंग, झूठे गुरुओं के माध्यम से गंभीर दुख और आध्यात्मिक शांति की कमी लाता है।"
+      },
+      "10": {
+        "positive": "निर्धारित करियर नेतृत्व में प्रगाढ़ भावनात्मक बुद्धिमत्ता। जनता आपकी शुद्ध आत्मा और सहानुभूतिपूर्ण अधिकार (अथॉरिटी) का सम्मान करती है।",
+        "register": "D60 Shashtiamsha के दशम भाव में चंद्रमा यह उजागर करता है कि पिछले जन्म का भावनात्मक कर्म आत्मा की सार्वजनिक प्रतिष्ठा और नियति को कैसे प्रभावित करता है।"
+      },
+      "11": {
+        "positive": "निर्धारित, सहायक सोल-ग्रुप्स (आत्मिक समूहों) के माध्यम से प्रगाढ़ भावनात्मक पूर्णता। आप दैवीय समुदाय के माध्यम से परम लक्ष्यों को प्राप्त करते हैं।",
+        "register": "D60 Shashtiamsha के एकादश भाव में चंद्रमा आत्मा के अंतिम सामाजिक वृत्तों (सर्कल्स) को उसकी सबसे गहरी भावनात्मक सुरक्षा से जोड़ता है।",
+        "negative": "पीड़ित चंद्रमा मित्रों के माध्यम से गंभीर karmic दुख, लाभ के आधार पर उतार-चढ़ाव वाले नैतिक मूल्य, और गहरा, भाग्यवश मिलने वाला अकेलापन लाता है।"
+      },
+      "12": {
+        "positive": "गहरे एकांत में पूर्ण आध्यात्मिक शांति। आत्मा गहन अवचेतन अंतर्दृष्टि और भविष्यसूचक सपनों से युक्त होती है।",
+        "register": "D60 Shashtiamsha के द्वादश भाव में चंद्रमा सबसे छिपे हुए भावनात्मक कर्म और मुक्ति (एमैनसिपेशन) के प्रति आत्मा की अंतिम इच्छा को उजागर करता है।",
+        "negative": "पीड़ित चंद्रमा पूर्व जन्म के आघात, गहरे छिपे हुए भय और भावनात्मक एकांत के कारण गंभीर, डरावने नींद के विकार (स्लीप डिस्टर्बेंस) पैदा करता है।"
+      }
+    },
+    "Mars": {
+      "1": {
+        "positive": "Immense, unyielding spiritual vitality and a divine fighting spirit carried from past lives. The soul is an unstoppable warrior.",
+        "neutral": "Mars in the 1st house of D60 focuses on the deeply ingrained aggressive or protective karmic traits of the soul.",
+        "negative": "Afflicted Mars brings severe, inherited proneness to violent anger, recklessness, and physical injuries due to past life cruelty."
+      },
+      "2": {
+        "positive": "Fierce, destined protection of values and family. The soul accumulates vast resources through bold, karmically blessed actions.",
+        "neutral": "Mars in the 2nd house of D60 highlights deep karma related to speech, diet, and the aggressive pursuit of wealth.",
+        "negative": "Afflicted Mars causes brutally harsh speech destroying families, sudden fated financial ruin, and reckless past life spending."
+      },
+      "3": {
+        "positive": "Unstoppable, divine courage and initiative. The soul aggressively and successfully solves karmic problems to protect its kin.",
+        "neutral": "Mars in the 3rd house of D60 emphasizes the soul's ancient drive for effort, courage, and action.",
+        "negative": "Afflicted Mars brings severe cowardly actions, violent fated conflicts with siblings, and dangerously misdirected energy."
+      },
+      "4": {
+        "positive": "A powerful, destined drive to build a secure spiritual foundation. The soul fiercely defends its inner peace and home.",
+        "neutral": "Mars in the 4th house of D60 points to the highly active, perhaps conflict-driven karma regarding the soul's deepest roots.",
+        "negative": "Afflicted Mars causes intense, fated domestic violence, sudden loss of property, and a complete, terrifying lack of inner peace."
+      },
+      "5": {
+        "positive": "Dynamic, divine creative expression and a fiercely protective nature towards destined children. Strong intellectual drive.",
+        "neutral": "Mars in the 5th house of D60 highlights the passionate, ancient karma involving intellect, romance, and progeny.",
+        "negative": "Afflicted Mars brings violent conflicts with children, severely aggressive fated romances, and destructively misdirected intellect."
+      },
+      "6": {
+        "positive": "The ultimate placement for utterly destroying karmic enemies and overcoming deep diseases. The soul has a highly competitive edge.",
+        "neutral": "Mars in the 6th house of D60 focuses ancient energy on fighting destined daily battles and overcoming karmic debts.",
+        "negative": "Afflicted Mars causes severe inflammatory diseases, continuous, draining fated litigation, and extremely dangerous ancient enemies."
+      },
+      "7": {
+        "positive": "Dynamic and highly protective destined partnerships. You and your soulmate tackle cosmic challenges as a unified, powerful team.",
+        "neutral": "Mars in the 7th house of D60 indicates the ancient energy and potential for severe conflict within destined marriages.",
+        "negative": "Afflicted Mars brings brutal aggression or abuse in fated marriages, violently dominating partners, and devastating divorce."
+      },
+      "8": {
+        "positive": "The ability to survive extreme, terrifying physical dangers. Strong regenerative powers and deep, ancient occult abilities.",
+        "neutral": "Mars in the 8th house of D60 deals with sudden, fated transformations, surgeries, and the most hidden aggressive karma.",
+        "negative": "Afflicted Mars brings extreme danger of severe fated accidents, sudden violent events, and horrifying hidden karmic diseases."
+      },
+      "9": {
+        "positive": "Fierce, unyielding defense of divine beliefs and dharma. The soul fights righteously for ultimate truth against all odds.",
+        "neutral": "Mars in the 9th house of D60 highlights the ancient karmic struggle involving religion, philosophy, and higher learning.",
+        "negative": "Afflicted Mars causes highly dangerous religious fanaticism, violent clashes with gurus, and a forceful, misguided belief system."
+      },
+      "10": {
+        "positive": "Ambitious, destined drive that effortlessly overcomes all professional obstacles. The soul achieves high executive status.",
+        "neutral": "Mars in the 10th house of D60 points to the aggressive, ancient pursuit of career, public standing, and authority.",
+        "negative": "Afflicted Mars brings spectacular, fated professional downfalls due to extreme aggression, conflicts with authorities, and public disgrace."
+      },
+      "11": {
+        "positive": "Aggressive and highly successful pursuit of massive, destined goals. The soul is aided by powerful, dynamic networks.",
+        "neutral": "Mars in the 11th house of D60 involves ancient effort towards gains and dynamics within powerful large groups.",
+        "negative": "Afflicted Mars causes violent, fated disputes with friends, severe accidents related to networks, and bitterly frustrated ambitions."
+      },
+      "12": {
+        "positive": "Massive energy directed perfectly towards ultimate spiritual liberation. The soul completely defeats hidden karmic enemies.",
+        "neutral": "Mars in the 12th house of D60 focuses on the most hidden karma, fated expenses, and aggressive actions in total isolation.",
+        "negative": "Afflicted Mars brings highly dangerous secret enemies, severe danger of imprisonment for past acts, and violently self-destructive actions."
+      }
+    },
+    "Mercury": {
+      "1": {
+        "positive": "पिछले जन्मों से प्राप्त परम, लगभग दिव्य बुद्धि और अनुकूलनशीलता। आत्मा ब्रह्मांड को सहजता से समझती है।",
+        "neutral": "D60 (षष्टियांश) के प्रथम भाव में बुध आत्मा की गहरीतम कार्मिक बुद्धि और संचार कौशल की ओर संकेत करता है।",
+        "negative": "पीड़ित बुध गंभीर, भाग्यजनित तंत्रिका संबंधी चिंता (नर्वस एंग्जायटी), पक्षाघात जैसी अनिर्णय की स्थिति और मानसिक एकाग्रता की पूर्ण कमी लाता है।"
+      },
+      "2": {
+        "positive": "शानदार, सत्यवादी संचार जो परिवारों को ठीक करता है। आत्मा उच्च बुद्धि के साथ भाग्य प्रदत्त धन का सहज प्रबंधन करती है।",
+        "neutral": "D60 के दूसरे भाव में बुध प्राचीन वाणी पैटर्न, गहरी प्रारंभिक शिक्षा के कर्म और वित्तीय बुद्धि से संबंधित है।",
+        "negative": "पीड़ित बुध लगातार और भाग्यजनित झूठ, पिछले जन्म के छल के कारण भारी वित्तीय धोखाधड़ी और गंभीर वाणी दोष का कारण बनता है।"
+      },
+      "3": {
+        "positive": "प्रतिभा स्तर के समस्या-समाधान कौशल और त्रुटिहीन संचार। आत्मा सहजता से कार्मिक बाधाओं पर पार पाती है।",
+        "neutral": "D60 के तीसरे भाव में बुध प्राचीन मानसिक प्रयासों, लेखन कौशल और भाई-बहनों के साथ भाग्यजनित संबंधों को उजागर करता है।",
+        "negative": "पीड़ित बुध गंभीर गलतफहमी, भयानक मानसिक आघात (नर्वस ब्रेकडाउन) और रिश्तेदारों के साथ कड़वे, भाग्यजनित विवाद लाता है।"
+      },
+      "4": {
+        "positive": "पूर्ण मानसिक शांति और घरेलू जीवन के प्रति एक पूरी तरह से तार्किक दृष्टिकोण। आत्मा एक बौद्धिक रूप से शानदार घर में विश्राम करती है।",
+        "neutral": "D60 के चौथे भाव में बुध आत्मा द्वारा विरासत में प्राप्त गहरे मानसिक संस्कारों और बौद्धिक नींव की ओर संकेत करता है।",
+        "negative": "पीड़ित बुध घर पर निरंतर, पागल कर देने वाली मानसिक बेचैनी, गंभीर शैक्षणिक व्यवधान और गहरी चिंता का कारण बनता है।"
+      },
+      "5": {
+        "positive": "गहन, सर्वोच्च बुद्धि और विश्लेषणात्मक प्रतिभा। आत्मा प्रतिभाशाली संतानों और रचनात्मक महारत से संपन्न है।",
+        "neutral": "D60 के पांचवें भाव में बुध आत्मा की अंतिम बुद्धि, कार्मिक स्मृति और गहन अध्ययन की क्षमता पर केंद्रित है।",
+        "negative": "पीड़ित बुध गंभीर सीखने की अक्षमता (लर्निंग डिसएबिलिटी), संतानों की बुद्धि को लेकर भाग्यजनित चिंता और अत्यंत खराब निर्णय क्षमता लाता है।"
+      },
+      "6": {
+        "positive": "एक प्रतिभाशाली विश्लेषणात्मक मन सही तार्किक दिनचर्या के माध्यम से कार्मिक शत्रुओं को सहजता से परास्त करता है और सभी रोगों पर विजय पाता है।",
+        "neutral": "D60 के छठे भाव में बुध आत्मा की गहरी बुद्धि को भाग्यजनित दैनिक दिनचर्या और शत्रुओं से निपटने से जोड़ता है।",
+        "negative": "पीड़ित बुध पिछले कर्मों के कारण गंभीर तंत्रिका तंत्र विकार, कार्यस्थल के विवाद और भारी धोखाधड़ी की संवेदनशीलता का कारण बनता है।"
+      },
+      "7": {
+        "positive": "भावी विवाह में त्रुटिहीन, टेलीपैथिक संचार। आत्मा अत्यधिक सफल और शानदार व्यावसायिक साझेदारियों में संलग्न होती है।",
+        "neutral": "D60 के सातवें भाव में बुध आत्मा के अंतरंग संबंधों में संचार और बुद्धि की प्राचीन भूमिका को उजागर करता है।",
+        "negative": "पीड़ित बुध गंभीर गलतफहमियां, अत्यधिक कपटी भाग्यजनित साझेदार और विवाह में अत्यंत जटिल कानूनी विवाद लाता है।"
+      },
+      "8": {
+        "positive": "गहन, पूर्ण अनुसंधान क्षमता और गहरी मनोवैज्ञानिक महारत। आत्मा शुद्ध प्रतिभा के माध्यम से भयानक संकटों से पार पाती है।",
+        "neutral": "D60 के आठवें भाव में बुध सबसे छिपे हुए गुप्त ज्ञान, गहरी मनोवैज्ञानिक गहराइयों और अचानक होने वाली भाग्यजनित घटनाओं से संबंधित है।",
+        "negative": "पीड़ित बुध गंभीर, भयानक तंत्रिका विकार, अज्ञात का पक्षाघात करने वाला डर और छिपे हुए शत्रुओं के माध्यम से भारी नुकसान लाता है।"
+      },
+      "9": {
+        "positive": "सर्वोच्च ब्रह्मांडीय ज्ञान और दर्शन की सटीक, तार्किक समझ। निरंतर सीखने के माध्यम से आत्मा को अंतिम सफलता मिलती है।",
+        "neutral": "D60 के नौवें भाव में बुध आत्मा की बुद्धि को परम आध्यात्मिकता और उच्च ब्रह्मांडीय शिक्षा से जोड़ता है।",
+        "negative": "पीड़ित बुध अत्यधिक अतार्किक, पाखंडी विश्वास, गुरुओं के साथ भाग्यजनित विवाद और यात्रा के दौरान गंभीर दुर्भाग्य का कारण बनता है।"
+      },
+      "10": {
+        "positive": "शानदार, पूरी तरह से समयबद्ध करियर के कदम और उत्कृष्ट व्यावसायिक संचार। आत्मा अनिवार्य रूप से उच्च पद तक पहुंचती है।",
+        "neutral": "D60 के दसवें भाव में बुध आत्मा के सार्वजनिक जीवन और करियर की नियति में प्राचीन संचार कर्मों को उजागर करता है।",
+        "negative": "पीड़ित बुध गंभीर गलत संचार, धोखाधड़ी, या अत्यधिक अस्थिर करियर पथों के कारण भारी, भाग्यजनित व्यावसायिक कलंक लाता है।"
+      },
+      "11": {
+        "positive": "प्रतिभाशाली नेटवर्किंग सभी समस्याओं को सहजता से हल करती है। आत्मा अत्यधिक बुद्धिमान, भाग्यजनित मित्रों के माध्यम से अपनी अंतिम इच्छाओं को प्राप्त करती है।",
+        "neutral": "D60 के ग्यारहवें भाव में सामाजिक समूहों के साथ गहरे मानसिक संबंध और आत्मा के अंतिम लक्ष्यों को पूरा करना शामिल है।",
+        "negative": "पीड़ित बुध अत्यधिक कपटी मित्रों, व्यावसायिक नेटवर्क में भारी नुकसान और भव्य महत्वाकांक्षाओं की कड़वी निराशा का कारण बनता है।"
+      },
+      "12": {
+        "positive": "गहन, प्रगाढ़ विश्लेषणात्मक ध्यान और अवचेतन की पूर्ण समझ। बौद्धिक वैराग्य के माध्यम से आत्मा को परम शांति मिलती है।",
+        "neutral": "D60 के बारहवें भाव में गहरे अवचेतन संचार, भाग्यजनित विदेशी भूमि और छिपे हुए खर्चों की ओर संकेत है।",
+        "negative": "पीड़ित बुध भयानक नींद विकार, गंभीर मानसिक अलगाव, विदेशी भूमि में भारी नुकसान और तीव्र गुप्त चिंताएं लाता है।"
+      }
+    },
+    "Jupiter": {
+      "1": {
+        "positive": "Supreme, absolute divine protection and profound, ancient wisdom carried from past lives. The soul radiates an expansive, holy aura.",
+        "neutral": "Jupiter in the 1st house of D60 provides a complete shield of divine grace and highlights the soul's profound philosophical traits.",
+        "negative": "Afflicted Jupiter causes extreme, fated false optimism, dangerous arrogance, and extremely poor judgment leading to massive misfortune."
+      },
+      "2": {
+        "positive": "Absolute protection and expansion of destined wealth. The soul provides supremely wise counsel and possesses the highest ethical values.",
+        "neutral": "Jupiter in the 2nd house of D60 relates to the deepest karmic wealth, ancient values, and the karma of profoundly truthful speech.",
+        "negative": "Afflicted Jupiter brings massive financial ruin through over-optimism, highly unhealthy indulgences, and the karmic weight of broken promises."
+      },
+      "3": {
+        "positive": "Supremely wise communication and perfectly harmonious relations with all relatives. The soul effortlessly uses cosmic knowledge to overcome any obstacle.",
+        "neutral": "Jupiter in the 3rd house of D60 focuses on using deep, ancient wisdom and moral courage to handle fated daily efforts.",
+        "negative": "Afflicted Jupiter causes terribly poor advice, a complete lack of genuine effort, and dangerously misdirected intellectual energy."
+      },
+      "4": {
+        "positive": "Profound, unshakable inner peace and a highly spiritual, destined domestic foundation. The soul enjoys great comfort and absolute divine blessings.",
+        "neutral": "Jupiter in the 4th house of D60 highlights the most auspicious karma involving the home, mother, and the soul's inner happiness.",
+        "negative": "Afflicted Jupiter brings deep, fated sorrow related to property, a terrifying loss of inner peace due to greed, and domestic hypocrisy."
+      },
+      "5": {
+        "positive": "Immense, unparalleled blessings through highly intelligent and deeply spiritual destined children. The soul achieves great creative and cosmic success.",
+        "neutral": "Jupiter in the 5th house of D60 connects the most profound past life merits with intelligence, true progeny, and ultimate creativity.",
+        "negative": "Afflicted Jupiter causes severe sorrow regarding children, massively disastrous investments, and the terrifying karmic misuse of knowledge."
+      },
+      "6": {
+        "positive": "Absolute divine grace protects the soul from all enemies and illnesses. You effortlessly heal others through profound cosmic wisdom and service.",
+        "neutral": "Jupiter in the 6th house of D60 links ancient wisdom and expansion with overcoming fated health issues and karmic debts.",
+        "negative": "Afflicted Jupiter brings severe liver issues, massive fated debts due to over-expansion, and extremely complicated legal troubles."
+      },
+      "7": {
+        "positive": "A highly wise, deeply ethical, and perfectly protective soulmate. Destined partnerships thrive effortlessly and bring immense cosmic fortune.",
+        "neutral": "Jupiter in the 7th house of D60 highlights the role of supreme wisdom, ethics, and dharma in the soul's destined marriage.",
+        "negative": "Afflicted Jupiter causes severe, fated marital disharmony due to supreme arrogance, differing beliefs, and highly destructive legal issues."
+      },
+      "8": {
+        "positive": "Profound, absolute occult wisdom and perfect protection during sudden, terrifying crises. The soul gains massively through destined inheritance.",
+        "neutral": "Jupiter in the 8th house of D60 deals with ultimate transformation through wisdom, deepest hidden karma, and immense longevity.",
+        "negative": "Afflicted Jupiter brings severe chronic illnesses, sudden, massive loss of wealth, and a terrifying lack of protection during fated crises."
+      },
+      "9": {
+        "positive": "Supreme, unparalleled divine grace, extreme good fortune, and profound blessings from enlightened gurus. The soul's strong dharma protects it completely.",
+        "neutral": "Jupiter in the 9th house of D60 connects the soul's core belief system, higher cosmic learning, and ultimate luck with its destiny.",
+        "negative": "Afflicted Jupiter causes a complete, tragic loss of faith, severe issues with gurus, and massive misfortune due to highly unethical past actions."
+      },
+      "10": {
+        "positive": "Absolute career protection and massive, destined success through ethical behavior. The soul is highly revered globally for its moral leadership.",
+        "neutral": "Jupiter in the 10th house of D60 highlights highly auspicious karma related to career, public standing, and true leadership destiny.",
+        "negative": "Afflicted Jupiter brings massive, fated professional disgrace, complete loss of authority, and severe conflicts with superiors due to immense pride."
+      },
+      "11": {
+        "positive": "Effortless fulfillment of all desires through highly wise and powerful destined networks. The soul gains immense wealth and influence easily.",
+        "neutral": "Jupiter in the 11th house of D60 involves highly auspicious gains, large righteous social circles, and the achievement of long-term aspirations.",
+        "negative": "Afflicted Jupiter causes massive, fated losses through friends, utterly unfulfilled grand ambitions, and terribly bad advice from networks."
+      },
+      "12": {
+        "positive": "Ultimate spiritual liberation (Moksha) and absolute divine protection. The soul finds immense, unshakable peace in charity and deep meditation.",
+        "neutral": "Jupiter in the 12th house of D60 focuses on the soul's final emancipation, karmic expenses, and the purity of the subconscious mind.",
+        "negative": "Afflicted Jupiter brings heavy, terrifying financial losses, massive unnecessary expenses, and deeply misguided, fated spiritual pursuits."
+      }
+    },
+    "Venus": {
+      "1": {
+        "positive": "एक अत्यंत आकर्षक, सम्मोहक और गहरी रूप से सौहार्दपूर्ण आत्मा। आप प्रेम के माध्यम से सहज रूप से उपचार करते हैं और अपने परिवेश में दिव्य सौंदर्य लाते हैं।",
+        "neutral": "D60 (षष्टियांश) के 1 भाव (लग्‍न) में शुक्र भौतिक सौंदर्य, पूर्ण समरसता और आत्मा के सौंदर्यशास्त्रीय दृष्टिकोण पर ध्यान केंद्रित करता है।",
+        "negative": "पीड़ित शुक्र अत्यधिक भोग-विलासिता, गहरी सतही प्रवृत्ति और जटिल प्रजनन स्वास्थ्य से जुड़े गंभीर, पूर्व-नियत (प्रारब्ध) कष्ट लाता है।"
+      },
+      "2": {
+        "positive": "पूर्ण वित्तीय सुरक्षा और अत्यधिक सौहार्दपूर्ण, भाग्यशाली पारिवारिक जीवन। यह आत्मा विलासी और नैतिक रूप से अर्जित संसाधनों का आनंद लेती है।",
+        "neutral": "D60 के दूसरे भाव में शुक्र धन संचय, पारिवारिक सद्भाव और गहरे सौंदर्य मूल्यों के प्रति आत्मा के कर्म से संबंधित है।",
+        "negative": "पीड़ित शुक्र अत्यधिक, पूर्व-नियत अपव्यय, गंभीर आहार संबंधी अति और कड़वे पारिवारिक कलह के माध्यम से भारी वित्तीय बर्बादी का कारण बनता है।"
+      },
+      "3": {
+        "positive": "अत्यंत कूटनीतिक और सुंदर संवाद सभी बाधाओं को सहजता से दूर कर देता है। आत्मा रिश्तेदारों के साथ बहुत सुखद, भाग्यशाली संबंधों का आनंद लेती है।",
+        "neutral": "D60 के तीसरे भाव में शुक्र आत्मा के प्राचीन रचनात्मक प्रयासों, कलात्मक कौशल और अत्यंत सुखद छोटी यात्राओं को उजागर करता है।",
+        "negative": "पीड़ित शुक्र प्रेरणा की एक गंभीर और पक्षाघातक कमी, अत्यधिक अनुचित संवाद और महिला रिश्तेदारों के साथ पूर्व-नियत विवाद लाता है।"
+      },
+      "4": {
+        "positive": "एक अत्यंत सुंदर, शांतिपूर्ण और शानदार भाग्यशाली घरेलू वातावरण। आत्मा महान सुख, भव्य संपत्तियों और आंतरिक आनंद का आनंद लेती है।",
+        "neutral": "D60 के चौथे भाव में शुक्र परम आंतरिक संतोष और परिपूर्ण घरेलू जीवन से जुड़े अत्यंत शुभ कर्मों की ओर इशारा करता है।",
+        "negative": "पीड़ित शुक्र अत्यधिक, पूर्व-नियत भौतिक इच्छाओं, कड़वे संपत्ति विवादों और वाहन दुर्घटनाओं के कारण शांति का भयानक नुकसान पहुंचाता है।"
+      },
+      "5": {
+        "positive": "पूर्ण रचनात्मक चमक, गहरी, शुद्ध रोमांटिक तृप्ति और बच्चों के साथ आनंदमय भाग्यशाली संबंध। अत्यधिक विकसित कलात्मक बुद्धि।",
+        "neutral": "D60 के पांचवें भाव में शुक्र शुद्ध रोमांस, परम रचनात्मकता और बच्चों को आत्मा के सबसे गहरे पिछले जन्म के कर्मों से जोड़ता है।",
+        "negative": "पीड़ित शुक्र भयानक रोमांटिक भ्रमों, बच्चों से जुड़ी गहरी समस्याओं और भारी रचनात्मक अवरोधों के माध्यम से गंभीर, पूर्व-नियत दुःख लाता है।"
+      },
+      "6": {
+        "positive": "सबसे बुरे कर्मिक शत्रुओं को भी मित्रों में बदलने की गहरी क्षमता। आत्मा संतुलित जीवनशैली के माध्यम से उत्तम स्वास्थ्य बनाए रखती है।",
+        "neutral": "D60 के छठे भाव में शुक्र स्वास्थ्य, सेवा और दैनिकचर्या को पूर्ण समरसता और कूटनीति से जोड़ता है।",
+        "negative": "पीड़ित शुक्र गंभीर गुर्दे/प्रजनन संबंधी समस्याएं, पूर्व-नियत विलासिता के कारण भारी कर्ज और महिला शत्रुओं से अत्यधिक मुसीबतें पैदा करता है।"
+      },
+      "7": {
+        "positive": "एक गहरा प्रेममयी, सुंदर और पूरी तरह से सहयोगी जीवनसाथी। आत्मा अत्यधिक सौहार्दपूर्ण और भारी सफल साझेदारियों में संलग्न होती है।",
+        "neutral": "D60 के सातवें भाव में शुक्र विवाह, रिश्तों और पूर्व-नियत सार्वजनिक अंतःक्रियाओं के सबसे शुभ कर्म को उजागर करता है।",
+        "negative": "पीड़ित शुक्र गंभीर, पूर्व-नियत वैवाहिक कलह, अनियंत्रित बेवफाई, कलंकपूर्ण तलाक और अत्यधिक विनाशकारी कानूनी मुश्किलें लाता है।"
+      },
+      "8": {
+        "positive": "जीवनसाथी या विरासत के माध्यम से भारी, पूर्व-नियत वित्तीय लाभ। आत्मा जीवन के सबसे गहरे परिवर्तनों के माध्यम से पूरी तरह से शालीनता से रूपांतरित होती है।",
+        "neutral": "D60 के आठवें भाव में शुक्र भारी छिपे हुए धन, तीव्र पूर्व-नियत परिवर्तनों और अचानक होने वाली घटनाओं से संबंधित है।",
+        "negative": "पीड़ित शुक्र संयुक्त परिसंपत्तियों का अचानक और भारी नुकसान, भयानक पुरानी प्रजनन संबंधी समस्याएं और गंभीर, गहरी जड़ें जमा चुके घपले-घोटाले पैदा करता है।"
+      },
+      "9": {
+        "positive": "उच्च ज्ञान और शांतिपूर्ण, दिव्य दर्शन के लिए गहरा, शुद्ध प्रेम। अत्यधिक सौभाग्य आत्मा की पूरी तरह से रक्षा करता है।",
+        "neutral": "D60 के नौवें भाव में शुक्र आत्मा के मूल मूल्यों को शुद्ध धर्म, उच्च ब्रह्मांडीय शिक्षा और यात्राओं से जोड़ता है।",
+        "negative": "पीड़ित शुक्र अत्यधिक सतही अध्यात्म, यात्राओं के दौरान गंभीर पूर्व-नियत दुर्भाग्य और नैतिक मान्यताओं को लेकर हिंसक टकराव लाता है।"
+      },
+      "10": {
+        "positive": "एक अत्यधिक सौहार्दपूर्ण, भारी सफल भाग्यशाली करियर पथ। आत्मा शुद्ध कूटनीति के माध्यम से अधिकारियों के साथ उत्कृष्ट संबंध बनाए रखती है।",
+        "neutral": "D60 के दसवें भाव में शुक्र सार्वजनिक छवि, करियर के सौंदर्यशास्त्र और पूर्व-नियत अधिकार से संबंधित आत्मा के कर्म को उजागर करता है।",
+        "negative": "पीड़ित शुक्र भारी व्यावसायिक घपले, अत्यधिक अनुचित व्यवहार के कारण प्रतिष्ठा की पूर्ण हानि और गंभीर नैतिक सुस्ती का कारण बनता है।"
+      },
+      "11": {
+        "positive": "एक अत्यधिक सहायक, संभ्रांत, पूर्व-नियत सामाजिक नेटवर्क के माध्यम से सभी इच्छाओं की सहज पूर्ति। आत्मा मित्रों के माध्यम से अपार धन प्राप्त करती है।",
+        "neutral": "D60 के ग्यारहवें भाव में शुक्र अत्यधिक लाभकारी मित्रता, सामाजिक घेरे और सौंदर्य संबंधी लक्ष्यों की प्राप्ति से जुड़ा है।",
+        "negative": "पीड़ित शुक्र सतही मित्रों के माध्यम से गहरा, पूर्व-नियत दुःख, कड़वे रूप से अपूर्ण इच्छाएं और अत्यधिक वित्तीय उतार-चढ़ाव लाता है।"
+      },
+      "12": {
+        "positive": "एकांत में गहरी, पूर्ण आध्यात्मिक शांति और आनंद। आत्मा को विदेशी संबंधों और शुद्ध परोपकारी कार्यों से अत्यधिक लाभ होता है।",
+        "neutral": "D60 के बारहवें भाव में शुक्र छिपे हुए शुद्ध आनंद, परम आध्यात्मिक मुक्ति और अत्यधिक धर्मसम्मत व्यय पर ध्यान केंद्रित करता है।",
+        "negative": "पीड़ित शुक्र अत्यधिक भोग-विलासिता, गहरे गुप्त व्यसनों और गहरे, भ्रष्ट एकांत के माध्यम से भारी, भयानक नुकसान का कारण बनता है।"
+      }
+    },
+    "Saturn": {
+      "1": {
+        "positive": "पिछले जन्मों से प्राप्त अपार, अटूट सहनशक्ति, अनुशासन और गहरी परिपक्वता। आत्मा एक ठोस, अविनाशी भाग्य का निर्माण करती है।",
+        "neutral": "D60 Shashtiamsha के प्रथम भाव (Lagna) में शनि आत्मा की शारीरिक सहनशक्ति, पूर्व-निर्धारित विलंब (fated delays) और कठोर वास्तविकताओं का सामना करने की अनिवार्यता पर केंद्रित है।",
+        "negative": "पीड़ित शनि गंभीर, आनुवंशिक और पुरानी बीमारियाँ, गहरा पक्षाघात करने वाला अवसाद, और अत्यधिक निराशावादी व कठोर कार्मिक स्वभाव लाता है।"
+      },
+      "2": {
+        "positive": "अत्यंत वित्तीय अनुशासन विशाल और भाग्यशाली धन की रक्षा करता है। आत्मा वाणी में अत्यधिक व्यावहारिक, साधन-संपन्न और सत्यवादी होती है।",
+        "neutral": "D60 Shashtiamsha के द्वितीय भाव में शनि धन संचय के भारी कर्म, तीव्र पारिवारिक जिम्मेदारियों और संयमित वाणी से संबंधित है।",
+        "negative": "पीड़ित शनि अत्यधिक, भाग्यवादी गरीबी, कठोर और क्रूर वाणी, तथा अविश्वसनीय रूप से भारी और बोझिल पारिवारिक कार्मिक दायित्वों का कारण बनता है।"
+      },
+      "3": {
+        "positive": "अथक प्रयास और पूर्ण धैर्य सभी कार्मिक बाधाओं को दूर करते हैं। आत्मा गणनात्मक, अत्यधिक दृढ़ और सफल कार्य करती है।",
+        "neutral": "D60 Shashtiamsha के तृतीय भाव में शनि संरचित पूर्व-निर्धारित प्रयासों, गहरे नैतिक साहस और रिश्तेदारों के प्रति भारी जिम्मेदारियों को उजागर करता है।",
+        "negative": "पीड़ित शनि पक्षाघात करने वाला कार्मिक भय, सभी प्रयासों की निरंतर विफलता, और भाई-बहनों के संबंध में गहरा, भाग्य-जनित दुःख लाता है।"
+      },
+      "4": {
+        "positive": "एक ठोस, अत्यधिक सुरक्षित और अविनाशी घरेलू आधार। आत्मा गहन भावनात्मक और आध्यात्मिक परिपक्वता के साथ कठिनाइयों को सहन करती है।",
+        "neutral": "D60 Shashtiamsha के चतुर्थ भाव में शनि घर, माता और आत्मा की आंतरिक शांति से संबंधित सबसे भारी कार्मिक बोझ की ओर इशारा करता है।",
+        "negative": "पीड़ित शनि तीव्र और भाग्य-जनित घरेलू दुःख, पैतृक संपत्ति की पूरी हानि, और गहन, अटल आंतरिक विषाद का कारण बनता है।"
+      },
+      "5": {
+        "positive": "अत्यंत संरचित, गहन रचनात्मकता और एक अनुशासित, गंभीर बुद्धि। आत्मा संतान के संबंध में नियत जिम्मेदारियों को पूरी तरह से निभाती है।",
+        "neutral": "D60 Shashtiamsha के पंचम भाव में शनि गहरे पिछले जन्म के कर्म को रोमांस, संतान और उच्च शिक्षा में पूर्व-निर्धारित देरी से जोड़ता है।",
+        "negative": "पीड़ित शनि संतान के संबंध में गहरा, भाग्य-जनित दुःख या गंभीर देरी, गहरा अवसाद, और भारी रचनात्मक अवरोध लाता है।"
+      },
+      "6": {
+        "positive": "शुद्ध, अटूट सहनशक्ति के माध्यम से कार्मिक शत्रुओं को पूरी तरह से परास्त करने के लिए उत्कृष्ट। आत्मा कड़े अनुशासन के साथ बीमारियों का प्रबंधन करती है।",
+        "neutral": "D60 Shashtiamsha के छठे भाव में शनि गहन कठिन परिश्रम और कड़े अनुशासन को गहरे शत्रुओं और नैतिक ऋणों पर विजय पाने से जोड़ता है।",
+        "negative": "पीड़ित शनि गंभीर, लाइलाज पुरानी बीमारियाँ, भारी कार्मिक ऋण, और शत्रुओं के साथ निरंतर, थका देने वाले संघर्ष का कारण बनता है।"
+      },
+      "7": {
+        "positive": "एक अत्यधिक परिपक्व, गहरी जिम्मेदार और समर्पित जीवनसाथी। आत्मा पूर्ण, धैर्त्यपूर्ण प्रतिबद्धता के माध्यम से वैवाहिक चुनौतियों को सहन करती है।",
+        "neutral": "D60 Shashtiamsha के सप्तम भाव में शनि विवाह में सबसे भारी नैतिक जिम्मेदारियों, पूर्व-निर्धारित देरी और गहरे कार्मिक पाठों को उजागर करता है।",
+        "negative": "पीड़ित शनि एक ठण्डा, कड़वा बोझिल विवाह, तीव्र भाग्य-जनित अकेलापन, और गंभीर, लंबे समय तक चलने वाले कानूनी विवाद लाता है।"
+      },
+      "8": {
+        "positive": "अत्यंत लंबी आयु और अपार कार्मिक दबाव से उबरने की पूर्ण क्षमता। आत्मा के पास गहरा, संरचित occult (गूढ़) ज्ञान होता है।",
+        "neutral": "D60 Shashtiamsha के अष्टम भाव में शनि पुराने नैतिक मुद्दों, गहरे कार्मिक परीक्षणों और अत्यधिक धीमी, गहन परिवर्तनों से संबंधित है।",
+        "negative": "पीड़ित शनि लंबे समय तक चलने वाली, भाग्य-जनित पीड़ा, गंभीर पुरानी बीमारियाँ, और संयुक्त संपत्तियों से अत्यधिक भारी, कुचलने वाले बोझ का कारण बनता है।"
+      },
+      "9": {
+        "positive": "आध्यात्मिक नैतिकता के प्रति एक अत्यधिक अनुशासित, गहन पारंपरिक दृष्टिकोण। आत्मा कठिन अनुभव और सम्मान के माध्यम से विश्वासों का निर्माण करती है।",
+        "neutral": "D60 Shashtiamsha के नवम भाव में शनि गहरे कर्म को कठोर नैतिक विश्वासों, पारंपरिक गुरुओं और भाग्य में पूर्व-निर्धारित देरी से जोड़ता है।",
+        "negative": "पीड़ित शनि विश्वास की पूर्ण और दुखद हानि, पिता तुल्य व्यक्तियों के साथ गंभीर संघर्ष, और अत्यधिक कठोर, पाखंडी कट्टरता लाता है।"
+      },
+      "10": {
+        "positive": "शुद्ध, अनुशासित कड़ी मेहनत के माध्यम से धीमी लेकिन बेहद स्थिर, निश्चित करियर उन्नति। आत्मा विशाल पेशेवर बोझ को पूरी तरह से संभालती है।",
+        "neutral": "D60 Shashtiamsha के दशम भाव में शनि सबसे भारी नैतिक कार्मिक जिम्मेदारियों और करियर तथा सार्वजनिक स्थिति में देरी को उजागर करता है।",
+        "negative": "पीड़ित शनि भारी, भाग्य-जनित पेशेवर पतन, अत्यधिक सार्वजनिक कलंक, और कार्यस्थल पर अत्यधिक, कुचलने वाले बोझ का कारण बनता है।"
+      },
+      "11": {
+        "positive": "दीर्घकालिक लक्ष्यों की स्थिर, अत्यधिक नैतिक और अपरिहार्य प्राप्ति। आत्मा के पास पुराने, गहरे परिपक्व मित्र होते हैं जो ठोस सहायता प्रदान करते हैं।",
+        "neutral": "D60 Shashtiamsha के एकादश भाव में शनि धीमी, धर्मसंगत भाग्य-जनित प्राप्ति, नेटवर्क के भीतर भारी जिम्मेदारियों और विलंबित पूर्ति से जुड़ा है।",
+        "negative": "पीड़ित शनि मित्रों के माध्यम से गहरा, भाग्य-जनित दुःख, लक्ष्यों की निरंतर और कड़वी निराशा, तथा गहरा, ठंडा अकेलापन लाता है।"
+      },
+      "12": {
+        "positive": "पूर्ण एकांत में अत्यधिक आध्यात्मिक अनुशासन। आत्मा अंततः कड़ी मेहनत और पूर्ण त्याग के माध्यम से सभी कार्मिक ऋणों को चुका देती है।",
+        "neutral": "D60 Shashtiamsha के द्वादश भाव में शनि भाग्य-जनित एकांत, भारी कार्मिक हानियों और आध्यात्मिक अनासक्ति की गहरी आवश्यकता पर केंद्रित है।",
+        "negative": "पीड़ित शनि गंभीर कारावास (जेल/अस्पताल), अपार छिपे हुए कार्मिक भय, और भारी, पूरी तरह से अपूरणीय हानियों का कारण बनता है।"
+      }
+    },
+    "Rahu": {
+      "1": {
+        "positive": "Brilliant, highly unconventional solutions to life's deepest crises. The soul possesses an immense, driving ambition to revolutionize its destiny.",
+        "neutral": "Rahu in the 1st house of D60 points to a highly illusionary physical environment and complex, deeply unconventional karmic traits.",
+        "negative": "Afflicted Rahu brings terrifying, mysterious illnesses, severe paranoia, and a complete, fated loss of identity or reputation."
+      },
+      "2": {
+        "positive": "Sudden, almost magical accumulation of massive wealth. The soul uses highly clever, out-of-the-box methods to secure resources.",
+        "neutral": "Rahu in the 2nd house of D60 relates to obsessive karmic desires for wealth and highly unconventional, complex family dynamics.",
+        "negative": "Afflicted Rahu causes sudden, massive financial ruin, chronic fated lying, poisoning, and severe, deceitful family disputes."
+      },
+      "3": {
+        "positive": "Extreme, almost hypnotic courage and highly persuasive communication. The soul outsmarts and utterly destroys karmic enemies effortlessly.",
+        "neutral": "Rahu in the 3rd house of D60 highlights obsessive fated efforts, unconventional skills, and highly complex sibling dynamics.",
+        "negative": "Afflicted Rahu brings cowardly, extreme deceit, severe nervous disorders, and highly toxic, fated misunderstandings with relatives."
+      },
+      "4": {
+        "positive": "Acquisition of massive, unconventional or foreign properties. The soul finds deep, surprising security in completely foreign lands.",
+        "neutral": "Rahu in the 4th house of D60 points to severe psychological restlessness regarding the soul's foundation and complex maternal karma.",
+        "negative": "Afflicted Rahu causes intense, terrifying domestic phobias, total loss of property through massive fraud, and severe inner turmoil."
+      },
+      "5": {
+        "positive": "Highly innovative, genius-level intelligence. The soul finds immense fated success in speculative ventures or raising highly unusual children.",
+        "neutral": "Rahu in the 5th house of D60 connects obsessive karmic desires with romance, intellect, and deeply unconventional progeny.",
+        "negative": "Afflicted Rahu brings deep, highly destructive illusions in romance, severe psychological issues with children, and massive gambling losses."
+      },
+      "6": {
+        "positive": "Excellent for utterly destroying enemies through profound cunning. The soul easily overcomes any fated debt or litigation through unconventional means.",
+        "neutral": "Rahu in the 6th house of D60 focuses obsessive karmic energy on daily struggles, health, and completely dominating adversaries.",
+        "negative": "Afflicted Rahu causes completely undiagnosable, terrifying diseases, massive false accusations, and overwhelming, hidden enemies."
+      },
+      "7": {
+        "positive": "Massive, fated success in foreign or highly unconventional partnerships. The soul benefits immensely from deeply ambitious spouses.",
+        "neutral": "Rahu in the 7th house of D60 highlights complex, deeply illusionary, or obsessive karmic ties in marriage and business.",
+        "negative": "Afflicted Rahu brings severe, massive deception in marriage, extreme scandals, sudden fated divorce, and highly toxic partnerships."
+      },
+      "8": {
+        "positive": "Massive, sudden destined gains through inheritance or profound occult knowledge. The soul miraculously survives extreme, sudden events.",
+        "neutral": "Rahu in the 8th house of D60 deals with deep, terrifying psychological obsessions, hidden karmic secrets, and sudden trauma.",
+        "negative": "Afflicted Rahu causes sudden, massive catastrophic events, intense, paralyzing phobias, mysterious chronic diseases, and severe scandals."
+      },
+      "9": {
+        "positive": "Massive, destined success in foreign lands. The soul develops highly unconventional but profoundly powerful spiritual philosophies.",
+        "neutral": "Rahu in the 9th house of D60 connects karmic obsession with religion, higher learning, and fated long-distance travel.",
+        "negative": "Afflicted Rahu brings highly deceptive false gurus, extreme religious fanaticism, and sudden, severe, fated legal troubles."
+      },
+      "10": {
+        "positive": "Massive, sudden, and destined career rise and worldly power. The soul uses highly strategic, unconventional methods to attain absolute authority.",
+        "neutral": "Rahu in the 10th house of D60 highlights obsessive ambition and complex, illusionary karma in the soul's public sphere.",
+        "negative": "Afflicted Rahu causes sudden, completely scandalous downfalls from power, immense public disgrace, and severe conflicts with authority."
+      },
+      "11": {
+        "positive": "Fulfillment of massive, obsessive fated desires. The soul gains immensely and suddenly through large, highly unconventional networks.",
+        "neutral": "Rahu in the 11th house of D60 involves the obsessive pursuit of ultimate goals and connections with highly powerful, secretive groups.",
+        "negative": "Afflicted Rahu brings highly deceitful, corrupt friends, sudden massive loss of fated income, and severe frustration of immense desires."
+      },
+      "12": {
+        "positive": "Massive, destined success in foreign lands or completely isolated environments. Deep, highly psychic insight into the subconscious mind.",
+        "neutral": "Rahu in the 12th house of D60 focuses on deepest hidden illusions, massive karmic expenditures, and profound subconscious fears.",
+        "negative": "Afflicted Rahu causes severe, terrifying sleep paralysis, imprisonment, extremely dangerous hidden enemies, and utterly destructive losses."
+      }
+    },
+    "Ketu": {
+      "1": {
+        "positive": "आत्मा के वास्तविक स्वरूप की ओर गहन, पूर्ण आध्यात्मिक अंतर्दृष्टि। आप भौतिक अहंकार से अत्यधिक विरक्त हैं और परम, सहज शांति के स्वामी हैं।",
+        "neutral": "D60 (षष्टियांश) के प्रथम भाव में केतु भौतिक ध्यान की पूर्ण कमी, अत्यधिक कार्मिक विरक्तता और पिछले जन्म की सर्वोच्च आध्यात्मिक महारत की ओर संकेत करता है।",
+        "negative": "पीड़ित केतु पहचान को लेकर गंभीर और अराजक भ्रम, पूरी तरह से रहस्यमय शारीरिक कष्ट और गहरे आत्म-विनाशकारी प्रवृत्तियों को जन्म देता है।"
+      },
+      "2": {
+        "positive": "धन से गहन और पूर्ण विरक्तता परम आत्मीय शांति प्रदान करती है। आपके पास भाग्य निर्धारित पारिवारिक गतिशीलता की गहरी सहज और पवित्र समझ है।",
+        "neutral": "D60 (षष्टियांश) के दूसरे भाव में केतु का होना वित्त, आहार और वाणी से गंभीर और अंतिम कार्मिक विरक्तता से जुड़ा है।",
+        "negative": "पीड़ित केतु कर्म के कारण अचानक और अस्पष्ट वित्तीय हानि, गंभीर वाक् दोष (तुतलाहट आदि) तथा परिवार से पूर्ण अलगाव का कारण बनता है।"
+      },
+      "3": {
+        "positive": "अत्यधिक सहज और पूर्ण समस्या-समाधान क्षमता। आत्मा अपूर्व आध्यात्मिक साहस के साथ कार्य करती है और अनावश्यक सांसारिक संघर्षों से पूरी तरह विरक्त रहती है।",
+        "neutral": "D60 (षष्टियांश) के तीसरे भाव में केतु प्रयास, सहोदरों और सांसारिक संचार से पूर्ण कार्मिक विरक्तता को उजागर करता है।",
+        "negative": "पीड़ित केतु प्रेरणा की गंभीर और पक्षाघात लाने वाली कमी, बड़े व फिक्स किए गए (भाग्यवश) गलतफहमियों और कर्म से कायरतापूर्ण पीछे हटने की स्थिति लाता है।"
+      },
+      "4": {
+        "positive": "गहन और अडिग आंतरिक आध्यात्मिक शांति। आत्मा सभी भौतिक संपत्तियों और आधारों से पूर्ण विरक्त होकर अपनी परम शांति प्राप्त करती है।",
+        "neutral": "D60 (षष्टियांश) के चौथे भाव में केतु घर, माता और भावनात्मक सुरक्षा से सबसे गहरे कार्मिक अलगाव की ओर संकेत करता है।",
+        "negative": "पीड़ित केतु गहरे, डरावने भावनात्मक खालीपन, घर या संपत्ति के अचानक कार्मिक नुकसान और आंतरिक शांति के गंभीर पतन का कारण बनता है।"
+      },
+      "5": {
+        "positive": "अत्यधिक सहज और अत्यंत पवित्र आध्यात्मिक बुद्धि। आत्मा का पूर्व-निश्चित (destined) संतानों के साथ गहरा, मानसिक और अत्यंत कार्मिक संबंध होता है।",
+        "neutral": "D60 (षष्टियांश) के पांचवें भाव में केतु पिछले जन्म की सर्वोच्च आध्यात्मिक महारत को बुद्धि और रोमांस से अत्यधिक विरक्तता के साथ जोड़ता है।",
+        "negative": "पीड़ित केतु संतानों से गहरा, भाग्यजन्य दुःख या अचानक अलगाव, गंभीर मानसिक भ्रम और सट्टेबाजी (speculation) में भारी नुकसान लाता है।"
+      },
+      "6": {
+        "positive": "रोगों की गंभीर और चमत्कारी आध्यात्मिक चिकित्सा। आत्मा केवल एक उच्च तल पर कार्य करके अपने शत्रुओं को पूरी तरह से सहजता से परास्त कर देती है।",
+        "neutral": "D60 (षष्टियांश) के छठे भाव में केतु अत्यधिक आध्यात्मिक विरक्तता को दैनिक संघर्षों, स्वास्थ्य और कार्मिक सेवा के साथ जोड़ता है।",
+        "negative": "पीड़ित केतु पूरी तरह से रहस्यमय, लाइलाज कार्मिक रोग, छुपे हुए शत्रु और पूर्व-निश्चित ऋणों (कर्ज) से लड़ने के लिए शून्य ऊर्जा उत्पन्न करता है।"
+      },
+      "7": {
+        "positive": "एक अत्यधिक आध्यात्मिक या पूरी तरह से विरक्त, पूर्व-निश्चित जीवनसाथी। शून्य भौतिक अपेक्षाओं के साथ आत्मा रिश्तों में परम शांति पाती है।",
+        "neutral": "D60 (षष्टियांश) के सातवें भाव में केतु पिछले जन्म के सबसे गहरे कार्मिक संबंधों और विवाह में गहन आध्यात्मिक विरक्तता को उजागर करता है।",
+        "negative": "पीड़ित केतु अचानक और अस्पष्ट भाग्यजन्य अलगाव, अत्यधिक भ्रमित या पूरी तरह से अनुपस्थित साथी और सार्वजनिक छवि के पूर्ण पतन को लाता है।"
+      },
+      "8": {
+        "positive": "गूढ़ विद्याओं (occult) और गुप्त क्षेत्रों पर गहन, पूर्ण अधिकार। आत्मा अडिग आध्यात्मिक पवित्रता के साथ अचानक होने वाले डरावने परिवर्तनों को पार कर लेती है।",
+        "neutral": "D60 (षष्टियांश) के आठवें भाव में केतु परम कार्मिक मुक्ति (मोक्ष), गहन गुप्त ज्ञान और अचानक होने वाली रहस्यमयी भाग्यवादी घटनाओं से संबंधित है।",
+        "negative": "पीड़ित केतु गंभीर, पूरी तरह से अराजक कार्मिक संकट, अचानक डरावनी आघातजनक (traumatic) घटनाओं और तीव्र मानसिक भ्रम का कारण बनता है।"
+      },
+      "9": {
+        "positive": "परम आध्यात्मिक और ब्रह्मांडीय मुक्ति। गहन सहज ज्ञान युक्त बुद्धि। आत्मा निरंतर उच्चतम, अदृश्य दिव्य शक्तियों द्वारा निर्देशित होती है।",
+        "neutral": "D60 (षष्टियांश) के नौवें भाव में केतु गहन कार्मिक विरक्तता को धर्म, गुरुओं और पिछले जन्म के आध्यात्मिक प्रयासों से जोड़ता है।",
+        "negative": "पीड़ित केतु गंभीर, उद्देश्यहीन आध्यात्मिक भटकाव, शिक्षकों से पूर्ण अलगाव और अत्यधिक अराजक व भ्रमित विश्वास प्रणालियों को जन्म देता है।"
+      },
+      "10": {
+        "positive": "गहन, पूरी तरह से पवित्र आध्यात्मिक नेतृत्व। चिकित्सा, गहन अनुसंधान या सर्वोच्च मार्गदर्शन से जुड़े पूर्व-निश्चित करियर में आत्मा अत्यधिक सफल होती है।",
+        "neutral": "D60 (षष्टियांश) के दसवें भाव में केतु सांसारिक महत्वाकांक्षा, प्रतिष्ठा और भौतिक अधिकार से अत्यधिक कार्मिक विरक्तता को उजागर करता है।",
+        "negative": "पीड़ित केतु करियर का अचानक और अस्पष्ट कार्मिक नुकसान, पेशेवर दिशा की पूरी कमी और प्रतिष्ठा के प्रति पूर्ण उदासीनता का कारण बनता है।"
+      },
+      "11": {
+        "positive": "अत्यधिक आध्यात्मिक और पवित्र नेटवर्किंग के माध्यम से इच्छाओं की पूर्ति। चूंकि आत्मा सभी सांसारिक इच्छाओं से पूरी तरह विरक्त हो चुकी है, अतः वह सहजता से लाभ प्राप्त करती है।",
+        "neutral": "D60 (षष्टियांश) के ग्यारहवें भाव में केतु बड़े सामाजिक समूहों, आय और सांसारिक लक्ष्यों से अत्यधिक कार्मिक विरक्तता को दर्शाता है।",
+        "negative": "पीड़ित केतु मित्रों से गहरा कार्मिक अलगाव, आय का अचानक पूर्ण नुकसान और उपलब्धियों के प्रति गहरी व अराजक असंतोष की भावना लाता है।"
+      },
+      "12": {
+        "positive": "शुद्ध मोक्ष (आध्यात्मिक मुक्ति) के लिए परम और अंतिम स्थिति। पूर्ण एकांत और गहरे ब्रह्मांडीय ध्यान में गहन, अडिग शांति।",
+        "neutral": "D60 (षष्टियांश) के बारहवें भाव में केतु पूरी तरह से शुद्ध आध्यात्मिक मुक्ति, सभी कर्मों के पूर्ण त्याग और दिव्य अवचेतन मन पर केंद्रित होता है।",
+        "negative": "पीड़ित केतु कार्मिक एकांत की तीव्र, डरावनी भावनाएं, पूरी तरह से अराजक अवचेतन भय और जीवन में दिशा की पूर्ण हानि का कारण बनता है।"
+      }
+    }
+  },
+  "planetDescriptions": {
+    "Sun": {
+      "title": "षष्ठीमास में सूर्य (D60)",
+      "description": "सूर्य की D60 स्थिति पिछले जन्मों के अहंकार, अधिकार और पिता संबंधों से संबंधित कर्मों को प्रकट करती है। लाभकारी स्थान पिछले जीवन के धार्मिक नेतृत्व का सुझाव देता है जो आपकी वर्तमान पहचान को आशीर्वाद देता है। चुनौतीपूर्ण स्थान पिछले जीवन के अहंकार के मुद्दों या अधिकार के दुरुपयोग को इंगित करता है जिसके लिए विनम्रता के माध्यम से समाधान की आवश्यकता होती है।",
+      "icon": "☀️",
+      "color": "orange"
+    },
+    "Moon": {
+      "title": "षष्ठीमास में चंद्रमा (D60)",
+      "description": "डी60 में चंद्रमा पिछले अवतारों के भावनात्मक और मानसिक कर्म को दर्शाता है। एक लाभकारी विभाजन पिछले जीवन की भावनात्मक बुद्धिमत्ता और पोषण को इंगित करता है जो वर्तमान मानसिक शांति का समर्थन करता है। चुनौतीपूर्ण प्लेसमेंट पिछले जीवन के भावनात्मक हेरफेर या सहायता प्रदान करने में विफलताओं को प्रकट कर सकता है।",
+      "icon": "🌙",
+      "color": "blue"
+    },
+    "Mars": {
+      "title": "षष्ठीमास में मंगल (D60)",
+      "description": "मंगल कार्य, साहस और शक्ति के उपयोग से संबंधित कर्म को प्रकट करता है। लाभकारी स्थान निर्दोष या धर्मी युद्ध के पिछले जीवन की सुरक्षा का सुझाव देता है। चुनौतीपूर्ण प्लेसमेंट पिछले जीवन की आक्रामकता या हिंसा का संकेत दे सकता है जो अब वर्तमान संघर्षों या दुर्घटना-प्रवण प्रवृत्तियों के रूप में प्रकट हो रहा है।",
+      "icon": "🔴",
+      "color": "red"
+    },
+    "Mercury": {
+      "title": "षष्ठीमास में बुध (D60)",
+      "description": "बुध बौद्धिक एवं संचार कर्म को दर्शाता है। लाभकारी स्थान पिछले जीवन की विद्वता, सच्चा भाषण और नैतिक व्यापारिक व्यवहार को इंगित करता है। चुनौतीपूर्ण प्लेसमेंट पिछले धोखे, टूटे वादे, या ज्ञान के दुरुपयोग का सुझाव देता है जिसके लिए अब ईमानदार संचार की आवश्यकता है।",
+      "icon": "🟢",
+      "color": "emerald"
+    },
+    "Jupiter": {
+      "title": "षष्ठीमास में बृहस्पति (D60)",
+      "description": "बृहस्पति उच्चतम आध्यात्मिक कर्म और ज्ञान के साथ संबंध को प्रकट करता है। लाभकारी स्थान पिछले जीवन की धार्मिक योग्यता, उदारता और शिक्षकों के प्रति सम्मान को दर्शाता है, जो एक मजबूत सुरक्षात्मक कार्मिक ढाल प्रदान करता है। चुनौतीपूर्ण स्थान हठधर्मिता या आध्यात्मिक कर्तव्यों की उपेक्षा का सुझाव देता है।",
+      "icon": "🟡",
+      "color": "amber"
+    },
+    "Venus": {
+      "title": "षष्ठीमास में शुक्र (D60)",
+      "description": "शुक्र संबंध कर्म और सौंदर्य या कला के प्रति समर्पण को नियंत्रित करता है। लाभकारी स्थान पिछले जीवन की वैवाहिक निष्ठा और कलात्मक योगदान को इंगित करता है। चुनौतीपूर्ण स्थान प्यार में विश्वासघात या अत्यधिक आत्मभोग का सुझाव देता है जिसे भक्ति के माध्यम से संतुलित किया जाना चाहिए।",
+      "icon": "💖",
+      "color": "pink"
+    },
+    "Saturn": {
+      "title": "षष्ठीमास में शनि (D60)",
+      "description": "शनि सबसे कठिन कर्म पाठ और सहनशक्ति का प्रतिनिधित्व करता है। लाभकारी स्थान समाज के लिए पिछले जीवन की सेवा और पीड़ा के दौरान शांत धैर्य को दर्शाता है। चुनौतीपूर्ण प्लेसमेंट कर्तव्यों की उपेक्षा या दूसरों को पीड़ा पहुंचाने का संकेत देता है, जिसे अब पुरानी बाधाओं के रूप में अनुभव किया जाता है।",
+      "icon": "⏳",
+      "color": "slate"
+    },
+    "Rahu": {
+      "title": "षष्ठीमास में राहु (D60)",
+      "description": "राहु पिछले जन्मों से प्राप्त अधूरी इच्छाओं और जुनूनी पैटर्न को प्रकट करता है। यह सीधे तौर पर उन क्षेत्रों की ओर इशारा करता है जहां कर्म विकास की तत्काल आवश्यकता है। लाभकारी प्लेसमेंट पारंपरिक सीमाओं को पार करने में मदद करता है; चुनौतीपूर्ण प्लेसमेंट पिछले भ्रमों को दोहराने की चेतावनी देता है।",
+      "icon": "🌑",
+      "color": "teal"
+    },
+    "Ketu": {
+      "title": "षष्ठीमास में केतु (D60)",
+      "description": "केतु संचित आध्यात्मिक निपुणता, मोक्ष आवेगों और कर्म बंधनों से मुक्ति का प्रतिनिधित्व करता है। लाभकारी स्थान पिछले जन्मों से गहन ध्यान प्राप्ति का संकेत देता है। चुनौतीपूर्ण स्थान अचानक, अकथनीय अलगाव या कार्मिक झटके को ट्रिगर कर सकता है।",
+      "icon": "☄️",
+      "color": "violet"
+    }
+  }
+}

@@ -1,0 +1,458 @@
+const fs = require('fs');
+const path = require('path');
+const mongoose = require('mongoose');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+
+const AstroTranslation = require('../models/AstroTranslation');
+const seeder = require('../services/astroTranslationSeeder');
+
+// Complete Sanskrit Dictionary (Classical Jyotish Devanagari)
+const sanskritDictionary = {
+  lang: 'sa',
+  langName: 'संस्कृतम् (Sanskrit)',
+  planets: {
+    Sun: "सूर्यः",
+    Moon: "चन्द्रः",
+    Mars: "मङ्गलः (भौमः)",
+    Mercury: "बुधः",
+    Jupiter: "गुरुः (बृहस्पतिः)",
+    Venus: "शुक्रः",
+    Saturn: "शनिः",
+    Rahu: "राहुः",
+    Ketu: "केतुः",
+    Ascendant: "लग्नम्"
+  },
+  signs: {
+    Aries: "मेषः",
+    Taurus: "वृषभः",
+    Gemini: "मिथुनम्",
+    Cancer: "कर्कः",
+    Leo: "सिंहः",
+    Virgo: "कन्या",
+    Libra: "तुला",
+    Scorpio: "वृश्चिकः",
+    Sagittarius: "धनुः",
+    Capricorn: "मकरः",
+    Aquarius: "कुम्भः",
+    Pisces: "मीनः"
+  },
+  nakshatras: {
+    Ashwini: "अश्विनी",
+    Bharani: "भरणी",
+    Krittika: "कृत्तिका",
+    Rohini: "रोहिणी",
+    Mrigashira: "मृगशीर्षम्",
+    Ardra: "आर्द्रा",
+    Punarvasu: "पुनर्वसुः",
+    Pushya: "पुष्यः",
+    Ashlesha: "आश्लेषा",
+    Magha: "मघा",
+    PurvaPhalguni: "पूर्वफाल्गुनी",
+    UttaraPhalguni: "उत्तरफाल्गुनी",
+    Hasta: "हस्तः",
+    Chitra: "चित्रा",
+    Swati: "स्वाती",
+    Vishakha: "विशाखा",
+    Anuradha: "अनुराधा",
+    Jyeshtha: "ज्येष्ठा",
+    Mula: "मूलम्",
+    PurvaAshadha: "पूर्वाषाढा",
+    UttaraAshadha: "उत्तराषाढा",
+    Shravana: "श्रवणः",
+    Dhanishta: "धनिष्ठा",
+    Shatabhisha: "शतभिषक्",
+    PurvaBhadrapada: "पूर्वभाद्रपदा",
+    UttaraBhadrapada: "उत्तरभाद्रपदा",
+    Revati: "रेवती"
+  },
+  ui: {
+    title: "D1 लग्न कुण्डली चक्रम्",
+    planetaryDegreesTitle: "ग्रह स्पष्टाङ्गाः एवं नक्षत्राणि",
+    planetaryDegreesSubtitle: "निरयण भोगांशाः, नक्षत्राणि, स्थितिः च",
+    ayanamsha: "लाहिरी अयनांशः",
+    colPlanet: "ग्रहः",
+    colSign: "राशिः",
+    colDegree: "अंशाः",
+    colNakshatra: "नक्षत्रम्",
+    colPada: "पादः",
+    colHouse: "भावः",
+    colMotion: "गतिः",
+    retrograde: "वक्र (Retrograde)",
+    direct: "मार्गी (Direct)",
+    combust: "अस्त (Combust)",
+    bhavasTitle: "द्वादश भाव विश्लेषणम्",
+    bhavasSubtitle: "सर्वेषां द्वादश भावानां राशयः, भावाधिपतयः, स्थिताः ग्रहाः च",
+    houseLabel: "भावः",
+    lordLabel: "भावाधिपतिः",
+    planetsLabel: "स्थिताः ग्रहाः",
+    noneOccupants: "ग्रहाः न सन्ति",
+    activeBhavas: "द्वादश भावाः सक्रियाः",
+    talkAstrologer: "ज्योतिर्विदा सह सम्भाषणम्",
+    close: "पिदधातु",
+    native: "जातकः",
+    inspectPlanetHint: "ग्रहस्य विवरणं द्रष्टुं पङ्क्तिं स्पृशतु",
+    drishtiTitle: "ग्रह एवं राशि दृष्टिः",
+    drishtiSubtitle: "कर्म प्रभावस्य शास्त्रीय दृष्टि विचारः",
+    grahaDrishtiTab: "ग्रह दृष्टिः (Planetary)",
+    jaiminiDrishtiTab: "जैमिनि राशि दृष्टिः (Sign)",
+    occupiedHouse: "स्थित भावः",
+    aspectLabel: "दृष्टिः",
+    aspectHouse: "दृष्ट भावः",
+    occupyingPlanets: "स्थिताः ग्रहाः",
+    drishtiQuality: "दृष्टि फलम्",
+    interpretation: "ज्योतिषीय फलकथनम्",
+    thAspect: "म दृष्टिः",
+    emptyHouse: "रिक्त भावः",
+    houseAndSign: "भावः एवं राशिः",
+    signNature: "राशि स्वभावः",
+    aspectedSignsHouses: "दृष्टाः राशयः भावाः च",
+    positiveBenefic: "🟢 शुभ दृष्टिः (Benefic)",
+    challengingMalefic: "🔴 पाप दृष्टिः (Malefic)",
+    mixedBenefic: "🟡 मिश्र शुभ दृष्टिः",
+    highlyPositive: "🟢 अत्युत्तम शुभ दृष्टिः (मित्र दृष्टिः)",
+    weakenedBenefic: "🟡 क्षीण शुभ दृष्टिः (शत्रु दृष्टिः)",
+    softenedMalefic: "🟡 मन्द पाप दृष्टिः (मित्र भावः)",
+    highlyChallenging: "🔴 तीव्र पाप दृष्टिः (शत्रु भावः)",
+    friendly: "मित्र (Friendly)",
+    inimical: "शत्रु (Inimical)",
+    neutral: "सम (Neutral)",
+    friendStatus: "मित्रम्",
+    enemyStatus: "शत्रुः",
+    neutralStatus: "समम्",
+    houseInterpTitle: "द्वादश भाव विस्तृत फलादेशः",
+    houseInterpSubtitle: "बृहत्पाराशर होरा शास्त्रानुसारं भाव फलकथनम्",
+    housePlacement: "भाव स्थितिः",
+    houseAnalysis: "भाव विचारः",
+    positiveManifest: "सकारात्मक फलम्",
+    negativeManifest: "सावधानी / प्रतिकूलता",
+    neutralManifest: "सामान्य प्रभावः",
+    manifestationSuffix: "फल स्वरूपम्",
+    manifestationAnalysis: "प्रभाव विश्लेषणम्",
+    positiveManifestAnalysis: "शुभ फल विचारः",
+    negativeManifestAnalysis: "प्रतिकूल फल विचारः",
+    neutralManifestAnalysis: "तटस्थ प्रभाव विचारः",
+    conjunctionSectionTitle: "ग्रह युति विचारः (Conjunctions)",
+    conjunctionSectionSubtitle: "द्वादश भावेषु परस्पर ग्रह संयोग निदानम्",
+    conjunctionActive: "सक्रिया युतिः",
+    conjunctionsActive: "सक्रियाः युतयः",
+    planetYuti: "ग्रह युतिः",
+    bhavaResonance: "भाव संयोगः",
+    coreOverviewTitle: "मुख्य सिद्धान्तः एवं फलम्",
+    theGoodTitle: "युतेः शुभ प्रभावाः",
+    theBadTitle: "चुनौत्यः, दोषाः, उपायाः च",
+    exploringConjunctions: "कुण्डल्यां ग्रह युतयः विश्लेष्यन्ते...",
+    labelStrength: "सकारात्मक बलं",
+    labelChallenge: "चुनौती",
+    yamakantakaTitle: "यमकण्टक विश्लेषणम्",
+    yamakantakaSubtitle: "बृहस्पति उपग्रहस्य रक्षात्मक कवचम्",
+    jupiterUpagraha: "गुरोः उपग्रहः (शुभः)",
+    residingBhava: "स्थित भावः",
+    riseTime: "उदय कालः",
+    natureLabel: "स्वभावः",
+    natureAuspicious: "परम शुभः (Auspicious)",
+    classicalParasharaRef: "बृहत्पाराशर होरा शास्त्रम्: देवगुरोः रश्मियुक्तः सौम्यः शुभप्रदः उपग्रहः।",
+    protectiveEffectsTitle: "सुरक्षात्मक प्रभावः एवं शास्त्रीय फलम्",
+    bhavaResonanceTag: "भाव संयोगः",
+    divineShieldLabel: "दैवीय रक्षा कवचम्",
+    divineShieldDesc: "अयं उपग्रहः भावं क्रूर ग्रहाणां पीडायाः रक्षति शुभ वृद्धिं च प्रयच्छति।",
+    mandiGulikaTitle: "मान्दि एवं गुलिक विचारः",
+    mandiGulikaSubtitle: "शनेः छायासुतौ: प्रारब्ध कर्म विमर्शः",
+    saturnSonsTag: "शनिपुत्रौ (छायाग्रहौ)",
+    houseTypeLabel: "भाव प्रकारः",
+    upachayaGrowth: "उपचय वृद्धिः (Upachaya)",
+    standardBhava: "सामान्य भावः",
+    classicalUpachayaRule: "शास्त्रीय नियमः: उपचयेषु (३, ६, १०, ११) मान्दि-गुलिकौ दृढ सफलतायाः विजयस्य च कारकौ भवतः।",
+    upachayaHeader: "भौतिक विजयः कर्मसिद्धिः च",
+    nonUpachayaHeader: "कर्म सम्बद्धाः क्लेशाः सावधान्यः च",
+    karmicNoteLabel: "कर्म विमर्शः",
+    upachayaNote: "अस्मिन् भावे पुरुषार्थेन काले जाते जातकः महत् यशः प्राप्नोति।",
+    nonUpachayaNote: "बाधानां शमनाय संयमः, धैर्यम्, वैदिक शान्ति उपायाः च कर्तव्याः।",
+    upaketuTitle: "उपकेतु (शिखी) विचारः",
+    upaketuBadge: "अप्रकाश्य ग्रहः (उपकेतुः)",
+    upaketuSubtitle: "अग्नितत्त्वीय अप्रकाश्य ग्रहः: आकस्मिक परिवर्तन विमर्शः",
+    upaketuRasi: "राशिः",
+    upaketuLongitude: "भोगांशः",
+    upaketuUpachayaType: "उपचय पराक्रमः",
+    upaketuClassicalRule: "शास्त्रीय पाराशरः: उपकेतौ मङ्गल-केतु सदृशं तीक्ष्णं तेजः भवति।",
+    upaketuUpachayaHeader: "प्रचण्ड सफलता तीव्र वृद्धिः च",
+    upaketuNonUpachayaHeader: "आकस्मिक घटनाः तीक्ष्ण ऊर्जा च",
+    upaketuClassicalGuidance: "शास्त्रीय मार्गदर्शनम्",
+    upaketuUpachayaGuidance: "अनुशासनेन शत्रुविजयः प्रतिस्पर्धायां च सिद्धिः भवति।",
+    upaketuNonUpachayaGuidance: "विवादात् अग्नेः च सावधानता वर्तनीया।",
+    indrachapaTitle: "इन्द्रचाप (कोदण्ड) विचारः",
+    indrachapaBadge: "अप्रकाश्य ग्रहः (इन्द्रचापः)",
+    indrachapaSubtitle: "रहस्यमयः इन्द्रधनुषीय ग्रहः: मायाजालम् अप्रत्याशित फलम् च",
+    indrachapaClassicalRule: "शास्त्रीय पाराशरः: इन्द्रचापः दैवीय धनुः सदृशः प्रारब्धे आकस्मिक प्रभावं जनयति।",
+    indrachapaUpachayaHeader: "आकस्मिक उत्थानं कूटनीतिक प्रभावः च",
+    indrachapaNonUpachayaHeader: "मायाजालं गूढ घटनाः च",
+    indrachapaUpachayaGuidance: "कूटनीतिक बुद्ध्या विषम परिस्थितौ अपि विजयः प्राप्यते।",
+    indrachapaNonUpachayaGuidance: "प्रलोभनेभ्यः दूरं वर्तनीयम्, सत्यनिष्ठा धारणीया।",
+    jumpTo: "अनुभागं गच्छतु:",
+    closeWindow: "पिदधातु",
+    navD1Chart: "लग्न कुण्डली (D1)",
+    nav12Bhavas: "द्वादश भावाः",
+    navDrishti: "दृष्टिः (Drishti)",
+    navHouseAnalysis: "भाव फलादेशः",
+    navConjunctions: "युति विचारः",
+    navYamakantaka: "यमकण्टकः",
+    navMandiGulika: "मान्दि-गुलिकौ",
+    navUpaketu: "उपकेतुः",
+    navIndrachapa: "इन्द्रचापः"
+  }
+};
+
+// Complete Punjabi Dictionary (Gurmukhi Script)
+const punjabiDictionary = {
+  lang: 'pa',
+  langName: 'ਪੰਜਾਬੀ (Punjabi)',
+  planets: {
+    Sun: "ਸੂਰਜ",
+    Moon: "ਚੰਦਰਮਾ",
+    Mars: "ਮੰਗਲ",
+    Mercury: "ਬੁੱਧ",
+    Jupiter: "ਗੁਰੂ (ਬ੍ਰਹਿਸਪਤ)",
+    Venus: "ਸ਼ੁੱਕਰ",
+    Saturn: "ਸ਼ਨੀ",
+    Rahu: "ਰਾਹੂ",
+    Ketu: "ਕੇਤੂ",
+    Ascendant: "ਲਗਨ"
+  },
+  signs: {
+    Aries: "ਮੇਖ",
+    Taurus: "ਬ੍ਰਿਖ",
+    Gemini: "ਮਿਥੁਨ",
+    Cancer: "ਕਰਕ",
+    Leo: "ਸਿੰਘ",
+    Virgo: "ਕੰਨਿਆ",
+    Libra: "ਤੁਲਾ",
+    Scorpio: "ਬ੍ਰਿਸ਼ਚਕ",
+    Sagittarius: "ਧਨੁ",
+    Capricorn: "ਮਕਰ",
+    Aquarius: "ਕੁੰਭ",
+    Pisces: "ਮੀਨ"
+  },
+  nakshatras: {
+    Ashwini: "ਅਸ਼ਵਿਨੀ",
+    Bharani: "ਭਰਣੀ",
+    Krittika: "ਕ੍ਰਿਤਿਕਾ",
+    Rohini: "ਰੋਹਿਣੀ",
+    Mrigashira: "ਮ੍ਰਿਗਸ਼ਿਰਾ",
+    Ardra: "ਆਰਦਰਾ",
+    Punarvasu: "ਪੁਨਰਵਸੂ",
+    Pushya: "ਪੁਸ਼ਯ",
+    Ashlesha: "ਅਸ਼ਲੇਸ਼ਾ",
+    Magha: "ਮਘਾ",
+    PurvaPhalguni: "ਪੂਰਵਾ ਫਾਲਗੁਨੀ",
+    UttaraPhalguni: "ਉੱਤਰਾ ਫਾਲਗੁਨੀ",
+    Hasta: "ਹਸਤ",
+    Chitra: "ਚਿਤ੍ਰਾ",
+    Swati: "ਸਵਾਤੀ",
+    Vishakha: "ਵਿਸ਼ਾਖਾ",
+    Anuradha: "ਅਨੁਰਾਧਾ",
+    Jyeshtha: "ਜੇਠਾ (ਜਯੇਸ਼ਠਾ)",
+    Mula: "ਮੂਲ",
+    PurvaAshadha: "ਪੂਰਵਾਸ਼ਾੜ੍ਹਾ",
+    UttaraAshadha: "ਉੱਤਰਾਸ਼ਾੜ੍ਹਾ",
+    Shravana: "ਸ਼੍ਰਵਣ",
+    Dhanishta: "ਧਨਿਸ਼ਠਾ",
+    Shatabhisha: "ਸ਼ਤਭਿਸ਼ਾ",
+    PurvaBhadrapada: "ਪੂਰਵ ਭਾਦਰਪਦ",
+    UttaraBhadrapada: "ਉੱਤਰ ਭਾਦਰਪਦ",
+    Revati: "ਰੇਵਤੀ"
+  },
+  ui: {
+    title: "D1 ਲਗਨ ਕੁੰਡਲੀ ਚਾਰਟ",
+    planetaryDegreesTitle: "ਗ੍ਰਹਿ ਡਿਗਰੀਆਂ ਅਤੇ ਨਕਸ਼ਤਰ",
+    planetaryDegreesSubtitle: "ਸਾਈਡਰੀਅਲ ਡਿਗਰੀਆਂ, ਨਕਸ਼ਤਰ ਅਤੇ ਗ੍ਰਹਿ ਸਥਿਤੀ",
+    ayanamsha: "ਲਾਹਿੜੀ ਅਯਨਾਂਸ਼",
+    colPlanet: "ਗ੍ਰਹਿ",
+    colSign: "ਰਾਸ਼ੀ",
+    colDegree: "ਡਿਗਰੀ",
+    colNakshatra: "ਨਕਸ਼ਤਰ",
+    colPada: "ਪਦ",
+    colHouse: "ਘਰ (ਭਾਵ)",
+    colMotion: "ਚਾਲ",
+    retrograde: "ਵਕਰੀ (Retrograde)",
+    direct: "ਮਾਰਗੀ (Direct)",
+    combust: "ਅਸਤ (Combust)",
+    bhavasTitle: "12 ਘਰਾਂ (ਭਾਵਾਂ) ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+    bhavasSubtitle: "ਸਾਰੇ 12 ਘਰਾਂ ਦੀਆਂ ਰਾਸ਼ੀਆਂ, ਮਾਲਕ ਗ੍ਰਹਿ ਅਤੇ ਮੌਜੂਦ ਗ੍ਰਹਿ",
+    houseLabel: "ਘਰ",
+    lordLabel: "ਮਾਲਕ ਗ੍ਰਹਿ",
+    planetsLabel: "ਮੌਜੂਦ ਗ੍ਰਹਿ",
+    noneOccupants: "ਕੋਈ ਗ੍ਰਹਿ ਨਹੀਂ",
+    activeBhavas: "12 ਘਰ ਕਿਰਿਆਸ਼ੀਲ",
+    talkAstrologer: "ਜੋਤਸ਼ੀ ਨਾਲ ਗੱਲ ਕਰੋ",
+    close: "ਬੰਦ ਕਰੋ",
+    native: "ਜਾਤਕ",
+    inspectPlanetHint: "ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਕਿਸੇ ਵੀ ਗ੍ਰਹਿ 'ਤੇ ਕਲਿੱਕ ਕਰੋ",
+    drishtiTitle: "ਗ੍ਰਹਿ ਅਤੇ ਰਾਸ਼ੀ ਦ੍ਰਿਸ਼ਟੀ",
+    drishtiSubtitle: "ਕਰਮ ਅਤੇ ਪ੍ਰਭਾਵ ਦੀ ਜੋਤਿਸ਼ਕ ਦ੍ਰਿਸ਼ਟੀ",
+    grahaDrishtiTab: "ਗ੍ਰਹਿ ਦ੍ਰਿਸ਼ਟੀ (Planetary)",
+    jaiminiDrishtiTab: "ਜੈਮਿਨੀ ਰਾਸ਼ੀ ਦ੍ਰਿਸ਼ਟੀ (Sign)",
+    occupiedHouse: "ਸਥਿਤ ਘਰ",
+    aspectLabel: "ਦ੍ਰਿਸ਼ਟੀ",
+    aspectHouse: "ਦ੍ਰਿਸ਼ਟੀ ਵਾਲਾ ਘਰ",
+    occupyingPlanets: "ਮੌਜੂਦ ਗ੍ਰਹਿ",
+    drishtiQuality: "ਦ੍ਰਿਸ਼ਟੀ ਪ੍ਰਭਾਵ",
+    interpretation: "ਜੋਤਿਸ਼ਕ ਫਲ / ਵਿਆਖਿਆ",
+    thAspect: "ਵੀਂ ਦ੍ਰਿਸ਼ਟੀ",
+    emptyHouse: "ਖਾਲੀ ਘਰ",
+    houseAndSign: "ਘਰ ਅਤੇ ਰਾਸ਼ੀ",
+    signNature: "ਰਾਸ਼ੀ ਸੁਭਾਅ",
+    aspectedSignsHouses: "ਦ੍ਰਿਸ਼ਟੀ ਵਾਲੀਆਂ ਰਾਸ਼ੀਆਂ ਤੇ ਘਰ",
+    positiveBenefic: "🟢 ਸ਼ੁਭ ਦ੍ਰਿਸ਼ਟੀ (Benefic)",
+    challengingMalefic: "🔴 ਅਸ਼ੁਭ ਦ੍ਰਿਸ਼ਟੀ (Malefic)",
+    mixedBenefic: "🟡 ਮਿਸ਼ਰਤ ਸ਼ੁਭ ਦ੍ਰਿਸ਼ਟੀ",
+    highlyPositive: "🟢 ਅਤਿ ਉੱਤਮ ਸ਼ੁਭ (ਮਿੱਤਰ ਦ੍ਰਿਸ਼ਟੀ)",
+    weakenedBenefic: "🟡 ਕਮਜ਼ੋਰ ਸ਼ੁਭ (ਦੁਸ਼ਮਣ ਦ੍ਰਿਸ਼ਟੀ)",
+    softenedMalefic: "🟡 ਨਰਮ ਅਸ਼ੁਭ (ਮਿੱਤਰ ਘਰ)",
+    highlyChallenging: "🔴 ਗੰਭੀਰ ਅਸ਼ੁਭ (ਦੁਸ਼ਮਣ ਘਰ)",
+    friendly: "ਮਿੱਤਰ (Friendly)",
+    inimical: "ਦੁਸ਼ਮਣ (Inimical)",
+    neutral: "ਸਮਾਨ (Neutral)",
+    friendStatus: "ਮਿੱਤਰ",
+    enemyStatus: "ਦੁਸ਼ਮਣ",
+    neutralStatus: "ਸਮਾਨ",
+    houseInterpTitle: "12 ਘਰਾਂ ਦਾ ਵਿਸਤ੍ਰਿਤ ਫਲਕਥਨ",
+    houseInterpSubtitle: "ਪਰਾਸ਼ਰ ਹੋਰਾ ਸ਼ਾਸਤਰ ਅਨੁਸਾਰ ਘਰਾਂ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+    housePlacement: "ਘਰ ਸਥਿਤੀ",
+    houseAnalysis: "ਘਰ ਵਿਸ਼ਲੇਸ਼ਣ",
+    positiveManifest: "ਸ਼ੁਭ ਪ੍ਰਭਾਵ",
+    negativeManifest: "ਸਾਵਧਾਨੀ / ਚੁਣੌਤੀ",
+    neutralManifest: "ਸਧਾਰਣ ਪ੍ਰਭਾਵ",
+    manifestationSuffix: "ਦਾ ਪ੍ਰਭਾਵ",
+    manifestationAnalysis: "ਪ੍ਰਭਾਵ ਵਿਸ਼ਲੇਸ਼ਣ",
+    positiveManifestAnalysis: "ਸ਼ੁਭ ਪ੍ਰਭਾਵ ਵਿਸ਼ਲੇਸ਼ਣ",
+    negativeManifestAnalysis: "ਚੁਣੌਤੀ ਪ੍ਰਭਾਵ ਵਿਸ਼ਲੇਸ਼ਣ",
+    neutralManifestAnalysis: "ਸਧਾਰਣ ਪ੍ਰਭਾਵ ਵਿਸ਼ਲੇਸ਼ਣ",
+    conjunctionSectionTitle: "ਗ੍ਰਹਿ ਯੁਤੀ ਵਿਸ਼ਲੇਸ਼ਣ (Conjunctions)",
+    conjunctionSectionSubtitle: "ਕੁੰਡਲੀ ਦੇ ਘਰਾਂ ਵਿੱਚ ਗ੍ਰਹਿਆਂ ਦੇ ਮਿਲਾਪ ਦਾ ਪ੍ਰਭਾਵ",
+    conjunctionActive: "ਕਿਰਿਆਸ਼ੀਲ ਯੁਤੀ",
+    conjunctionsActive: "ਕਿਰਿਆਸ਼ੀਲ ਯੁਤੀਆਂ",
+    planetYuti: "ਗ੍ਰਹਿ ਯੁਤੀ",
+    bhavaResonance: "ਘਰ ਸੰਯੋਗ",
+    coreOverviewTitle: "ਮੁੱਖ ਸਿਧਾਂਤ ਅਤੇ ਸਾਰੰਸ਼",
+    theGoodTitle: "ਯੁਤੀ ਦੇ ਸ਼ੁਭ ਪ੍ਰਭਾਵ",
+    theBadTitle: "ਚੁਣੌਤੀਆਂ ਅਤੇ ਸਾਵਧਾਨੀਆਂ",
+    exploringConjunctions: "ਕੁੰਡਲੀ ਵਿੱਚ ਗ੍ਰਹਿ ਯੁਤੀਆਂ ਦੀ ਜਾਂਚ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+    labelStrength: "ਸ਼ੁਭ ਸ਼ਕਤੀ",
+    labelChallenge: "ਚੁਣੌਤੀ",
+    yamakantakaTitle: "ਯਮਕੰਟਕ ਵਿਸ਼ਲੇਸ਼ਣ",
+    yamakantakaSubtitle: "ਰੱਖਿਆਤਮਕ ਕ੍ਰਿਪਾ ਅਤੇ ਸ਼ੁਭ ਉਪਗ੍ਰਹਿ ਕਵਚ",
+    jupiterUpagraha: "ਗੁਰੂ ਦਾ ਉਪਗ੍ਰਹਿ (ਸ਼ੁਭ)",
+    residingBhava: "ਸਥਿਤ ਘਰ",
+    riseTime: "ਉਦੈ ਸਮਾਂ",
+    natureLabel: "ਸੁਭਾਅ",
+    natureAuspicious: "ਸ਼ੁਭ ਉਪਗ੍ਰਹਿ (Auspicious)",
+    classicalParasharaRef: "ਬ੍ਰਿਹਤ ਪਰਾਸ਼ਰ ਹੋਰਾ ਸ਼ਾਸਤਰ: ਦੇਵਗੁਰੂ ਬ੍ਰਹਿਸਪਤ ਦੀਆਂ ਰਸ਼ਮੀਆਂ ਨਾਲ ਭਰਪੂਰ ਪਰਮ ਸ਼ੁਭ ਉਪਗ੍ਰਹਿ।",
+    protectiveEffectsTitle: "ਰੱਖਿਆਤਮਕ ਪ੍ਰਭਾਵ ਅਤੇ ਸ਼ਾਸਤਰੀ ਫਲ",
+    bhavaResonanceTag: "ਘਰ ਸੰਯੋਗ",
+    divineShieldLabel: "ਰੱਬੀ ਰੱਖਿਆ ਕਵਚ",
+    divineShieldDesc: "ਇਹ ਨਿਰਧਾਰਤ ਘਰ ਨੂੰ ਪਾਪ ਗ੍ਰਹਿਆਂ ਦੇ ਮਾੜੇ ਪ੍ਰਭਾਵਾਂ ਤੋਂ ਬਚਾਉਂਦਾ ਹੈ ਅਤੇ ਤਰੱਕੀ ਦਿੰਦਾ ਹੈ।",
+    mandiGulikaTitle: "ਮਾਂਦੀ ਅਤੇ ਗੁਲਿਕਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+    mandiGulikaSubtitle: "ਸ਼ਨੀ ਦੇ ਛਾਇਆ ਗ੍ਰਹਿ: ਦੇਰੀ, ਰੁਕਾਵਟ ਅਤੇ ਸੰਚਿਤ ਕਰਮ",
+    saturnSonsTag: "ਸ਼ਨੀ-ਪੁੱਤਰ (ਛਾਇਆ ਗ੍ਰਹਿ)",
+    houseTypeLabel: "ਘਰ ਦੀ ਕਿਸਮ",
+    upachayaGrowth: "ਉਪਚੈ ਵਾਧਾ (Upachaya Growth)",
+    standardBhava: "ਸਧਾਰਣ ਘਰ",
+    classicalUpachayaRule: "ਸ਼ਾਸਤਰੀ ਨਿਯਮ: ਉਪਚੈ ਘਰਾਂ (3, 6, 10, 11) ਵਿੱਚ ਮਾਂਦੀ ਅਤੇ ਗੁਲਿਕਾ ਸਫਲਤਾ ਅਤੇ ਜਿੱਤ ਦਿਵਾਉਂਦੇ ਹਨ।",
+    upachayaHeader: "ਸੰਸਾਰਕ ਸਫਲਤਾ ਅਤੇ ਕਰਮ ਜਿੱਤ",
+    nonUpachayaHeader: "ਕਰਮ ਚੁਣੌਤੀਆਂ ਅਤੇ ਸਾਵਧਾਨੀਆਂ",
+    karmicNoteLabel: "ਕਰਮ ਵਿਚਾਰ",
+    upachayaNote: "ਸਮੇਂ ਦੇ ਨਾਲ ਮਿਹਨਤ ਕਰਕੇ ਜਾਤਕ ਵੱਡੀਆਂ ਪ੍ਰਾਪਤੀਆਂ ਹਾਸਲ ਕਰਦਾ ਹੈ।",
+    nonUpachayaNote: "ਰੁਕਾਵਟਾਂ ਦੇ ਨਿਵਾਰਣ ਲਈ ਧੀਰਜ, ਸੰਜਮ ਅਤੇ ਵੈਦਿਕ ਸ਼ਾਂਤੀ ਉਪਾਵਾਂ ਦੀ ਲੋੜ ਹੈ।",
+    upaketuTitle: "ਉਪਕੇਤੂ (ਸ਼ਿਖੀ) ਵਿਸ਼ਲੇਸ਼ਣ",
+    upaketuBadge: "ਅਪ੍ਰਕਾਸ਼ ਗ੍ਰਹਿ (ਉਪਕੇਤੂ ਸ਼ਿਖੀ)",
+    upaketuSubtitle: "ਅਗਨੀ ਤੱਤ ਵਾਲਾ ਅਪ੍ਰਕਾਸ਼ ਗ੍ਰਹਿ: ਅਚਾਨਕ ਘਟਨਾਵਾਂ ਅਤੇ ਕਰਮ ਵਿਚਾਰ",
+    upaketuRasi: "ਰਾਸ਼ੀ",
+    upaketuLongitude: "ਡਿਗਰੀ",
+    upaketuUpachayaType: "ਉਪਚੈ ਬਹਾਦਰੀ",
+    upaketuClassicalRule: "ਸ਼ਾਸਤਰੀ ਪਰਾਸ਼ਰ: ਉਪਕੇਤੂ ਵਿੱਚ ਮੰਗਲ-ਕੇਤੂ ਵਰਗੀ ਤਿੱਖੀ ਊਰਜਾ ਹੁੰਦੀ ਹੈ।",
+    upaketuUpachayaHeader: "ਭਾਰੀ ਸਫਲਤਾ ਅਤੇ ਤੇਜ਼ ਵਾਧਾ",
+    upaketuNonUpachayaHeader: "ਅਚਾਨਕ ਘਟਨਾਵਾਂ ਅਤੇ ਤੀਬਰ ਊਰਜਾ",
+    upaketuClassicalGuidance: "ਸ਼ਾਸਤਰੀ ਮਾਰਗਦਰਸ਼ਨ",
+    upaketuUpachayaGuidance: "ਅਨੁਸ਼ਾਸਨ ਨਾਲ ਇਸ ਊਰਜਾ ਨੂੰ ਸਹੀ ਪਾਸੇ ਲਗਾਉਣ 'ਤੇ ਵਿਰੋਧੀਆਂ 'ਤੇ ਜਿੱਤ ਮਿਲਦੀ ਹੈ।",
+    upaketuNonUpachayaGuidance: "ਅਚਾਨਕ ਝਗੜਿਆਂ ਅਤੇ ਅੱਗ ਤੋਂ ਸਾਵਧਾਨ ਰਹੋ; ਵਾਧੂ ਊਰਜਾ ਕਸਰਤ ਵਿੱਚ ਲਗਾਓ।",
+    indrachapaTitle: "ਇੰਦਰਚਾਪ (ਕੋਦੰਡ) ਵਿਸ਼ਲੇਸ਼ਣ",
+    indrachapaBadge: "ਅਪ੍ਰਕਾਸ਼ ਗ੍ਰਹਿ (ਇੰਦਰਚਾਪ ਕੋਦੰਡ)",
+    indrachapaSubtitle: "ਰਹੱਸਮਈ ਧਨੁਸ਼ ਗ੍ਰਹਿ: ਭਰਮ, ਮਾਇਆ ਅਤੇ ਅਚਾਨਕ ਪ੍ਰਭਾਵ",
+    indrachapaClassicalRule: "ਸ਼ਾਸਤਰੀ ਪਰਾਸ਼ਰ: ਇੰਦਰਚਾਪ ਕਿਸਮਤ ਵਿੱਚ ਅਚਾਨਕ ਚਮਕ ਅਤੇ ਅਸਾਧਾਰਣ ਪ੍ਰਭਾਵ ਪੈਦਾ ਕਰਦਾ ਹੈ।",
+    indrachapaUpachayaHeader: "ਅਚਾਨਕ ਤਰੱਕੀ ਅਤੇ ਰਣਨੀਤਕ ਪ੍ਰਭਾਵ",
+    indrachapaNonUpachayaHeader: "ਰਹੱਸਮਈ ਘਟਨਾਵਾਂ ਅਤੇ ਭਰਮ",
+    indrachapaUpachayaGuidance: "ਸਮਝਦਾਰੀ ਅਤੇ ਅਚਾਨਕ ਮੌਕਿਆਂ ਦਾ ਲਾਭ ਉਠਾ ਕੇ ਉੱਚੇ ਅਹੁਦੇ ਦੀ ਪ੍ਰਾਪਤੀ ਹੁੰਦੀ ਹੈ।",
+    indrachapaNonUpachayaGuidance: "ਲਾਲਚ ਤੋਂ ਬਚੋ, ਪੂਰੀ ਜਾਂਚ ਤੋਂ ਬਾਅਦ ਹੀ ਵਿਸ਼ਵਾਸ ਕਰੋ।",
+    jumpTo: "ਇੱਥੇ ਜਾਓ:",
+    closeWindow: "ਬੰਦ ਕਰੋ",
+    navD1Chart: "ਲਗਨ ਕੁੰਡਲੀ (D1)",
+    nav12Bhavas: "12 ਘਰ",
+    navDrishti: "ਦ੍ਰਿਸ਼ਟੀ (Drishti)",
+    navHouseAnalysis: "ਘਰ ਫਲਾਦੇਸ਼",
+    navConjunctions: "ਯੁਤੀ ਵਿਚਾਰ",
+    navYamakantaka: "ਯਮਕੰਟਕ",
+    navMandiGulika: "ਮਾਂਦੀ-ਗੁਲਿਕਾ",
+    navUpaketu: "ਉਪਕੇਤੂ",
+    navIndrachapa: "ਇੰਦਰਚਾਪ"
+  }
+};
+
+async function main() {
+  console.log('Connecting to MongoDB...');
+  await mongoose.connect(process.env.MONGODB_URI);
+  console.log('Connected to MongoDB.');
+
+  // Upsert Sanskrit
+  await AstroTranslation.findOneAndUpdate(
+    { lang: 'sa' },
+    sanskritDictionary,
+    { upsert: true, new: true }
+  );
+  console.log('✅ Sanskrit (sa) astro dictionary seeded into MongoDB.');
+
+  // Upsert Punjabi
+  await AstroTranslation.findOneAndUpdate(
+    { lang: 'pa' },
+    punjabiDictionary,
+    { upsert: true, new: true }
+  );
+  console.log('✅ Punjabi (pa) astro dictionary seeded into MongoDB.');
+
+  // Update backend/services/astroTranslationSeeder.js file directly so it persists offline
+  const seederPath = path.join(__dirname, '../services/astroTranslationSeeder.js');
+  let currentTranslations = seeder.defaultTranslations || [];
+  
+  // Replace or add 'sa'
+  currentTranslations = currentTranslations.filter(t => t.lang !== 'sa' && t.lang !== 'pa');
+  currentTranslations.push(sanskritDictionary);
+  currentTranslations.push(punjabiDictionary);
+
+  const seederCode = `const mongoose = require("mongoose");
+const AstroTranslation = require("../models/AstroTranslation");
+
+const defaultTranslations = ${JSON.stringify(currentTranslations, null, 2)};
+
+async function seedAstroTranslations() {
+  try {
+    for (const item of defaultTranslations) {
+      await AstroTranslation.findOneAndUpdate({ lang: item.lang }, item, { upsert: true, new: true });
+    }
+    console.log(\`✅ Seeded \${defaultTranslations.length} astrological language dictionaries into MongoDB.\`);
+  } catch (err) {
+    console.error("Error seeding astro translations:", err);
+  }
+}
+
+module.exports = { seedAstroTranslations, defaultTranslations };
+`;
+
+  fs.writeFileSync(seederPath, seederCode, 'utf8');
+  console.log(`✅ Updated astroTranslationSeeder.js with ${currentTranslations.length} languages (including sa & pa).`);
+
+  await mongoose.disconnect();
+  console.log('Done!');
+}
+
+main().catch(err => {
+  console.error('Fatal error:', err);
+  process.exit(1);
+});

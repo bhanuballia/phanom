@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
@@ -11,6 +12,7 @@ import ContactUs from './pages/ContactUs';
 import Kundali from './pages/Kundali';
 import KundaliMatching from './pages/KundaliMatching';
 import DailyCalendar from './pages/DailyCalendar';
+import MonthlyPanchang from './pages/MonthlyPanchang';
 import AdminDashboard from './Admin/AdminDashboard';
 import AstrologerManagement from './Admin/AstrologerManagement';
 import AddAstrologer from './Admin/AddAstrologer';
@@ -49,6 +51,23 @@ import LiveChatHistory from './Admin/LiveChatHistory';
 import AuditReport from './Admin/AuditReport';
 import KundaliHub from './pages/KundaliHub';
 import TarotReading from './pages/TarotReading';
+import D1ChartWindow from './pages/D1ChartWindow';
+import D2ChartWindow from './pages/charts/D2ChartWindow';
+import D3ChartWindow from './pages/charts/D3ChartWindow';
+import D4ChartWindow from './pages/charts/D4ChartWindow';
+import D7ChartWindow from './pages/charts/D7ChartWindow';
+import D9ChartWindow from './pages/charts/D9ChartWindow';
+import D10ChartWindow from './pages/charts/D10ChartWindow';
+import D12ChartWindow from './pages/charts/D12ChartWindow';
+import D16ChartWindow from './pages/charts/D16ChartWindow';
+import D20ChartWindow from './pages/charts/D20ChartWindow';
+import D24ChartWindow from './pages/charts/D24ChartWindow';
+import D27ChartWindow from './pages/charts/D27ChartWindow';
+import D30ChartWindow from './pages/charts/D30ChartWindow';
+import D40ChartWindow from './pages/charts/D40ChartWindow';
+import D45ChartWindow from './pages/charts/D45ChartWindow';
+import D60ChartWindow from './pages/charts/D60ChartWindow';
+import VimshottariDashaWindow from './pages/VimshottariDashaWindow';
 
 
 
@@ -95,8 +114,9 @@ function App() {
 
   return (
     <AuthProvider>
-      <Router>
-        <div className="App">
+      <LanguageProvider>
+        <Router>
+          <div className="App">
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
@@ -118,11 +138,75 @@ function App() {
             />
             <Route
               path="/kundali-hub"
-              element={
-                <ProtectedRoute>
-                  <KundaliHub />
-                </ProtectedRoute>
-              }
+              element={<KundaliHub />}
+            />
+            <Route
+              path="/chart/d1"
+              element={<D1ChartWindow />}
+            />
+            <Route
+              path="/chart/d2"
+              element={<D2ChartWindow />}
+            />
+            <Route
+              path="/chart/d3"
+              element={<D3ChartWindow />}
+            />
+            <Route
+              path="/chart/d4"
+              element={<D4ChartWindow />}
+            />
+            <Route
+              path="/chart/d7"
+              element={<D7ChartWindow />}
+            />
+            <Route
+              path="/chart/d9"
+              element={<D9ChartWindow />}
+            />
+            <Route
+              path="/chart/d10"
+              element={<D10ChartWindow />}
+            />
+            <Route
+              path="/chart/d12"
+              element={<D12ChartWindow />}
+            />
+            <Route
+              path="/chart/d16"
+              element={<D16ChartWindow />}
+            />
+            <Route
+              path="/chart/d20"
+              element={<D20ChartWindow />}
+            />
+            <Route
+              path="/chart/d24"
+              element={<D24ChartWindow />}
+            />
+            <Route
+              path="/chart/d27"
+              element={<D27ChartWindow />}
+            />
+            <Route
+              path="/chart/d30"
+              element={<D30ChartWindow />}
+            />
+            <Route
+              path="/chart/d40"
+              element={<D40ChartWindow />}
+            />
+            <Route
+              path="/chart/d45"
+              element={<D45ChartWindow />}
+            />
+            <Route
+              path="/chart/d60"
+              element={<D60ChartWindow />}
+            />
+            <Route
+              path="/chart/vimshottari"
+              element={<VimshottariDashaWindow />}
             />
 
             <Route
@@ -140,6 +224,10 @@ function App() {
                   <DailyCalendar />
                 </ProtectedRoute>
               }
+            />
+            <Route
+              path="/monthly-panchang"
+              element={<MonthlyPanchang />}
             />
             <Route
               path="/lal-kitab"
@@ -430,14 +518,15 @@ function App() {
           <WebTritWidget /> */}
         </div>
       </Router>
-    </AuthProvider>
+    </LanguageProvider>
+  </AuthProvider>
   );
 }
 
 const ChatbotWrapper = () => {
   const location = useLocation();
-  // Don't show floating chatbot on the dedicated AI Astrologer page
-  if (location.pathname === '/ai-astrologer') return null;
+  // Don't show floating chatbot on the dedicated AI Astrologer page or dedicated popup chart windows
+  if (location.pathname === '/ai-astrologer' || location.pathname.startsWith('/chart/')) return null;
   return <AIChatbot />;
 };
 
@@ -445,6 +534,9 @@ function LiveFloatingButton() {
   const location = useLocation();
   const navigate = useNavigate();
   
+  // Don't show redundant floating button on popup chart windows
+  if (location.pathname.startsWith('/chart/')) return null;
+
   const handleClick = () => {
     navigate('/live-astrologers');
   };

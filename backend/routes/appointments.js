@@ -171,13 +171,13 @@ router.delete('/:id', protect, async (req, res) => {
 router.get('/astrologer/:astrologerId/availability', async (req, res) => {
   try {
     const { astrologerId } = req.params;
-    const { date, duration = 30 } = req.query; // Default duration to 30 mins if not provided
+    let { date, duration = 30 } = req.query; // Default duration to 30 mins if not provided
 
     if (!date) {
-      return res.status(400).json({ message: 'Date is required' });
+      date = new Date().toISOString().split('T')[0];
     }
 
-    const durationNum = parseInt(duration);
+    const durationNum = parseInt(duration) || 30;
 
     // Get all booked appointments for the astrologer on the specified date
     const bookedAppointments = await Appointment.find({

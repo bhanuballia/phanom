@@ -127,6 +127,10 @@ const connectDB = async () => {
 
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/astrology');
     console.log('Connected to MongoDB');
+
+    // Auto-seed Astrological Dictionary translations into MongoDB if missing
+    const { seedAstroTranslations } = require('./services/astroTranslationSeeder');
+    seedAstroTranslations().catch(e => console.warn('Astro translation seeder:', e.message));
   } catch (error) {
     console.error('MongoDB connection error:', error.message);
     console.log('⚠️  Warning: MongoDB not available. Some features may not work.');
@@ -434,6 +438,7 @@ app.use('/api/geo', geoRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/agora', agoraRoutes);
+app.use('/api/translate', require('./routes/translate'));
 
 // Serve uploaded files - ensure paths work in Vercel
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

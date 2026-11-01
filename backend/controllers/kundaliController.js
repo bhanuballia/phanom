@@ -3491,4 +3491,217 @@ exports.getDailyHoroscope = async (req, res) => {
   }
 };
 
+// Generate 100-Page Hybrid Kundali (Swiss Ephemeris + Gemini Flash)
+exports.generate100PagePDF = async (req, res) => {
+  try {
+    const { generate100PageData } = require('../services/hybridKundaliService');
+    const { name, dateOfBirth, timeOfBirth, placeOfBirth, gender, coordinates, timezone } = req.body;
 
+    const payload = {
+      name: name || 'Native',
+      date: dateOfBirth,
+      time: timeOfBirth,
+      placeOfBirth: placeOfBirth,
+      gender: gender || 'male',
+      coordinates: coordinates,
+      timezone: timezone || 'Asia/Kolkata',
+      tz_offset: 5.5
+    };
+
+    console.log(`\n🚀 [100PageKundali] Starting Hybrid 100-Page Generation for: ${payload.name}`);
+    const result = await generate100PageData(payload);
+
+    return res.json({
+      success: true,
+      message: '100-Page Hybrid Kundali Data successfully synthesized.',
+      pageAllocation: {
+        pages_1_to_10: 'Core Birth Chart (Lagna/D1), Moon, Navamsha (D9), Planetary degrees & Dignities (Swiss Ephemeris)',
+        pages_11_to_30: 'All 16 Divisional Charts (D1-D60), Bhava Chalit, Ashtakavarga & Sarvashtakavarga (Swiss Ephemeris)',
+        pages_31_to_45: '120-Year Vimshottari Dasha Hierarchy (Swiss Ephemeris)',
+        pages_46_to_65: 'Classical Planetary & House Analysis (Parashara Engine)',
+        pages_66_to_72: 'AI Personality, Core Strengths & Panchang Synthesis (Gemini Flash)',
+        pages_73_to_80: 'AI Career, Business & Financial Wealth Outlook (Gemini Flash)',
+        pages_81_to_86: 'AI Marriage, Spouse Profile & Relationship Timing (Gemini Flash)',
+        pages_87_to_92: 'AI Health, Vitality & Disease Vulnerabilities (Gemini Flash)',
+        pages_93_to_97: 'AI Active Dasha & 5-Year Transit Deep-Dive (Gemini Flash)',
+        pages_98_to_100: 'AI Personalized Remedies, Gemstones, Rudraksha, Mantras & Lifestyle Do\'s/Don\'ts (Gemini Flash)'
+      },
+      aiSections: result.aiSections,
+      raw_astronomical_summary: {
+        ascendant: result.ai_synthesis_context.native.ascendant_sign,
+        moon_sign: result.ai_synthesis_context.native.moon_sign,
+        sun_sign: result.ai_synthesis_context.native.sun_sign,
+        nakshatra: result.ai_synthesis_context.native.nakshatra,
+        active_dasha: result.ai_synthesis_context.current_dasha
+      }
+    });
+  } catch (error) {
+    console.error('❌ Error generating 100-page Kundali:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to generate 100-page Kundali',
+      details: error.message
+    });
+  }
+};
+
+// Generate 40-Page Hybrid Kundali (Swiss Ephemeris + Gemini Flash)
+exports.generate40PagePDF = async (req, res) => {
+  try {
+    const { generate40PageData } = require('../services/hybridKundaliService');
+    const { name, dateOfBirth, timeOfBirth, placeOfBirth, gender, coordinates, timezone } = req.body;
+
+    const payload = {
+      name: name || 'Native',
+      date: dateOfBirth,
+      time: timeOfBirth,
+      placeOfBirth: placeOfBirth,
+      gender: gender || 'male',
+      coordinates: coordinates,
+      timezone: timezone || 'Asia/Kolkata',
+      tz_offset: 5.5
+    };
+
+    console.log(`\n🚀 [40PageKundali] Starting Hybrid 40-Page Generation for: ${payload.name}`);
+    const result = await generate40PageData(payload);
+
+    return res.json({
+      success: true,
+      message: '40-Page Hybrid Kundali Report successfully generated.',
+      pageAllocation: {
+        pages_1_to_3: 'Cover, Avakhada Chakra & Panchang Particulars (Swiss Ephemeris)',
+        pages_4_to_8: 'Planetary Degrees, Dignities, Retrograde Status & Bhava Chalit (Swiss Ephemeris)',
+        pages_9_to_14: 'Core Kundali & Shodashvarga Charts (D1, D9, D10, D7, D12) (Swiss Ephemeris)',
+        pages_15_to_18: 'Ashtakavarga & Sarvashtakavarga Matrix (Swiss Ephemeris)',
+        pages_19_to_23: '120-Year Vimshottari Mahadasha & Antardasha Intervals (Swiss Ephemeris)',
+        pages_24_to_27: 'AI Personality, Temperament & Core Strengths (Gemini Flash)',
+        pages_28_to_31: 'AI Career, Profession & Financial Wealth Outlook (Gemini Flash)',
+        pages_32_to_34: 'AI Love, Marriage & Spouse Profile (Gemini Flash)',
+        pages_35_to_37: 'AI Health, Vitality & Dosha Vulnerabilities (Gemini Flash)',
+        pages_38_to_40: 'AI Tailored Remedies, Gemstones, Mantras & Recommendations (Gemini Flash)'
+      },
+      aiSections: result.aiSections,
+      raw_astronomical_summary: {
+        ascendant: result.ai_synthesis_context?.native?.ascendant_sign || 'Aries',
+        moon_sign: result.ai_synthesis_context?.native?.moon_sign || 'Taurus',
+        sun_sign: result.ai_synthesis_context?.native?.sun_sign || 'Aries',
+        nakshatra: result.ai_synthesis_context?.native?.nakshatra || 'Ashwini',
+        active_dasha: result.ai_synthesis_context?.current_dasha || {}
+      }
+    });
+  } catch (error) {
+    console.error('❌ Error generating 40-page Kundali:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to generate 40-page Kundali',
+      details: error.message
+    });
+  }
+};
+
+// Generate 25-Page Hybrid Dhan Yog Report (Swiss Ephemeris + Gemini Flash)
+exports.generateDhanYogReport = async (req, res) => {
+  try {
+    const { generateDhanYog25PageData } = require('../services/hybridDhanYogService');
+    const { name, dateOfBirth, timeOfBirth, placeOfBirth, gender, coordinates, timezone } = req.body;
+
+    const payload = {
+      name: name || 'Seeker',
+      dateOfBirth: dateOfBirth,
+      timeOfBirth: timeOfBirth || '12:00',
+      placeOfBirth: placeOfBirth || 'New Delhi, India',
+      gender: gender || 'male',
+      coordinates: coordinates || '28.6139,77.2090',
+      timezone: timezone || 'Asia/Kolkata',
+      tz_offset: 5.5
+    };
+
+    console.log(`\n💎 [DhanYogReport] Initiating 25-Page Wealth Blueprint for: ${payload.name}`);
+    const result = await generateDhanYog25PageData(payload);
+
+    return res.json({
+      success: true,
+      message: '25-Page Dhan Yog Wealth Report successfully generated.',
+      pageAllocation: {
+        pages_1_to_3: 'Cover Page, Planetary Coordinates & Natal Baseline (D1 Rasi)',
+        pages_4_to_6: 'Wealth Houses Deep Dive (2nd, 5th, 9th, 11th Bhavas & Lords)',
+        pages_7_to_9: 'Classical Dhan Yogas & Lakshmi Yogas Detection & Strength',
+        pages_10_to_12: 'D2 (Hora) Chart Analysis & Wealth Type (Solar vs Lunar Wealth)',
+        pages_13_to_15: 'D10 (Career Wealth) & D11 (Rudramsha / Recurring Gains)',
+        pages_16_to_18: 'Sarvashtakavarga Financial Potential (2nd vs 11th vs 12th Bindus)',
+        pages_19_to_21: '10-Year Financial Timeline (Vimshottari Dasha & Jupiter Transits)',
+        pages_22_to_23: 'Stock Market, Real Estate, Business vs Job Guidance (AI Synthesized)',
+        pages_24_to_25: 'Classical Remedies, Gemstones, Yantras & Astrological Disclaimer'
+      },
+      chapters: result.chapters,
+      raw_astronomical_summary: {
+        ascendant: result.ai_synthesis_context?.native?.ascendant_sign || 'Aries',
+        moon_sign: result.ai_synthesis_context?.native?.moon_sign || 'Taurus',
+        sun_sign: result.ai_synthesis_context?.native?.sun_sign || 'Leo',
+        nakshatra: result.ai_synthesis_context?.native?.nakshatra || 'Rohini',
+        active_dasha: result.ai_synthesis_context?.current_dasha || { active_mahadasha: 'Jupiter', active_antardasha: 'Mercury' }
+      }
+    });
+  } catch (error) {
+    console.error('❌ Error generating Dhan Yog report:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to generate Dhan Yog Report',
+      details: error.message
+    });
+  }
+};
+
+// Generate 25-Page Hybrid Remedies Report (Encyclopedia of Remedies + Gemini Flash)
+exports.generateRemedies25PageReport = async (req, res) => {
+  try {
+    const { generateRemedies25PageData } = require('../services/hybridRemediesService');
+    const { name, dateOfBirth, timeOfBirth, placeOfBirth, gender, coordinates, timezone } = req.body;
+
+    const payload = {
+      name: name || 'Seeker',
+      dateOfBirth: dateOfBirth,
+      timeOfBirth: timeOfBirth || '12:00',
+      placeOfBirth: placeOfBirth || 'New Delhi, India',
+      gender: gender || 'male',
+      coordinates: coordinates || '28.6139,77.2090',
+      timezone: timezone || 'Asia/Kolkata',
+      tz_offset: 5.5
+    };
+
+    console.log(`\n🪔 [RemediesReport] Initiating 25-Page Remedial Blueprint for: ${payload.name}`);
+    const result = await generateRemedies25PageData(payload);
+
+    return res.json({
+      success: true,
+      message: '25-Page Comprehensive Astrological Remedies Report successfully generated.',
+      bookSource: `${result.bookTitle} by ${result.author}`,
+      pageAllocation: {
+        pages_1_to_3: 'Cover Page, Natal Diagnostics & Fundamental 43-Day Remedial Rule',
+        pages_4_to_7: 'Prescribed Gemstones (Life Stone, Karaka Stone, Lucky Stone & Incompatibilities)',
+        pages_8_to_11: 'Gemstone Consecration Rituals, Metal, Finger, Weight & Skin Contact Rules',
+        pages_12_to_15: 'Sacred Rudraksha Therapy (Mukhi Prescription, Beej Mantras & Prana Pratishtha)',
+        pages_16_to_18: 'Yantra Science (Sri Yantra, Kuber, Mahamrityunjay & Cardinal Direction Placements)',
+        pages_19_to_21: 'Lal Kitab Totke, Daan (Food Grain / Metal Charities) & Jal Visarjan',
+        pages_22_to_23: 'Vrat (Fasting), Vedic Suktams & Planetary Mantra Japa Schedules',
+        pages_24_to_25: 'Nishiddha Karma (Actions/Donations to Avoid) & Astrological Disclaimer'
+      },
+      lagnaSpecificGems: result.lagnaSpecificGems,
+      chapters: result.chapters,
+      raw_astronomical_summary: {
+        ascendant: result.ai_synthesis_context?.native?.ascendant_sign || 'Aries',
+        moon_sign: result.ai_synthesis_context?.native?.moon_sign || 'Taurus',
+        sun_sign: result.ai_synthesis_context?.native?.sun_sign || 'Leo',
+        nakshatra: result.ai_synthesis_context?.native?.nakshatra || 'Rohini',
+        active_dasha: result.ai_synthesis_context?.current_dasha || { active_mahadasha: 'Jupiter', active_antardasha: 'Mercury' }
+      }
+    });
+  } catch (error) {
+    console.error('❌ Error generating Remedies report:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to generate Remedies Report',
+      details: error.message
+    });
+  }
+};

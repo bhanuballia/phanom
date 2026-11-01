@@ -27,6 +27,7 @@ const appointmentSchema = new mongoose.Schema({
   consultationType: {
     type: String,
     enum: [
+      'custom_questions',
       'birth_chart',
       'relationship',
       'career',

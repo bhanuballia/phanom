@@ -24,6 +24,18 @@ router.post('/send-sms', kundaliController.sendKundaliToPhone);
 // Generate PDF
 router.post('/generate-pdf', kundaliController.generatePDF);
 
+// Generate 100-Page Hybrid Kundali (Swiss Ephemeris + Gemini Flash)
+router.post('/generate-100-page-pdf', kundaliController.generate100PagePDF);
+
+// Generate 40-Page Hybrid Kundali (Swiss Ephemeris + Gemini Flash)
+router.post('/generate-40-page-pdf', kundaliController.generate40PagePDF);
+
+// Generate 25-Page Hybrid Dhan Yog Report (Swiss Ephemeris + Gemini Flash)
+router.post('/generate-dhanyog-report', kundaliController.generateDhanYogReport);
+
+// Generate 25-Page Hybrid Remedies Report (Encyclopedia of Remedies + Gemini Flash)
+router.post('/generate-remedies-report', kundaliController.generateRemedies25PageReport);
+
 // Calculate Zodiac Signs (Sun & Moon) using VedAstro
 router.post('/calculate-signs', kundaliController.calculateZodiacSigns);
 

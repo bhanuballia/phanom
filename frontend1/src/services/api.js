@@ -176,6 +176,9 @@ export const kundaliAPI = {
   sendToEmail: (emailData) => api.post('/kundali/send-email', emailData),
   sendToPhone: (smsData) => api.post('/kundali/send-sms', smsData),
   getPanchang: (panchangData) => api.post('/kundali/panchang', panchangData),
+  getDailyPanchang: (params) => axios.get('http://localhost:8000/api/panchang/daily', { params }),
+  getDailyHoroscope: (data) => api.post('/kundali/daily-horoscope', data),
+  getMonthlyPanchangSheet: (params) => axios.get('http://localhost:8000/api/panchang/monthly-sheet', { params }),
   generatePDF: (pdfData) => api.post('/kundali/generate-pdf', pdfData, { responseType: 'blob' }),
 };
 

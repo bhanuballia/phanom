@@ -318,7 +318,7 @@ const createAppointment = async (req, res) => {
     }
 
     // Check if astrologer exists
-    const astrologer = await User.findById(astrologerId);
+    const astrologer = await User.findById(astrologerId).populate('astrologerProfile');
     if (!astrologer || astrologer.role !== 'astrologer') {
       return res.status(400).json({ message: 'Invalid astrologer selected' });
     }
@@ -358,7 +358,9 @@ const createAppointment = async (req, res) => {
       'custom_questions'
     ];
     const isFixedPackage = FIXED_CONSULTATION_TYPES.includes(consultationType);
-    const astroRate = Number(astrologer.pricing) > 0 ? Number(astrologer.pricing) : 9;
+    const profilePricing = Number(astrologer.astrologerProfile?.pricing);
+    const userPricing = Number(astrologer.pricing);
+    const astroRate = profilePricing > 0 ? profilePricing : (userPricing > 0 ? userPricing : 9);
 
     // Billing type determination:
     // If first time -> 0 price (free 10-min trial)

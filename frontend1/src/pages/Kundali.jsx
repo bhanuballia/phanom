@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 import Navigation from '../components/Navigation';
 import KundaliChart from '../components/KundaliChart';
@@ -57,6 +58,7 @@ const Kundali = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (user) {
@@ -760,11 +762,69 @@ const Kundali = () => {
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navigation />
 
+        {/* Ancient Wisdom, Modern Guidance Section */}
+        <section className="relative z-10 px-3 sm:px-4 lg:px-6 pt-8 pb-4">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {/* Main Ancient Wisdom Card (Left 2 cols) */}
+            <div className="lg:col-span-8 rounded-[32px] bg-white border border-slate-200 p-6 sm:p-8 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div className="relative">
+                <div className="absolute inset-0 blur-2xl bg-amber-200/30 -z-10 rounded-[32px]" />
+                <img
+                  src="/images/home3.webp"
+                  alt="Horoscope and Consultations"
+                  className="w-full rounded-[28px] border border-slate-200 object-cover shadow-lg"
+                  loading="lazy"
+                />
+              </div>
+              <div className="space-y-4">
+                <p className="text-xs uppercase tracking-[0.4em] text-amber-600 font-bold">{t('Horoscope & Consultations')}</p>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">{t('Ancient Wisdom, Modern Guidance')}</h2>
+                <p className="text-slate-700 leading-relaxed font-normal text-sm sm:text-base">
+                  {t('Our certified Hindu astrologers bring thousands of years of Vedic tradition to your modern life. With deep knowledge of Sanskrit texts and authentic practices, we provide personalized guidance that honors both tradition and your contemporary needs.')}
+                </p>
+                <div className="space-y-2.5">
+                  {[
+                    'Certified Vedic astrologers with 15+ years experience',
+                    'Authentic Sanskrit-based calculations and interpretations',
+                    'Personalized remedies and spiritual guidance'
+                  ].map((point) => (
+                    <div key={point} className="flex items-start gap-2.5 text-slate-800 text-sm font-medium">
+                      <CheckCircle className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />
+                      <span>{t(point)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side kundalifree.jpg Card */}
+            <div className="lg:col-span-4 rounded-[32px] bg-white border border-slate-200 p-4 sm:p-5 shadow-sm flex flex-col justify-between overflow-hidden group">
+              <div className="relative w-full h-full min-h-[320px] rounded-[24px] overflow-hidden border border-slate-200 shadow-inner flex flex-col justify-end">
+                <img
+                  src="/images/kundalifree.jpg"
+                  alt="Free Kundali Insights"
+                  className="w-full h-full object-cover rounded-[24px] group-hover:scale-105 transition-transform duration-500 absolute inset-0"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none" />
+                <div className="relative z-10 p-5 text-white pointer-events-none">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-amber-400 block mb-1">
+                    निःशुल्क जन्म पत्रिका
+                  </span>
+                  <p className="text-base font-bold leading-snug drop-shadow-sm">
+                    Free Detailed Vedic Kundli & Astrological Predictions
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <div className="flex-1 flex items-center justify-center p-3 sm:p-4 lg:p-6">
-          <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+          <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
             {/* Left Info & Settings Panel */}
-            <div className="lg:col-span-4 flex flex-col justify-between rounded-3xl border border-black/10 bg-white/85 backdrop-blur-lg shadow-xl p-5 sm:p-6">
+            <div className="lg:col-span-3 flex flex-col justify-between rounded-3xl border border-black/10 bg-white/85 backdrop-blur-lg shadow-xl p-5 sm:p-6">
               <div>
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-full bg-astro-gold/15 border border-astro-gold/40 flex items-center justify-center">
@@ -855,7 +915,7 @@ const Kundali = () => {
             </div>
 
             {/* Right Generate Kundali Form Card */}
-            <div id="kundali-form" className="lg:col-span-8 flex flex-col justify-between rounded-3xl border border-black/10 bg-white/95 backdrop-blur-lg shadow-xl p-5 sm:p-6">
+            <div id="kundali-form" className="lg:col-span-6 flex flex-col justify-between rounded-3xl border border-black/10 bg-orange-200 backdrop-blur-lg shadow-xl p-5 sm:p-6">
               <form onSubmit={handleSubmit} className="flex flex-col justify-between h-full space-y-3 text-black">
                 {error && (
                   <div className="bg-red-100 border border-red-200 text-red-700 px-4 py-2 rounded-xl text-xs sm:text-sm text-center">
@@ -868,7 +928,7 @@ const Kundali = () => {
                     <Sparkles className="h-4 w-4 text-astro-gold" />
                     जन्म विवरण (Birth Details Form)
                   </h2>
-                  <span className="text-[11px] font-medium text-black/60 bg-black/5 px-2.5 py-1 rounded-full">
+                  <span className="text-[14px] font-medium text-black bg-black/5 px-2.5 py-1 rounded-full">
                     {generationMode === 'accurate' ? 'Mode: Accurate (सटीक)' : 'Mode: Quick (त्वरित)'}
                   </span>
                 </div>
@@ -1053,6 +1113,27 @@ const Kundali = () => {
                   </button>
                 </div>
               </form>
+            </div>
+
+            {/* Right Side Kundali Image Card */}
+            <div className="lg:col-span-3 flex flex-col justify-between rounded-3xl border border-black/10 bg-white/90 backdrop-blur-lg shadow-xl p-3 sm:p-4 overflow-hidden group">
+              <div className="relative w-full h-full min-h-[300px] lg:min-h-full rounded-2xl overflow-hidden border border-black/10 shadow-inner flex flex-col justify-between">
+                <img
+                  src="/images/dkundali.jpg"
+                  alt="Vedic Kundali Chart"
+                  className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 inset-x-0 p-4 text-white z-10 pointer-events-none">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-amber-400 block mb-1">
+                    वैदिक जन्म पत्रिका
+                  </span>
+                  <p className="text-sm font-bold leading-snug drop-shadow-sm">
+                    Authentic Vedic Kundali & Planetary Chart
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

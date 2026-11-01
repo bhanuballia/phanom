@@ -1,0 +1,628 @@
+{
+  "lang": "sa",
+  "langName": "Sanskrit",
+  "ui": {
+    "sectionTitle": "षष्ट्यंश विश्लेषणम् (D60 - पूर्वजन्मकृतकर्म प्रारब्धभाग्यं च)",
+    "sectionSubtitle": "पूर्वजन्मकृतानां संचितकर्मणां, प्रारब्धभोगस्य, सूक्ष्मसंस्काराणां परमदैवविधानस्य च भाववारं फलविचारः",
+    "houseBadge": "भावः",
+    "deityLabel": "षष्ट्यंशाधिष्ठाता",
+    "partLabel": "षष्ट्यंशभागः (१-६०)",
+    "impactLabel": "D60 कर्मफलम्"
+  },
+  "intro": "षष्ट्यंशकुण्डली (D60) वैदिकज्योतिष्यशास्त्रे अतिगम्भीरा सूक्ष्मतमा च वर्गकुण्डली वर्तते। इयं कुण्डली सञ्चितकर्मरूपिणं पूर्वजन्मार्जितं कर्मफलं प्रकटयति, यद् वर्तमानजन्मनो आधारशीला भवति। महर्षिः पराशरः सर्वेषु वर्गचक्रेषु षष्ट्यंशाय सर्वोच्चं प्राधान्यं प्रदत्तवान् यतः एषा जन्मपत्रिकारूपस्य विन्यासं 'किदर्थम्' (why) इति स्पष्टीकरोति।\n\nसारावल्यादिप्राचीनग्रन्थानुसारं जातकोपयोगिजतकपारिजातादिग्रन्थेषु च षष्ट्यंशः स्थायिनः जीवनप्रवाहानां गूढमूलानि प्रकाशयति यानि परिवर्तनानि दुस्तरत्वेन रोधयन्ति। जन्मपत्रिकायां ग्रहस्य फलादेशस्य पूर्णता भवति वा गम्भीरकर्मिकबाधानां सम्मुखीकरणं जायते, तस्य निश्चये षष्ट्यंशस्य निर्णयः चरमप्रमाणं मन्यते।\n\nषष्ट्यंशस्य मुख्यप्रयोगाः:\n- पूर्वजन्मकर्म: पूर्वजन्मकृतानि विशिष्टकर्माणि यानि वर्तमानस्य व्यक्तित्वम्, स्वास्थ्यम्, भाग्यं च प्रभावितानि कुर्वन्ति।\n- स्थायिनः प्रभावाः: सम्बन्धानां, कर्मक्षेत्रस्य, आर्थिककष्टानां वा वारं वारं पुनरावृत्तिं ये तर्कसङ्गतोपचारान् लङ्घयन्ति, तेषां कारणं प्रदर्शयति।\n- कुण्डलीनां श्रेणीक्रमः: D1, D9, D10 इत्येतेषां वर्गचक्राणां सम्भावनानां समर्थनं निरोधं वा कुर्वतीं मूलभूतस्तरीयं शक्तिं प्रयच्छति।\n- आध्यात्मिकसम्भावना: सञ्चितम् आध्यात्मिकपुण्यं वर्तमानकालस्य च धर्मवृद्धेः बाधान् प्रकटीकरोति।",
+  "interpretations": {
+    "Sun": {
+      "1": {
+        "positive": "Profound past life merits grant an unshakable, regal soul. You are born with immense spiritual authority and a clear divine purpose.",
+        "neutral": "Sun in the 1st house of D60 highlights the core karmic identity of the soul carried over from past incarnations.",
+        "negative": "Afflicted Sun brings deep-seated ego karma from past lives, resulting in an inherited arrogance that blocks the soul's progress."
+      },
+      "2": {
+        "positive": "Past life generosity results in effortless access to resources in this life. Your speech carries profound, ancient authority.",
+        "neutral": "Sun in the 2nd house of D60 connects your deep karmic values and financial destiny with past life actions.",
+        "negative": "Afflicted Sun indicates severe past life misuse of wealth or power, leading to inexplicable financial karmic debts."
+      },
+      "3": {
+        "positive": "Immense, soul-level courage carried from past lifetimes as a warrior or protector. You overcome karmic obstacles effortlessly.",
+        "neutral": "Sun in the 3rd house of D60 highlights the soul's deep-rooted will to act and its karmic ties with siblings.",
+        "negative": "Afflicted Sun brings a karmic lack of courage or past life conflicts with siblings that resurface to test the soul."
+      },
+      "4": {
+        "positive": "Profound, absolute inner peace rooted in past life spiritual practices. Your soul is deeply connected to a divine home.",
+        "neutral": "Sun in the 4th house of D60 emphasizes the soul's deepest emotional foundations built across multiple incarnations.",
+        "negative": "Afflicted Sun causes intense, inexplicable soul-level unrest and karmic suffering related to the concept of 'home'."
+      },
+      "5": {
+        "positive": "Supreme past life spiritual merit (Poorva Punya) grants extraordinary, divine intelligence and highly evolved children.",
+        "neutral": "Sun in the 5th house of D60 is the ultimate indicator of the soul's accrued merits and creative karma.",
+        "negative": "Afflicted Sun brings heavy karmic debts regarding children or the misuse of divine intelligence in past lives."
+      },
+      "6": {
+        "positive": "Past life acts of selfless service grant an invincible immune system against karmic diseases. You defeat ancient adversaries.",
+        "neutral": "Sun in the 6th house of D60 highlights the karma of service, debts, and health carried over from previous lives.",
+        "negative": "Afflicted Sun indicates severe, deeply rooted karmic diseases or ancient, unresolved conflicts with enemies."
+      },
+      "7": {
+        "positive": "A divine, soulmate partnership destined by past life karma. Marriage elevates the soul to its highest purpose.",
+        "neutral": "Sun in the 7th house of D60 connects your soul's deepest karma with the concept of union and profound partnerships.",
+        "negative": "Afflicted Sun brings severe, unresolved karmic conflicts in marriage, tying you to partners from past lives for harsh lessons."
+      },
+      "8": {
+        "positive": "Profound mastery over the occult and life-and-death cycles from past incarnations. You transform the soul effortlessly.",
+        "neutral": "Sun in the 8th house of D60 deals with the deepest, most hidden karmic transformations and sudden, fated events.",
+        "negative": "Afflicted Sun causes severe, terrifying karmic crises, sudden traumatic fated events, and deep subconscious fears."
+      },
+      "9": {
+        "positive": "Supreme divine grace from past life devotion. Your soul is inherently aligned with Dharma and protected by cosmic forces.",
+        "neutral": "Sun in the 9th house of D60 links your soul's core belief system and ultimate luck to your past life spiritual efforts.",
+        "negative": "Afflicted Sun brings a tragic loss of faith due to past life religious hypocrisy, leading to severe karmic bad luck."
+      },
+      "10": {
+        "positive": "Destined career rise and immense worldly power granted by past life righteous leadership. The soul is meant to rule.",
+        "neutral": "Sun in the 10th house of D60 highlights the ultimate karmic purpose of the soul in the public sphere and its destined authority.",
+        "negative": "Afflicted Sun causes fated, spectacular professional downfalls due to the misuse of power in past lives."
+      },
+      "11": {
+        "positive": "Effortless fulfillment of soul-level desires due to past life philanthropy. You attract highly evolved, powerful networks.",
+        "neutral": "Sun in the 11th house of D60 connects the soul's ultimate aspirations and destined gains with past life karma.",
+        "negative": "Afflicted Sun brings profound karmic sorrow through friends and the utter frustration of deep desires due to past greed."
+      },
+      "12": {
+        "positive": "The soul is on the verge of ultimate spiritual liberation (Moksha). Profound peace and completion of all karmic cycles.",
+        "neutral": "Sun in the 12th house of D60 focuses on the soul's final emancipation, deep subconscious karma, and inevitable losses.",
+        "negative": "Afflicted Sun causes terrifying, inexplicable karmic isolation, severe subconscious fears, and heavy, fated financial ruin."
+      }
+    },
+    "Moon": {
+      "1": {
+        "positive": "Profound, pure emotional wisdom carried from past lives. The soul radiates absolute peace, empathy, and divine love.",
+        "neutral": "Moon in the 1st house of D60 highlights the core emotional essence and receptivity of the soul across incarnations.",
+        "negative": "Afflicted Moon brings severe, deeply rooted emotional trauma from past lives, causing intense, inexplicable instability."
+      },
+      "2": {
+        "positive": "Deep emotional security tied to ancient, pure family values. Your speech heals souls due to past life nurturing.",
+        "neutral": "Moon in the 2nd house of D60 connects your soul's financial destiny and dietary karma with past emotional patterns.",
+        "negative": "Afflicted Moon causes fated financial instability due to past life emotional greed, and severe karmic family discord."
+      },
+      "3": {
+        "positive": "Profoundly empathetic and creative soul-level communication. You effortlessly heal past life karmic rifts with relatives.",
+        "neutral": "Moon in the 3rd house of D60 highlights the mental karma and emotional courage passed down through the soul's journey.",
+        "negative": "Afflicted Moon brings severe, fated nervous anxiety, deceptive communication, and deep emotional rifts with siblings."
+      },
+      "4": {
+        "positive": "Absolute inner peace and a destined, deeply spiritual home environment. The soul rests in the comfort of past life merits.",
+        "neutral": "Moon in the 4th house of D60 is a core placement showing the soul's deepest emotional foundation and karmic mother-ties.",
+        "negative": "Afflicted Moon destroys the soul's inner peace, causing intense, inexplicable sorrow and karmic suffering regarding the home."
+      },
+      "5": {
+        "positive": "Highly intuitive, almost psychic soul intelligence. Past life merits bring destined, deeply loving children.",
+        "neutral": "Moon in the 5th house of D60 connects the soul's past emotional karma with its true intelligence and progeny.",
+        "negative": "Afflicted Moon brings severe, fated emotional distress regarding children and deep illusions rooted in past life romances."
+      },
+      "6": {
+        "positive": "The soul has mastered the art of healing through past life service. You effortlessly overcome conflicts with divine empathy.",
+        "neutral": "Moon in the 6th house of D60 links the soul's emotional health with karmic debts, diseases, and daily service.",
+        "negative": "Afflicted Moon causes inexplicable psychosomatic illnesses due to past life guilt, and severe emotional exhaustion from enemies."
+      },
+      "7": {
+        "positive": "A destined, profoundly deeply nurturing soulmate connection. Past life karma blesses your marriage with pure divine love.",
+        "neutral": "Moon in the 7th house of D60 highlights the deepest emotional dynamics in partnerships carried over from past lives.",
+        "negative": "Afflicted Moon brings severe, fated emotional torture in marriage, tying you to unstable partners from previous incarnations."
+      },
+      "8": {
+        "positive": "Profound emotional transformation and deep occult intuition. The soul navigates terrifying crises with absolute peace.",
+        "neutral": "Moon in the 8th house of D60 deals with the most hidden emotional traumas and the soul's psychological inheritance.",
+        "negative": "Afflicted Moon causes severe, paralyzing emotional fears, deep-seated karmic trauma, and extreme psychological crises."
+      },
+      "9": {
+        "positive": "Deep, pure emotional comfort in supreme spiritual philosophies. Past life devotion guides the soul's destined path.",
+        "neutral": "Moon in the 9th house of D60 connects the soul's belief system with its profound emotional capacity for faith.",
+        "negative": "Afflicted Moon brings fated disillusionment with religion, severe sorrow through false gurus, and lack of spiritual peace."
+      },
+      "10": {
+        "positive": "Profound emotional intelligence in destined career leadership. The public reveres your pure soul and empathetic authority.",
+        "neutral": "Moon in the 10th house of D60 highlights how past life emotional karma affects the soul's public reputation and destiny.",
+        "negative": "Afflicted Moon causes fated professional scandals due to deep-seated emotional instability and public breakdowns."
+      },
+      "11": {
+        "positive": "Profound emotional fulfillment through destined, supportive soul-groups. You achieve ultimate goals through divine community.",
+        "neutral": "Moon in the 11th house of D60 connects the soul's ultimate social circles with its deepest emotional security.",
+        "negative": "Afflicted Moon brings severe karmic sorrow through friends, fluctuating morals based on gains, and profound, fated loneliness."
+      },
+      "12": {
+        "positive": "Absolute spiritual peace in deep isolation. The soul possesses profound subconscious intuition and prophetic dreams.",
+        "neutral": "Moon in the 12th house of D60 highlights the most hidden emotional karma and the soul's ultimate desire for emancipation.",
+        "negative": "Afflicted Moon causes severe, terrifying sleep disturbances due to past life trauma, deep hidden fears, and emotional isolation."
+      }
+    },
+    "Mars": {
+      "1": {
+        "positive": "Immense, unyielding spiritual vitality and a divine fighting spirit carried from past lives. The soul is an unstoppable warrior.",
+        "neutral": "Mars in the 1st house of D60 focuses on the deeply ingrained aggressive or protective karmic traits of the soul.",
+        "negative": "Afflicted Mars brings severe, inherited proneness to violent anger, recklessness, and physical injuries due to past life cruelty."
+      },
+      "2": {
+        "positive": "Fierce, destined protection of values and family. The soul accumulates vast resources through bold, karmically blessed actions.",
+        "neutral": "Mars in the 2nd house of D60 highlights deep karma related to speech, diet, and the aggressive pursuit of wealth.",
+        "negative": "Afflicted Mars causes brutally harsh speech destroying families, sudden fated financial ruin, and reckless past life spending."
+      },
+      "3": {
+        "positive": "Unstoppable, divine courage and initiative. The soul aggressively and successfully solves karmic problems to protect its kin.",
+        "neutral": "Mars in the 3rd house of D60 emphasizes the soul's ancient drive for effort, courage, and action.",
+        "negative": "Afflicted Mars brings severe cowardly actions, violent fated conflicts with siblings, and dangerously misdirected energy."
+      },
+      "4": {
+        "positive": "A powerful, destined drive to build a secure spiritual foundation. The soul fiercely defends its inner peace and home.",
+        "neutral": "Mars in the 4th house of D60 points to the highly active, perhaps conflict-driven karma regarding the soul's deepest roots.",
+        "negative": "Afflicted Mars causes intense, fated domestic violence, sudden loss of property, and a complete, terrifying lack of inner peace."
+      },
+      "5": {
+        "positive": "Dynamic, divine creative expression and a fiercely protective nature towards destined children. Strong intellectual drive.",
+        "neutral": "Mars in the 5th house of D60 highlights the passionate, ancient karma involving intellect, romance, and progeny.",
+        "negative": "Afflicted Mars brings violent conflicts with children, severely aggressive fated romances, and destructively misdirected intellect."
+      },
+      "6": {
+        "positive": "The ultimate placement for utterly destroying karmic enemies and overcoming deep diseases. The soul has a highly competitive edge.",
+        "neutral": "Mars in the 6th house of D60 focuses ancient energy on fighting destined daily battles and overcoming karmic debts.",
+        "negative": "Afflicted Mars causes severe inflammatory diseases, continuous, draining fated litigation, and extremely dangerous ancient enemies."
+      },
+      "7": {
+        "positive": "Dynamic and highly protective destined partnerships. You and your soulmate tackle cosmic challenges as a unified, powerful team.",
+        "neutral": "Mars in the 7th house of D60 indicates the ancient energy and potential for severe conflict within destined marriages.",
+        "negative": "Afflicted Mars brings brutal aggression or abuse in fated marriages, violently dominating partners, and devastating divorce."
+      },
+      "8": {
+        "positive": "The ability to survive extreme, terrifying physical dangers. Strong regenerative powers and deep, ancient occult abilities.",
+        "neutral": "Mars in the 8th house of D60 deals with sudden, fated transformations, surgeries, and the most hidden aggressive karma.",
+        "negative": "Afflicted Mars brings extreme danger of severe fated accidents, sudden violent events, and horrifying hidden karmic diseases."
+      },
+      "9": {
+        "positive": "Fierce, unyielding defense of divine beliefs and dharma. The soul fights righteously for ultimate truth against all odds.",
+        "neutral": "Mars in the 9th house of D60 highlights the ancient karmic struggle involving religion, philosophy, and higher learning.",
+        "negative": "Afflicted Mars causes highly dangerous religious fanaticism, violent clashes with gurus, and a forceful, misguided belief system."
+      },
+      "10": {
+        "positive": "Ambitious, destined drive that effortlessly overcomes all professional obstacles. The soul achieves high executive status.",
+        "neutral": "Mars in the 10th house of D60 points to the aggressive, ancient pursuit of career, public standing, and authority.",
+        "negative": "Afflicted Mars brings spectacular, fated professional downfalls due to extreme aggression, conflicts with authorities, and public disgrace."
+      },
+      "11": {
+        "positive": "Aggressive and highly successful pursuit of massive, destined goals. The soul is aided by powerful, dynamic networks.",
+        "neutral": "Mars in the 11th house of D60 involves ancient effort towards gains and dynamics within powerful large groups.",
+        "negative": "Afflicted Mars causes violent, fated disputes with friends, severe accidents related to networks, and bitterly frustrated ambitions."
+      },
+      "12": {
+        "positive": "Massive energy directed perfectly towards ultimate spiritual liberation. The soul completely defeats hidden karmic enemies.",
+        "neutral": "Mars in the 12th house of D60 focuses on the most hidden karma, fated expenses, and aggressive actions in total isolation.",
+        "negative": "Afflicted Mars brings highly dangerous secret enemies, severe danger of imprisonment for past acts, and violently self-destructive actions."
+      }
+    },
+    "Mercury": {
+      "1": {
+        "positive": "पूर्वजन्मार्जिता परा दिव्या बुद्धिः अनुकूलता च। आत्मा विश्वं अनायासमेव अवगच्छति।",
+        "neutral": "D60-चक्रे प्रथमभावे स्थितो बुधः आत्मायाः गाढतरं कर्मठं बुद्धिमत्त्वं संवादकौशलं च सूचयति।",
+        "negative": "पीडितो बुधः तीव्रं प्रारब्धजनितं स्नायविकं तनावम्, अनिर्णयस्य पक्षाघातं, मानसिकैकाग्रतायाः पूर्णभावं च जनयति।"
+      },
+      "2": {
+        "positive": "कुटुम्बं पावयन्ती दीप्ता सत्या च वाक्। आत्मा उच्चबुद्ध्या प्रारब्धधनं सहजमेव नियच्छति।",
+        "neutral": "D60-चक्रे द्वितीयभावे स्थितो बुधः प्राचीनवाक्प्रवृत्तिम्, गभीरारम्भिकशिक्षणकर्म, वित्तीयबुद्धिमत्त्वं च स्पृशति।",
+        "negative": "पीडितो बुधः चिरकालिकं प्रारब्धसिद्धम् असत्यभाषणम्, पूर्वजन्मवञ्चनाकारणात् महावित्तीयघोटकम्, तीव्रां वाक्समस्यां च जनयति।"
+      },
+      "3": {
+        "positive": "प्रतिभाशाली समस्यासमाधानकौशलं निर्दोषा वाक् च। आत्मा कर्मावरोधात् अनायासमेव विमुच्यते।",
+        "neutral": "D60-चक्रे तृतीयभावे स्थितो बुधः प्राचीनमानसिकप्रयासान्, लेखनकौशलम्, सहोदरैः सह प्रारब्धसम्बन्धांश्च प्रकाशयति।",
+        "negative": "पीडितो बुधः तीव्रं संवाददोषं, भयावहं स्नायविकविषादम्, आत्मीयैः सह कटुप्रारब्धकलहं च आनयति।"
+      },
+      "4": {
+        "positive": "परममानसिकशान्तिः कौटुम्बिकजीवने च पूर्णतया तार्त्विकी दृष्टिः। आत्मा बौद्धिकदृष्ट्या उज्ज्वले गृहे विश्राम्यति।",
+        "neutral": "D60-चक्रे चतुर्थभावे स्थितो बुधः आत्मायाः गभीरतममानसिकसंस्कारान् बौद्धिकपृष्ठभूमिं च निर्दिशति।",
+        "negative": "पीडितो बुधः गृहे सततम् उन्मत्तकरं मानसिकमौल्यम्, तीव्रशैक्षणिकबाधाः, गभीरं तनावं च जनयति।"
+      },
+      "5": {
+        "positive": "गाम्भीर्यं, सर्वोच्चा बुद्धिः, विश्लेषणात्मकं तेजश्च। आत्मा प्रतिभावत्सुपुत्रैः सृजनात्मकप्रभुत्वेन च अनुगृहीता भवति।",
+        "neutral": "D60-चक्रे पञ्चमभावे स्थितो बुधः आत्मायाः परमबुद्धिम्, कर्मस्मृतिं, गभीरशिक्षणक्षमतां च अधिकृत्य वर्तते।",
+        "negative": "पीडितो बुधः गम्भीरं शिक्षणवैकल्यं, सन्तानानां बुद्धेः विषये प्रारब्धचिन्ताम्, अतीवाशुद्धं निर्णयं च आहरति।"
+      },
+      "6": {
+        "positive": "विश्लेषणात्मकं प्रतिभावत् मनः तार्किकविधानैः कर्मशत्रून् रोगांश्च अनायासमेव जयति।",
+        "neutral": "D60-चक्रे षष्ठभावे स्थितो बुधः आत्मायाः गभीरबुद्धिं प्रारब्धदैनिकचर्यायाः शत्रूणां च नियन्त्रणेन सह संयोजयति।",
+        "negative": "पीडितो बुधः पूर्वकर्मणा स्नायविकतन्त्रस्य गम्भीरविकारान्, कार्यक्षेत्रे विवादं, महावञ्चनायाः सम्भावनां च जनयति।"
+      },
+      "7": {
+        "positive": "प्रारब्धसिद्धदाम्पत्ये निर्दोषं मानसिकसंवादरूपम्। आत्मा अतीवफलादेशेषु यशस्वीबुद्धिव्यापारिकसहयोगेषु प्रवर्तते।",
+        "neutral": "D60-चक्रे सप्तमभावे स्थितो बुधः आत्मायाः निकटसम्बन्धे संवादस्य बुद्धेश्च प्राचीनभूमिकां प्रकाशयति।",
+        "negative": "पीडितो बुधः तीव्रदुरवबोधम्, अतीववञ्चकप्रारब्धजीवनसाथिनं, दाम्पत्ये अतीवजटिलकानूनीविवादांश्च आनयति।"
+      },
+      "8": {
+        "positive": "गम्भीराः पूर्णसंशोधनक्षमताः गभीरमानसिकप्रभुत्वं च। शुद्धप्रतिभया आत्मा भयावहसङ्कटेभ्यः सुरक्षितो भवति।",
+        "neutral": "D60-चक्रे अष्टमभावे स्थितो बुधः गुप्ततमोत्तमगूढविद्याभिः, गभीरमनोवैज्ञानिकस्तरैः, आकस्मिकप्रारब्धघटनाभिश्च सह व्यवहरति।",
+        "negative": "पीडितो बुधः तीव्रभयावहस्नायविकविकारान्, अज्ञातभयात् मानसिकस्तम्भनं, गुप्तशत्रुद्वारा महद्धानिश्च जनयति।"
+      },
+      "9": {
+        "positive": "उच्चतरदैविकज्ञानस्य दर्शनस्य च पूर्णं तार्किकज्ञानम्। निरन्तरशिक्षया आत्मा परमसिद्धिं प्राप्नोति।",
+        "neutral": "D60-चक्रे नवमभावे स्थितो बुधः आत्मायाः बुद्धिं परमध्यात्मतया उच्चतरदैविकशिक्षया च सह संयोजयति।",
+        "negative": "पीडितो बुधः अतीवतार्त्विकहीनान् दम्भपूर्णान् विचारान्, गुरुभिः सह प्रारब्धविवादान्, यात्राकाले तीव्रदुर्भाग्यं च जनयति।"
+      },
+      "10": {
+        "positive": "उज्ज्वलाः सम्यक्समये कृताः कर्मगतनिर्णयाः उत्कृष्टं व्यावसायिकं संवादकौशलं च। आत्मा निश्चयेन उच्चपदं प्राप्नोति।",
+        "neutral": "D60-चक्रे दशमभावे स्थितो बुधः आत्मायाः सार्वजनिकजीवने करियरनियतौ च प्राचीनसंवादकर्म प्रकाशयति।",
+        "negative": "पीडितो बुधः संवाददोषेण, वञ्चनया, वाऽस्थिरकरियरमार्गेण महाप्रारब्धव्यावसायिककलङ्कान् जनयति।"
+      },
+      "11": {
+        "positive": "प्रतिभाशाली जालसङ्गठनं (networking) सर्वाणि समस्याः अनायासमेव परिहरति। बुद्धिमद्भिः प्रारब्धमित्रैश्च आत्मा स्वस्य चरमकामनाः प्राप्नोति।",
+        "neutral": "D60-चक्रे एकादशभावे स्थितो बुधः सामाजिकवर्गैः सह गभीरमानसिकसम्बन्धान् आत्मायाः चरमलक्ष्याणां पूर्तिं च स्पृशति।"
+      },
+      "12": {
+        "positive": "गम्भीरं प्रगाढं विश्लेषणात्मकं ध्यानम् अवचेतनस्य पूर्णबोधश्च। बौद्धिकवैराग्येण आत्मा परमशान्तिं लभते।",
+        "neutral": "D60-चक्रे द्वादशभावे स्थितो बुधः गभीरतमअवचेतनसंवादं, प्रारब्धविदेशगमनं, गुप्तव्ययान् च निर्दिशति।",
+        "negative": "पीडितो बुधः भयावहनिद्राविकारान्, तीव्रमानसिकैकान्त्यम्, विदेशेषु महद्धानिं, तीव्रान् गुप्तचिन्ताश्च जनयति।"
+      }
+    },
+    "Jupiter": {
+      "1": {
+        "positive": "परमदिव्यसुरक्षा, पूर्वाजन्मार्जिता अगाधप्राचीनप्रज्ञा च। आत्मा विस्तीर्णं पवित्रं तेजः प्रकटीकरोति।",
+        "neutral": "D60 षष्ट्यांशे प्रथमस्थाने स्थितो गुरुः दैविककृपायाः पूर्णकवचं प्रददाति, आत्मानश्च गम्भीरदर्शनतत्त्वानि प्रकाशयति।",
+        "negative": "पीडितो गुरुः आत्यन्तिकं भाविमिथ्याप्रोत्साहनम्, अतीवघोरमहमभावं, महाविपत्तिप्रदं कुण्ठितनिर्णयं च जनयति।"
+      },
+      "2": {
+        "positive": "नियतधनस्य पूर्णसुरक्षा विस्तारश्च। आत्मा अतीवप्रज्ञोपदेशं ददाति, सर्वोत्तमैतिकादर्शयुक्ता च वर्तते।",
+        "neutral": "D60 षष्ट्यांशे द्वितीयस्थाने स्थितो गुरुः गम्भीरकर्मधनं, प्राचीनमूल्यानि, सत्यभाषित्वस्य कर्म च सूचयति।",
+        "negative": "पीडितो गुरुः अतिप्रोत्साहानात् महार्णवं धननाशम्, अस्वास्थ्यकरभोगान्, भग्नवचनानां कर्मभारं च आनयति।"
+      },
+      "3": {
+        "positive": "सर्वैः बन्धुभिः सह प्रज्ञायुक्तं संवादं पूर्णसौहार्दं च। आत्मा सर्वविधविघ्ननाशायायत्नतः ब्रह्माण्डज्ञानं उपयुङ्क्त्वे।",
+        "neutral": "D60 षष्ट्यांशे तृतीयस्थाने स्थितो गुरुः नियतनित्यप्रयत्ननिर्वाहाय गम्भीरप्राचीनप्रज्ञायाः नीतिकायैश्च उपयोगं अधिकरोति।",
+        "negative": "पीडितो गुरुः अतीवदुष्टोपदेशम्, वास्तविकप्रयत्नस्य पूर्णोपेक्षणम्, सङ्कटप्रदं भ्रामकप्रज्ञाशक्तिं च जनयति।"
+      },
+      "4": {
+        "positive": "गम्भीरम् अचलं आन्तरिकशान्तिः, उच्चाध्यात्मिकं नियतगृहधार्मिकपृष्ठभूमिः च। आत्मा महासुखं पूर्णदैविककृपां च अनुभवति।",
+        "neutral": "D60 षष्ट्यांशे चतुर्थस्थाने स्थितो गुरुः गृहं, माता, आत्मनश्च आन्तरिकसुखं संबद्धाः शुभाशुभकर्माण्यधिकरोति।",
+        "negative": "पीडितो गुरुः भूमिसंबद्धं घोरं भाविशोकम्, लोभात् आन्तरिकशान्तेर्नाशं, गृहस्थकपटतां च आनयति।"
+      },
+      "5": {
+        "positive": "अतिप्रज्ञावद्भिः अध्यात्मनिष्ठैः नियतसन्तानैः अतुलिता महाकृपा। आत्मा उच्चसृजनात्मकं ब्रह्माण्डसफलतां प्राप्नोति।",
+        "neutral": "D60 षष्ट्यांशे पञ्चमस्थाने स्थितो गुरुः अतीवगम्भीरपूर्वजन्मपुण्यानि बुद्ध्या, सत्सन्तानेन, चरमसर्जनतया सह योजयति।",
+        "negative": "पीडितो गुरुः सन्तानविषये घोरशोकम्, महाविनाशकारीविनियोगाः, प्रज्ञायाः भयङ्करकर्मोपेक्षणं च जनयति।"
+      },
+      "6": {
+        "positive": "परमदैविककृपा आत्मानं सर्वशत्रुरोगेभ्यः रक्षति। गम्भीरब्रह्माण्डप्रज्ञया सेवया च अन्येषां सहजं कल्याणं करोति।",
+        "neutral": "D60 षष्ट्यांशे षष्ठस्थाने स्थितो गुरुः प्राचीनप्रज्ञाविस्तारं नियतरोगनिवारणेन कर्मऋणमोचनेन च सह संबध्नाति।",
+        "negative": "पीडितो गुरुः गंभीरयकृद्रोगान्, अतिविस्तारात् महानीतऋणानि, अतीवक्लिष्टविधिकानूनीक्संकटानि च आनयति।"
+      },
+      "7": {
+        "positive": "प्रज्ञावान्, अतीवनीतिनिष्ठः, पूर्णरक्षकः जीवनसंगसाथी। नियतसहयोगः सहजं प्रवर्धते महद्ब्रह्माण्डसुखं च आनयति।",
+        "neutral": "D60 षष्ट्यांशे सप्तमस्थाने स्थितो गुरुः आत्मनः नियतविवाहे परमप्रज्ञायाः, नीतेः, धर्मस्य च भूमिकां प्रकाशयति।",
+        "negative": "पीडितो गुरुः सर्वोच्चाहंकारात्, विभिन्नमताभ्यासात्, अतिविनाशकारीविधिकसमस्याभ्यश्च तीव्रं वैवाहिकवैमनस्यं जनयति।"
+      },
+      "8": {
+        "positive": "गम्भीरं परमगुह्यप्रज्ञां, आकस्मिकभयङ्करसंकटसमयेषु च पूर्णरक्षाम्। आत्मा नियतपैतृकसंपत्त्या महदुपलाभते।",
+        "neutral": "D60 षष्ट्यांशे अष्टमस्थाने स्थितो गुरुः प्रज्ञया चरमपरिवर्तनं, अतीवगुप्तकर्म, महान्तमायुष्यं च अधिकरोति।",
+        "negative": "पीडितो गुरुः तीव्रदीर्घरोगान्, आकस्मिकमहद्धननाशं, नियतसंकटेषु सुरक्षायाः भयङ्करभावं च आनयति।"
+      },
+      "9": {
+        "positive": "परमं सर्वोच्चं दैविककृपा, चरमसुभाग्यं, प्रबुद्धगुरुणां गम्भीरकृपा च। आत्मनः दृढधर्मः पूर्णतया आत्मानं रक्षति।",
+        "neutral": "D60 षष्ट्यांशे नवमस्थाने स्थितो गुरुः आत्मनः मूलविश्वासपद्धतिं, उच्चब्रह्माण्डविद्यां, चरमभाग्यं भाग्येन सह योजयति।",
+        "negative": "पीडितो गुरुः पूर्णं भाग्यनाशम्, गुरुभिः सह तीव्रविवादान्, अतिनीतिहीनपूर्वकर्मात् महादुर्भाग्यं च जनयति।"
+      },
+      "10": {
+        "positive": "कर्मणः पूर्णसुरक्षा, नीतिनिष्ठया नियतमहाफलता च। नीतिनेतृत्वहेतोः आत्मा विश्वत्र अत्यधिकं सम्मन्यते।",
+        "neutral": "D60 षष्ट्यांशे दशमस्थाने स्थितो गुरुः कर्मणा, जनप्रतिष्ठायाः, सत्यनेतृत्वनियमैश्च सह महाशुभकर्माणि प्रकाशयति।",
+        "negative": "पीडितो गुरुः महत्भाविप्रतिष्ठानाशं, सत्तायाः पूर्णह्रासं, अत्यधिकगर्वेण उच्चाधिकारिभिः सह तीव्रसंघर्षान् च आनयति।"
+      },
+      "11": {
+        "positive": "प्रज्ञावद्भ्यः शक्तिमद्द्भ्यः नियतजालैः (networks) सर्वकामानामप्रयासं पूर्तिः। आत्मा अनायासेन महाधनं प्रभावं च प्राप्नोति।",
+        "neutral": "D60 षष्ट्यांशे एकादशस्थाने स्थितो गुरुः अतिशुभलाभान्, विस्तीर्णधर्मनिष्ठसामाजिकसमूहान्, दीर्घकालीनसंकल्पानां सिद्धिं च अन्तर्भवति।",
+        "negative": "पीडितो गुरुः मित्रद्वारा महाभाविनाशान्, पूर्णतया अपूर्णमहत्त्वाकांक्षाः, जालद्वारा प्रदत्तान् भयङ्करदुष्टोपदेशान् च जनयति।"
+      },
+      "12": {
+        "positive": "चरमाध्यात्मिकमुक्तिः (मोक्षः) परमदैविकसुरक्षा च। दानध्यानाभ्यां आत्मा गम्भीरं अचलं शान्तिं विन्दति।",
+        "neutral": "D60 षष्ट्यांशे द्वादशस्थाने स्थितो गुरुः आत्मनः चरममुक्तेः, कर्मव्ययानां, उपचेतसाम् (subconscious mind) शुद्धेः च उपरि केन्द्रीभवति।",
+        "negative": "पीडितो गुरुः गुरुतरं भयङ्करवित्तीयनाशं, महाप्रयोजनेतरव्ययान्, अतिभ्रान्ताः नियताध्यात्मिकप्रयत्नांश्च आनयति।"
+      }
+    },
+    "Venus": {
+      "1": {
+        "positive": "A profoundly charming, attractive, and deeply harmonious soul. You effortlessly heal through love and bring divine beauty to your surroundings.",
+        "neutral": "Venus in the 1st house of D60 focuses on the physical beauty, absolute harmony, and the aesthetic approach of the soul.",
+        "negative": "Afflicted Venus brings severe, fated issues with extreme over-indulgence, deep superficiality, and complex reproductive health karma."
+      },
+      "2": {
+        "positive": "Absolute financial protection and a highly harmonious, destined family life. The soul enjoys luxurious, ethically acquired resources.",
+        "neutral": "Venus in the 2nd house of D60 relates to the soul's karma of wealth accumulation, family harmony, and deep aesthetic values.",
+        "negative": "Afflicted Venus causes massive financial ruin through extreme, fated extravagance, severe dietary excesses, and bitter family discord."
+      },
+      "3": {
+        "positive": "Supremely diplomatic and beautiful communication effortlessly resolves all obstacles. The soul enjoys very pleasant, fated relations with relatives.",
+        "neutral": "Venus in the 3rd house of D60 highlights the soul's ancient creative efforts, artistic skills, and highly pleasant short travels.",
+        "negative": "Afflicted Venus brings a severe, paralyzing lack of motivation, highly inappropriate communication, and fated disputes with female relatives."
+      },
+      "4": {
+        "positive": "A profoundly beautiful, peaceful, and luxurious destined home environment. The soul enjoys great comfort, grand properties, and inner bliss.",
+        "neutral": "Venus in the 4th house of D60 points to highly auspicious karma involving ultimate inner contentment and perfect domestic life.",
+        "negative": "Afflicted Venus causes a terrifying loss of peace due to excessive, fated material desires, bitter property disputes, and vehicle disasters."
+      },
+      "5": {
+        "positive": "Absolute creative brilliance, deep, pure romantic fulfillment, and joyous destined relations with children. Highly evolved artistic intelligence.",
+        "neutral": "Venus in the 5th house of D60 connects pure romance, ultimate creativity, and children with the soul's deepest past life karma.",
+        "negative": "Afflicted Venus brings severe, fated sorrow through terrifying romantic illusions, deep issues with children, and massive creative blocks."
+      },
+      "6": {
+        "positive": "The profound ability to charm even the worst karmic enemies into friends. The soul maintains perfect health through balanced living.",
+        "neutral": "Venus in the 6th house of D60 links health, service, and daily routines with absolute harmony and diplomacy.",
+        "negative": "Afflicted Venus causes severe kidney/reproductive issues, massive debts due to fated luxury, and extreme troubles from female enemies."
+      },
+      "7": {
+        "positive": "A deeply loving, beautiful, and absolutely supportive soulmate. The soul engages in highly harmonious and massively successful partnerships.",
+        "neutral": "Venus in the 7th house of D60 highlights the most auspicious karma of marriage, relationships, and destined public interactions.",
+        "negative": "Afflicted Venus brings severe, fated marital discord, rampant infidelity, scandalous divorce, and highly destructive legal troubles."
+      },
+      "8": {
+        "positive": "Massive, destined financial gains through the spouse or inheritance. The soul transforms perfectly gracefully through life's deepest changes.",
+        "neutral": "Venus in the 8th house of D60 deals with immense hidden wealth, intense fated transformations, and sudden events.",
+        "negative": "Afflicted Venus causes sudden, massive loss of joint assets, terrifying chronic reproductive issues, and severe, deep-rooted scandals."
+      },
+      "9": {
+        "positive": "Profound, pure love for higher wisdom and peaceful, divine philosophies. Extreme good fortune protects the soul completely.",
+        "neutral": "Venus in the 9th house of D60 connects the soul's core values with pure religion, higher cosmic education, and travels.",
+        "negative": "Afflicted Venus brings highly superficial spirituality, severe fated bad luck during travels, and violent clashes over ethical beliefs."
+      },
+      "10": {
+        "positive": "A highly harmonious, massively successful destined career path. The soul maintains excellent relations with authorities through pure diplomacy.",
+        "neutral": "Venus in the 10th house of D60 highlights the soul's karma related to public image, career aesthetics, and destined authority.",
+        "negative": "Afflicted Venus causes massive professional scandals, complete loss of status due to highly inappropriate behavior, and severe moral laziness."
+      },
+      "11": {
+        "positive": "Effortless fulfillment of all desires through a highly supportive, elite, destined social network. The soul gains immense wealth through friends.",
+        "neutral": "Venus in the 11th house of D60 involves deeply beneficial friendships, social circles, and the achievement of aesthetic goals.",
+        "negative": "Afflicted Venus brings profound, fated sorrow through superficial friends, bitterly unfulfilled desires, and extreme financial fluctuations."
+      },
+      "12": {
+        "positive": "Deep, absolute spiritual peace and pleasure in isolation. The soul benefits immensely from foreign connections and pure charitable acts.",
+        "neutral": "Venus in the 12th house of D60 focuses on hidden pure pleasures, ultimate spiritual liberation, and highly righteous expenses.",
+        "negative": "Afflicted Venus causes heavy, terrifying losses through extreme over-indulgence, dark secret addictions, and deep, corrupted isolation."
+      }
+    },
+    "Saturn": {
+      "1": {
+        "positive": "पूर्वजन्मार्जिता महती, अप्रतिहता सहनशक्तिः, अनुशासनम्, गाम्भीर्यं च। आत्मा दृढं, अनश्वरं भाग्यं निर्माति।",
+        "neutral": "षष्टियांशे (D60) प्रथमे भावे स्थितः शनिः आत्मीय शारीरिकसहनशक्तिं, कर्मवशात् विलंबाद्, कठिनवास्तविकतायाः सामनाकरणस्य आवश्यकतां च सूचयति।",
+        "negative": "पीडितः शनिः गम्भीरं, आनुवंशिकं जीर्णरोगं, गहनं, घातकं विषादं, अतीव निराशावादी, अनम्यं च कर्मस्वभावं जनयति।"
+      },
+      "2": {
+        "positive": "अत्यन्तं वित्तीयमनुशासनं विशालं भाग्यलब्धं धनं रक्षति। आत्मा अतीव व्यावहारिकः, संसाधनयुक्तः, सत्यावादी च भवति।",
+        "neutral": "षष्टियांशे द्वितीये भावे शनिः धनसञ्चयस्य गुरुतरं कर्म, तीव्राः कुटुम्बउत्तरदायित्वानी, कठोरवाणीं च संबध्नाति।",
+        "negative": "पीडितः शनिः अतीव भाग्यलब्धं दारिद्र्यं, कठोरक्रूरवाणीं, अतीव गुरुतरभारयुक्तानि कुटुम्बकर्मबन्धानानि च आनयति।"
+      },
+      "3": {
+        "positive": "अविश्रान्तप्रयत्नः परमं धैर्यं च सर्वाणि कर्मविघ्नानि जयति। आत्मा परिगणितम्, अतीव संकल्पितं, सफलञ्च कर्म करोति।",
+        "neutral": "षष्टियांशे तृतीये भावे शनिः संरचितं भाग्यलब्धं प्रयत्नं, गहनं नैतिकसाहसं, बन्धूनां प्रति गुरुतरउत्तरदायित्वं च प्रकाशयति।",
+        "negative": "पीडितः शनिः घातकमार्गभयं, सर्वेषां प्रयातानां निरन्तरं विफलतां, सहोदरान् प्रति गहनं भाग्यलब्धं शोकं च जनयति।"
+      },
+      "4": {
+        "positive": "एकः दृढः, गहनसुरक्षितः, अनश्वरश्च गृहस्य आधारः। आत्मा गाढभावात्मिकया आध्यात्मिकया च परिपक्वतया कष्टानि सहते।",
+        "neutral": "षष्टियांशे चतुर्थे भावे शनिः गृहं, माता, आत्मनः आन्तरिकशान्तिश्चेति विषयैः सह सम्बद्धान् गुरुतरान् कर्मभारान् दर्शयति।",
+        "negative": "पीडितः शनिः तीव्रं भाग्यलब्धं गृहशोकं, पैतृक सम्पत्तेः पूर्णनाशं, गहनम् अचलम् आन्तरिकं विषादं च जनयति।"
+      },
+      "5": {
+        "positive": "अतीव संरचिता, गभीरा रचनात्मकता, अनुशासितः गम्भीरश्च बुद्धिः। आत्मा सन्तानविषयकानि भाग्यलब्धोतरदायित्वानि सम्यक् निर्वहति।",
+        "neutral": "षष्टियांशे पञ्चमे भावे शनिः गहनं पूर्वजन्मकर्म प्रेमप्रकरणेषु, सन्तानेषु, उच्चशिक्षायै च भाग्यलब्धैः विलम्बैः सह संयोजयति।",
+        "negative": "पीडितः शनिः गम्भीरं भाग्यलब्धं शोकं सन्तानेषु गम्भीरविलम्बं च, गहनविषादं, विशालरचनात्मकबाधां च आनयति।"
+      },
+      "6": {
+        "positive": "केवलम् अङ्कतेन अभङ्गेने च सहनेन कर्मशत्रून् सम्पूर्णतया पराजेतुम् अतीव श्रेष्ठः। आत्मा कडितेनानुशासनेन रोगाणां प्रबन्धनं करोति।",
+        "neutral": "षष्टियांशे षष्ठे भावे शनिः तीव्रपरिश्रमं कठोरानुशासनञ्च गहनशत्रूणां नैतिऋणानाञ्चोपरि विजयेन सह संयोजयति।",
+        "negative": "पीडितः शनिः गम्भीरान्, दुस्तरजीर्गरोगाान्, विशालकर्मऋणान्, शत्रूभिः सह निरन्तरं क्लेशकरं संघर्षञ्च जनयति।"
+      },
+      "7": {
+        "positive": "अतीव परिपक्वा, गहनउत्तरदायित्वपूर्णा, प्रतिबद्धश्च जीवनसाथी। आत्मा पूर्णधैर्येण प्रतिबद्धतया च वैवाहिकप्रतिकूलताः सहते।",
+        "neutral": "षष्टियांशे सप्तमे भावे शनिः गुरुतरनेतिकउत्तरदायित्वानि, भाग्यलब्धानि विलंबाणि, विवाहे गहनकर्मपाठान् च प्रकाशयति।",
+        "negative": "पीडितः शनिः शीतलं, क्लेशकरं गुरुतरं विवाहं, तीव्रभाग्यलब्धैकान्तं, गम्भीरदीर्घकालिकविधिकविवादान् च आनयति।"
+      },
+      "8": {
+        "positive": "अत्यन्तदीर्घायुः विशालकर्मदबावस्य सहनस्य च अमोघा शक्तिः। आत्मनः पार्श्वे गहनम्, संरचितं गुह्यज्ञानं वर्तते।",
+        "neutral": "षष्टियांशे अष्टमे भावे शनिः जीर्णनैतिकविषयैः, गहनकर्मपरीक्षैः, अतिमन्दैः गहनरूपांतरैः च व्यवहरति।",
+        "negative": "पीडितः शनिः दीर्घकालीनं भाग्यलब्धकष्टं, गम्भीरजीर्गरोगान्, संयुक्तसम्पत्तिभ्यः अतीव गुरुतरान् आक्रान्तान् भारान् च जनयति।"
+      },
+      "9": {
+        "positive": "आध्यात्मिकनीतीनां प्रति अतीव अनुशासितः, गहनपारम्परिकदृष्टिकोणः। आत्मा कठोरानुभवेन आदरेण च विश्वासान् निर्माति।",
+        "neutral": "षष्टियांशे नवमे भावे शनिः गहनकर्म अनम्यनैतिकविश्वासाइः, पारम्परिकगुरुभिः, भाग्यस्य भाग्यलब्धविलम्बैः सह संयोजयति।",
+        "negative": "पीडितः शनिः विश्वासस्य पूर्णं, शोचनीयं नाशं, पितृसमानैः सह गम्भीरसंघर्षं, अतीव कठोरं पाखण्डि-सिद्धान्तवादञ्च आनयति।"
+      },
+      "10": {
+        "positive": "मन्दः किन्तु अतीवास्थिरः, अनुशासितपरिश्रमेण निश्चितः कर्मक्षेत्रे उदयः। आत्मा विशालव्यावसायिकभारान् सम्यक् निर्वहति।",
+        "neutral": "षष्टियांशे दशमे भावे शनिः गुरुतरनैतिककर्मउत्तरदायित्वानि कर्मक्षेत्रे सार्वजनिकप्रतिष्ठायां च विलंबाणि प्रकाशयति।",
+        "negative": "पीडितः शनिः विशालान् भाग्यलब्धान् व्यावसायिकपतनान्, चरमसार्वजनिकनिन्दाम्, कर्मक्षेत्रे अतिभारिणम् आक्रान्तं भारं च जनयति।"
+      },
+      "11": {
+        "positive": "स्थिरं, अतीव नैतिकं, दीर्घकालीनलक्ष्याणां अनिवार्यप्राप्तिः। आत्मनः दृढसमर्थनप्रदातृणः ज्येष्ठाः, गहनपरिपक्वाः मित्राणि सन्ति।",
+        "neutral": "षष्टियांशे एकादशे भावे शनिः मन्दं, धर्मिष्ठं भाग्यलब्धलाभं, जालेषु गुरुतरउत्तरदायित्वं, विलंबितसिद्धिञ्च अन्तर्भवति।",
+        "negative": "पीडितः शनिः मित्रैः सह गम्भीरं भाग्यलब्धशोकं, लक्ष्याणां निरन्तरं, क्लेशकरं निराशां, गहनं, शीतलं वियोगञ्च आनयति।"
+      },
+      "12": {
+        "positive": "पूर्णैकान्ते अतीव आध्यात्मिकानुशासनम्। आत्मा अन्ते परिश्रमेण पूर्णसंन्यासेन च सर्वाणि कर्मऋणानि अपाकरोति।",
+        "neutral": "षष्टियांशे द्वादशे भावे शनिः भाग्यलब्धैकान्तं, गुरुतरकर्महानिं, आध्यात्मिकविरागाय गहनम् आवश्यकतां च अधिकृत्य तिष्ठति।",
+        "negative": "पीडितः शनिः गम्भीरं बन्धनम् (कारागारम्/चिकित्सालयम्), विशालाः गुह्यकर्मभयानि, गुरुतराः, पूर्णतया अनुपलब्धाः हानिश्च जनयति।"
+      }
+    },
+    "Rahu": {
+      "1": {
+        "positive": "जीवस्य चरमसंकटेभ्यः अतीव प्रदीप्ताः अभूतपूर्वाश्च उपायाः। आत्मनः स्वभाग्यं परिवर्धयितुम् महान् तीव्रः च संकल्पः वर्तते।",
+        "neutral": "षष्टियांशे (D60) प्रथमभावे राहुः अतीव भ्रान्तिमयं भौतिकपरिवेशं तथा गभीरान् अलौकिककर्मणः स्वभावान् सूचयति।",
+        "negative": "पीड़ितराहुः भयानक-रहस्यमयान् रोगान्, तीव्र-संभ्रमम् (paranoia), तथा च पहचानस्य प्रतिष्ठायाः वा पूर्णं भाग्यहतिं जनयति।"
+      },
+      "2": {
+        "positive": "अकस्मात् चमत्कारिकरूपेण विपुलधनस्य प्राप्तिः। आत्मा संसाधनरक्षणाय अतीव चातुर्यपूर्णान् बहिर्मुखान् उपायान् प्रयोजयति।",
+        "neutral": "षष्टियांशे द्वितीयभावे राहुः धनस्य कृते मोहग्रस्तकर्मणः इच्छाः तथा च अतीव जटिल-पारिवारिकसम्बन्धान् गोचरयति।",
+        "negative": "पीड़ितराहुः अकस्मात् महतीम् आर्थिकक्षतिम्, सततभाग्य-असत्यभाषणम्, विषबाधाम्, तथा च गंभीरान् कपटपूर्णकुटुम्बकलहान् जनयति।"
+      },
+      "3": {
+        "positive": "चरमं सम्मोहनक्षमं धैर्यम् अतीव प्रभावशालिनी वाक् च। आत्मा लीलया कर्मशत्रूनू पराजय्य विनश्यति च।",
+        "neutral": "षष्टियांशे तृतीयभावे राहुः मोहग्रस्तान् भाग्यप्रयत्नान्, अलौकिककौशल्यानि, तथा च जटिलभ्रातृसम्बन्धान् प्रकाशयति।",
+        "negative": "पीड़ितराहुः कातरं तीव्रकपटम्, गंभीरसंजीवनीविकारान्, तथा च आत्मीयजनैः सह विषमयभाग्य-भ्रमं जनयति।"
+      },
+      "4": {
+        "positive": "विपुलस्य, अलौकिकस्य विदेशीसम्पत्तेः वा प्राप्तिः। आत्मा पूर्णतया विदेशीभूमिषु गभीराम् आश्चर्यजनिकां सुरक्षां विन्दति।",
+        "neutral": "षष्टियांशे चतुर्थभावे राहुः आत्मनः आधारविषये गंभीरमानसिक-अस्थिरतां तथा च मातृकर्मणः जटिलतां निर्दिशति।",
+        "negative": "पीड़ितराहुः तीव्रभयानक-गृहभयान्, विशालवञ्चनया सम्पत्तेः पूर्णनाशम्, तथा च गंभीरान् आन्तरिक-उत्पातान् जनयति।"
+      },
+      "5": {
+        "positive": "अतीव नूतनोन्मुखमनाः, प्रतिभासंपन्नः बुद्धिः। आत्मा सट्टे वा विलक्षणसन्ततिपालने महान्तं भाग्य-उत्कर्षं विन्दति।",
+        "neutral": "षष्टियांशे पञ्चमभावे राहुः प्रेमप्रसङ्गेण, बुद्ध्या, तथा च विलक्षणसन्तत्या सह मोहग्रस्तकर्मणः इच्छाः संयोजयति।",
+        "negative": "पीड़ितराहुः प्रेमे गभीराः विनाशकारी-भ्रान्तीः, सन्ततिभिः सह गंभीरमानसिकसमस्याः, तथा च द्यूते महतीः क्षतीः जनयति।"
+      },
+      "6": {
+        "positive": "प्रगाढचातुर्येण शत्रूणां सम्पूर्णनाशाय श्रेष्ठम्। आत्मा अलौकिकैः उपायैः किमपि भाग्यऋणं वा विवादं लीलया तरति।",
+        "neutral": "षष्टियांशे षष्ठभावे राहुः दैनिकसंघर्षेषु, आरोग्ये, तथा च शत्रूणां पूर्णविजये मोहग्रस्तकर्म-ऊर्जां केन्द्रितं करोति।",
+        "negative": "पीड़ितराहुः दुर्निदानयोग्यान् भयानकप्रकृतिरोगान्, महतीः मिथ्याप्रचीतिः (false accusations), तथा च प्रबलानां गूढशत्रूणां भयम् जनयति।"
+      },
+      "7": {
+        "positive": "विदेशेषु अथवा अलौकिक-सम्बन्धेषु महती भाग्यसिद्धिः। आत्मा अतीव महत्वाकांक्षिभ्यां जीवनसाथिभ्यां विपुललाभं प्राप्नोति।",
+        "neutral": "षष्टियांशे सप्तमभावे राहुः विवाहादिषु तथा व्यवसाये जटिलान्, भ्रान्तिमयान्, मोहग्रस्तान् वा कर्मबन्धनान् प्रकाशयति।",
+        "negative": "पीड़ितराहुः विवाहे गंभीरं महावञ्चनम्, घोरकुख्यातिम्, अकस्मात् भाग्यवशच्छेदम् (divorce), तथा च विषमयसम्बन्धान् जनयति।"
+      },
+      "8": {
+        "positive": "उत्तराधिकाररूपेण वा प्रगाढगूढविद्याप्राप्त्या च आकस्मिकं महान्तं भाग्यलाभम्। आत्मा चरम-आकस्मिकघटनाभ्यः आचमत्कारं जीवति।",
+        "neutral": "षष्टियांशे अष्टमभावे राहुः गंभीरैः भयानकमानसिकमोहैः, गूढकर्मरहस्यैः, आकस्मिकदुःखैश्च सह संबध्यते।",
+        "negative": "पीड़ितराहुः आकस्मिकाः महत्यः विपत्तः, तीव्रस्तब्धकर-भयान्, रहस्यमयान् दीर्घकालिकरोगान्, तथा च गंभीरकुख्यातिम् जनयति।"
+      },
+      "9": {
+        "positive": "विदेशेषु महान् भाग्यसिद्धिलाभः। आत्मा अतीव अलौकिकान् किन्तु प्रगाढशक्तिशालिनः अध्यात्मसिद्धान्तान् विकसयति।",
+        "neutral": "षष्टियांशे नवमभावे राहुः धर्मेण, उच्चशिक्षया, दीर्घदूरयात्राभिश्च सह कर्ममोहं संयोजयति।",
+        "negative": "पीड़ितराहुः वञ्चकान् मिथ्यागुरून्, चरमसांप्रदायिककठोरताम्, तथा च आकस्मिकान् गंभीरभाग्य-विधिकष्टान् जनयति।"
+      },
+      "10": {
+        "positive": "महती, आकस्मिकी, भाग्यवती च करियर-उन्नतिः ऐहिकशक्तिश्च। आत्मा पूर्णसत्ताप्राप्तये सामरिक-अलौकिकौपायान् उपयुङ्क्ते।",
+        "neutral": "षष्टियांशे दशमभावे राहुः आत्मनः लोकक्षेत्रे महतीं महत्वाकांक्षां जटिलं भ्रान्तिमयं कर्म च प्रकाशयति।",
+        "negative": "पीड़ितराहुः सत्तातः आकस्मिकं सम्पूर्णकलङ्कपूर्णपतनम्, महतीं सार्वजनिककुख्यातिम्, तथा च अधिकारिभिः सह गंभीरसंघर्षान् जनयति।"
+      },
+      "11": {
+        "positive": "विपुलमोहमयानां भाग्यवासनानां पूर्तिः। आत्मा विशालैः अलौकिकैः सञ्जालैः (networks) अकस्मात् विपुलं लाभं प्राप्नोति।",
+        "neutral": "षष्टियांशे एकादशभावे राहुः चरमलक्ष्याणां मोहग्रस्तान्वेषणं तथा अतिशक्तिशालिभिः गुह्यसमूहैः सह सम्बन्धं सूचयति।",
+        "negative": "पीड़ितराहुः कपटपूर्णान् भ्रष्टान् मित्राणि, भाग्यलब्धधनस्य आकस्मिकीं महतीं क्षतिम्, तथा च महतीनां इच्छानां तीव्रनिराशां जनयति।"
+      },
+      "12": {
+        "positive": "विदेशेषु अथवा एकान्तवासे आकस्मिकी भाग्यसिद्धिः। अवचेतनमनसि (subconscious) गभीरा, अलौकिकदृष्टिः विकसति।",
+        "neutral": "षष्टियांशे द्वादशभावे राहुः गभीरतमगूढभ्रान्तिषु, विपुलकर्मव्ययेषु, प्रगाढअवचेतनभयेषु च केन्द्रितो भवति।",
+        "negative": "पीड़ितराहुः गंभीरं भयानकनिद्राघातम् (sleep paralysis), कारावासम्, अतिभयङ्करान् गूढशत्रूनू, तथा च सर्वथा विनाशकारीक्षतीः जनयति।"
+      }
+    },
+    "Ketu": {
+      "1": {
+        "positive": "आत्मनः वास्तविकस्वरूपस्य प्रगाढा, निरतिशया अध्यात्मिकप्रज्ञा। भवन्तः भौतिकाहङ्कारात् पूर्णतया विरक्ताः सन्ति, सर्वोच्चं सहजशान्तिं च प्राप्नुवन्ति।",
+        "neutral": "षष्टियांशे (D60) प्रथमे भावे केतुस्थितिः भौतिकदृष्टेः पूर्णम् अभावं, तीव्रं कार्मिकवैराग्यं, पारलौकिकम् अध्यात्मिकसिद्धिश्च सूचयति।",
+        "negative": "पीडितः केतुः स्वरूपविषये तीव्रां, अराजकां भ्रान्तिं, पूर्णतया रहस्यमयान् शारीरिकरोगान्, अतिगम्भीरान् आत्मविनाशकान् स्वभावांश्च जनयति।"
+      },
+      "2": {
+        "positive": "धनात् प्रगाढम्, निरतिशयं वैराग्यं परमम् आत्मशान्तिं यच्छति। भाग्यविधातृ-कुटुम्बपरिस्थितेः विषये भवतां प्रगाढा, सहजशुद्धा अवगतिरस्ति।",
+        "neutral": "षष्टियांशे (D60) द्वितीये भावे केतुः वित्तस्य, आहारस्य, वाण्याश्च विषये तीव्रं, परमं कार्मिकवैराग्यं दर्शयति।",
+        "negative": "पीडितः केतुः कर्मवशात् अकस्मात् अनपेक्षितधनहानिं, गंभीरं वाक्सङ्कटं, कुटुम्बात् पूर्णविच्छेदं च जनयति।"
+      },
+      "3": {
+        "positive": "अतिसहजं, निरतिशयं समस्यासमाधानम्। आत्मा अपारसाहसेना प्रवर्तेते, अनावश्यकलौकिकविवादेभ्यश्च पूर्णतया विरक्ता भवति।",
+        "neutral": "षष्टियांशे (D60) तृतीये भावे केतुः पुरुषार्थस्य, सहोदराणां, लौकिकसञ्चारस्य च विषये पूर्णं कार्मिकवैराग्यं प्रकटयति।",
+        "negative": "पीडितः केतुः तीव्रं, स्तब्धं प्रेरणाभावं, विशालान्, भाग्यगतान्र् अर्थभेदान्, कर्मणः कापुरुषवत् पलायनञ्च आनयति।"
+      },
+      "4": {
+        "positive": "प्रगाढा, अचला आन्तरिकी अध्यात्मिकशान्तिः। आत्मा सर्वेभ्यो भौतिकसम्पत्तिभ्यो मूलाधारलाभप्रभृतिभ्यश्च सम्पूर्णवैराग्ये परमं सुखं विन्दति।",
+        "neutral": "षष्टियांशे (D60) चतुर्थे भावे केतुः गृहस्य, मातुः, मानसिकसुरक्षायाश्च विषये गाढतरं कार्मिकवैराग्यं सूचयति।",
+        "negative": "पीडितः केतुः गम्भीरान्, भीषणान् मानसिकशून्यतान्, गृहस्य सम्पत्तेश्च आकस्मिक कार्मिकहानिं, आन्तरिकशान्तेः प्रगाढं दूषणं च जनयति।"
+      },
+      "5": {
+        "positive": "अतिसहजा प्रगाढशुद्धा चाध्यात्मिकप्रज्ञा। आत्मनः भाग्यैः सहजैः सन्तानेन सह च गहनं मानसिकं, गाढं कार्मिकसम्बन्धं च वर्तते।",
+        "neutral": "षष्टियांशे (D60) पञ्चमे भावे केतुः चरमपारलौकिकम् अध्यात्मिकसिद्धिं बुद्ध्या सह प्रेमसम्बन्धेभ्यश्च अतिवैराग्यं संयोजयति।",
+        "negative": "पीडितः केतुः गम्भीरं, भाग्यगतं शोकं सन्तानेन वा आकस्मिकवियोगं, तीव्रां मानसिकभ्रान्तिं, सट्टे महाहानिं च आनयति।"
+      },
+      "6": {
+        "positive": "रोगाणां प्रगाढम्, चमत्कारिकम् अध्यात्मिकारोग्यम्। आत्मा उच्चतले स्थित्वा शत्रून् सहजमेव पूर्णतया पराजयते।",
+        "neutral": "षष्टियांशे (D60) षष्ठे भावे केतुः चरमम् अध्यात्मिकवैराग्यं दैनन्दिनसङ्घर्षैः, आरोग्येण, कार्मिकसेवया च सह संबध्नाति।",
+        "negative": "पीडितः केतुः पूर्णतया रहस्यमयान्, अनिर्णयात्मकान् कार्मिकरोगान्, गुप्तरिपून्र्, भाग्यगतरणऋणानां योद्धुम् शून्यशक्तिं च जनयति।"
+      },
+      "7": {
+        "positive": "अध्यात्मिकः पूर्णतया विरक्तो वा भाग्यगतः प्राणप्रियतमः (Soulmate)। आत्मा सर्वविधभौतिकेक्षाशून्यतया सम्बन्धे परमशान्तिं विन्दति।",
+        "neutral": "षष्टियांशे (D60) सप्तमे भावे केतुः गभीरतमान् पूर्वजन्मकार्मिकसम्बन्धान् विवाहे प्रगाढम् अध्यात्मिकवैराग्यं च प्रकाशयति।",
+        "negative": "पीडितः केतुः आकस्मिकम्, अनिर्वाच्यं भाग्यगतवियोगं, गम्भीरभ्रान्तं पूर्णतया अनुपस्थितं जोडीदारं (Partner), सार्वजनिकप्रतिभायाः सम्पूर्णहानिं च जनयति।"
+      },
+      "8": {
+        "positive": "गूढविद्यायां (Occult) गुह्यक्षेत्रेषु च प्रगाढा, निरतिशया सिद्धिः। आत्मा अचलाध्यात्मिकशुद्धत्या आकस्मिकान्, भीषणान् रूपान्तरणान् (Transformations) तरति।",
+        "neutral": "षष्टियांशे (D60) अष्टमे भावे केतुः चरमकार्मिकमुक्तिं, प्रगाढगुह्यज्ञानम्, आकस्मिकान्, रहस्यमयान् भाग्यगतान् विषयान् च स्पृशति।",
+        "negative": "पीडितः केतुः गम्भीरान्, पूर्णतया अराजकान् कार्मिकसङ्कटान्, आकस्मिकभीषणयातानाः, तीव्रां मनोवैज्ञानिकभ्रान्तिं च जनयति।"
+      },
+      "9": {
+        "positive": "परमम् अध्यात्मिकं ब्रह्माण्डीयं मुक्तिः (Moksha)। प्रगाढा सहजप्रज्ञा। उच्चतहैः, अदृश्यैर्दैवीशक्तिभिः आत्मा सततं मार्गदर्शितो भवति।",
+        "neutral": "षष्टियांशे (D60) नवमे भावे केतुः प्रगाढकार्मिकवैराग्यं धर्मेण, गुरुभिः, पूर्वजन्मकेध्यात्मिकसाधनाभिश्च सह संयोजयति।",
+        "negative": "पीडितः केतुः तीव्रम्, लक्ष्यहीनम् अध्यात्मिकभ्रमणं, गुरुभिः सह पूर्णविच्छेदं, गम्भीरतया अराजकं, भ्रान्तं विश्वासतन्त्रं च आनयति।"
+      },
+      "10": {
+        "positive": "प्रगाढं, पूर्णशुद्धम् अध्यात्मिकनेतृत्वम्। चिकित्सायाः, गहनशोधस्य, सर्वोच्चमार्गदर्शनस्य वा सम्बद्धायां भाग्यगतसञ्चालने आत्मा अपारं सफला भवति।",
+        "neutral": "षष्टियांशे (D60) दशमे भावे केतुः लौकिकाकांक्षातः, स्थितेः, भौतिकप्राधिकारतश्च चरमं कार्मिकवैराग्यं दर्शयति।",
+        "negative": "पीडितः केतुः कर्मवशात् आकस्मिकम् अनपेक्षितवृत्तिहानिं (Career loss), व्यावसायिकदिशायाः पूर्णम् अभावं, प्रतिष्ठायाः विषये पूर्णोदासीनतां च जनयति।"
+      },
+      "11": {
+        "positive": "अध्यात्मिकैः, शुद्धजालक्रमैः (Networks) पूर्णता। सर्वलौकिककामनाभ्यः पूर्णतया विरक्तत्वात् आत्मा अनायासमेव फलानि प्राप्नोति।",
+        "neutral": "षष्टियांशे (D60) एकादशे भावे केतुः बृहत्सामाजिकसमूहेभ्यः, आयतः, लौकिकलक्ष्येभ्यश्च चरमकार्मिकवैराग्यं धारयति।",
+        "negative": "पीडितः केतुः मित्राणां प्रगाढकार्मिकवियोगं, आयस्य आकस्मिकसम्पूर्णहानिं, उपलब्धीनां विषये गम्भीरं, अराजकं असन्तोषं च आनयति।"
+      },
+      "12": {
+        "positive": "शुद्धमोक्षस्य (अध्यात्मिकमुक्तिः) परमं सर्वोच्चस्थानम्। पूर्णैकान्ते गम्भीरब्रह्माण्डीये ध्याने च प्रगाढा, अचला शान्तिः।",
+        "neutral": "षष्टियांशे (D60) द्वादशे भावे केतुः पूर्णतया शुद्धम् अध्यात्मिकमोक्षणं, सर्वकर्मत्यागं, दैवीचैतन्यं चाधिकृत्य वर्तते।",
+        "negative": "पीडितः केतुः कार्मिकैकान्तस्य तीव्रां, भीषणानुभूतिं, पूर्णतया अराजकान् अवचेतनभयान्, जीवने दिशायाः सम्पूर्णहानिं च जनयति।"
+      }
+    }
+  },
+  "planetDescriptions": {
+    "Sun": {
+      "title": "Sun in Shashtiamsa (D60)",
+      "description": "The Sun's D60 position reveals karma related to ego, authority, and father relationships from past lives. Benefic placement suggests past-life righteous leadership that blesses your current identity. Challenging placement indicates past-life ego issues or misuse of authority requiring resolution through humility.",
+      "icon": "☀️",
+      "color": "orange"
+    },
+    "Moon": {
+      "title": "Moon in Shashtiamsa (D60)",
+      "description": "The Moon in D60 shows emotional and mental karma from previous incarnations. A benefic division indicates past-life emotional intelligence and nurturing that supports current mental peace. Challenging placement may reveal past-life emotional manipulation or failures in providing support.",
+      "icon": "🌙",
+      "color": "blue"
+    },
+    "Mars": {
+      "title": "Mars in Shashtiamsa (D60)",
+      "description": "Mars reveals karma related to action, courage, and the use of power. Benefic placement suggests past-life protection of the innocent or righteous battle. Challenging placement may indicate past-life aggression or violence now manifesting as current conflicts or accident-prone tendencies.",
+      "icon": "🔴",
+      "color": "red"
+    },
+    "Mercury": {
+      "title": "Mercury in Shashtiamsa (D60)",
+      "description": "Mercury shows intellectual and communication karma. Benefic placement indicates past-life scholarship, truthful speech, and ethical business dealings. Challenging placement suggests past deceit, broken promises, or misuse of knowledge requiring honest communication now.",
+      "icon": "🟢",
+      "color": "emerald"
+    },
+    "Jupiter": {
+      "title": "Jupiter in Shashtiamsa (D60)",
+      "description": "Jupiter reveals the highest spiritual karma and relationship with wisdom. Benefic placement shows past-life religious merit, generosity, and respect for teachers, providing a strong protective karmic shield. Challenging placement suggests dogmatism or neglect of spiritual duties.",
+      "icon": "🟡",
+      "color": "amber"
+    },
+    "Venus": {
+      "title": "Venus in Shashtiamsa (D60)",
+      "description": "Venus governs relationship karma and devotion to beauty or art. Benefic placement indicates past-life marital fidelity and artistic contribution. Challenging placement suggests betrayal in love or excessive self-indulgence that must be balanced through devotion.",
+      "icon": "💖",
+      "color": "pink"
+    },
+    "Saturn": {
+      "title": "Saturn in Shashtiamsa (D60)",
+      "description": "Saturn represents the heaviest karmic lessons and endurance. Benefic placement shows past-life service to society and quiet patience during suffering. Challenging placement indicates neglect of duties or causing suffering to others, now experienced as chronic obstacles.",
+      "icon": "⏳",
+      "color": "slate"
+    },
+    "Rahu": {
+      "title": "Rahu in Shashtiamsa (D60)",
+      "description": "Rahu reveals unfulfilled desires and obsessive patterns carried from previous lives. It points directly to the areas where karmic evolution is most urgently needed. Benefic placement helps transcend conventional boundaries; challenging placement warns of repeating past illusions.",
+      "icon": "🌑",
+      "color": "teal"
+    },
+    "Ketu": {
+      "title": "Ketu in Shashtiamsa (D60)",
+      "description": "Ketu represents accumulated spiritual mastery, moksha impulses, and release from karmic bonds. Benefic placement indicates deep meditative realization from past lives. Challenging placement can trigger sudden, inexplicable detachments or karmic shocks.",
+      "icon": "☄️",
+      "color": "violet"
+    }
+  }
+}
