@@ -1,3 +1,4 @@
+import { PYTHON_ASTRO_URL } from '../services/api';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Sparkles, Calendar, Clock, LayoutGrid, CheckCircle2 } from 'lucide-react';
@@ -150,7 +151,7 @@ export default function YoginiTable({ birthData }) {
     if (timeStr && timeStr.split(':').length === 2) timeStr = timeStr + ':00';
     const tz = parseFloat(birthData.tz_offset ?? 5.5);
 
-    axios.post('http://localhost:8000/api/dasha/all-nakshatra', {
+    axios.post((PYTHON_ASTRO_URL.includes('/api/kundali') ? `${PYTHON_ASTRO_URL}/dasha/all-nakshatra` : `${PYTHON_ASTRO_URL}/api/dasha/all-nakshatra`), {
       date: dateStr,
       time: timeStr,
       tz_offset: tz

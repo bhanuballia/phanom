@@ -1,3 +1,4 @@
+import { PYTHON_ASTRO_URL } from '../services/api';
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { MapPin, Calendar, Clock, Plus, Trash2, List, Layout, Target, Sparkles } from 'lucide-react';
@@ -149,7 +150,7 @@ export default function DasaTimelineViewer({ birthData }) {
     if (timeStr && timeStr.split(':').length === 2) timeStr = timeStr + ':00';
     const tz = parseFloat(birthData.tz_offset ?? 5.5);
 
-    axios.post("http://localhost:8000/api/dasha/timeline", {
+    axios.post((PYTHON_ASTRO_URL.includes('/api/kundali') ? `${PYTHON_ASTRO_URL}/dasha/timeline` : `${PYTHON_ASTRO_URL}/api/dasha/timeline`), {
       date: dateStr,
       time: timeStr,
       tz_offset: tz

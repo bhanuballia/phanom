@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Sparkles, CheckCircle2, AlertTriangle, Layers, Info } from "lucide-react";
-import { API_BASE_URL } from "../services/api";
+import { API_BASE_URL, PYTHON_ASTRO_URL } from '../services/api';
 
 const PLANET_COLORS = {
   Sun: "#dc2626",
@@ -202,7 +202,7 @@ export default function HouseConjunctionAnalysis({ houses, translations, current
         detected.map(async (conj) => {
           try {
             let url = "";
-            const baseUrl = "http://localhost:8000";
+            const baseUrl = PYTHON_ASTRO_URL.includes('/api/kundali') ? PYTHON_ASTRO_URL : `${PYTHON_ASTRO_URL}/api`;
             if (conj.planets.length === 2) {
               url = `${baseUrl}/api/conjunction/detail/${conj.planets[0]}/${conj.planets[1]}`;
             } else if (conj.planets.length === 3) {

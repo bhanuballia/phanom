@@ -1,3 +1,4 @@
+import { PYTHON_ASTRO_URL } from '../services/api';
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
@@ -86,7 +87,7 @@ export default function VimshottariTable({
     setLoading(true);
     setError(null);
 
-    axios.post('http://localhost:8000/api/vimshottari-table', {
+    axios.post((PYTHON_ASTRO_URL.includes('/api/kundali') ? `${PYTHON_ASTRO_URL}/vimshottari-table` : `${PYTHON_ASTRO_URL}/api/vimshottari-table`), {
       date,
       time,
       tz,

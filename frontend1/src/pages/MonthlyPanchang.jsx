@@ -1,10 +1,11 @@
+import { PYTHON_ASTRO_URL } from '../services/api';
 import React, { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import { Calendar, RefreshCw, Printer, Sparkles, ChevronLeft, ChevronRight, Compass, ShieldAlert, Award } from 'lucide-react';
 import axios from 'axios';
 
 // Vedic Astrology Python backend port is 8000
-const PYTHON_BACKEND_URL = 'http://localhost:8000/api/panchang/monthly-sheet';
+const PYTHON_BACKEND_URL = PYTHON_ASTRO_URL.includes('/api/kundali') ? `${PYTHON_ASTRO_URL}/panchang/monthly-sheet` : `${PYTHON_ASTRO_URL}/api/panchang/monthly-sheet`;
 
 const RASHI_OPTIONS = [
   'मेष', 'वृषभ', 'मिथुन', 'कर्क', 'सिंह', 'कन्या',

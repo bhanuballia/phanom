@@ -1,3 +1,4 @@
+import { PYTHON_ASTRO_URL } from '../../services/api';
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
@@ -510,7 +511,7 @@ export default function D40ChartWindow() {
 
     // 2. Fetch from Vedic backend
     try {
-      const response = await axios.post('http://localhost:8000/api/report/data', {
+      const response = await axios.post((PYTHON_ASTRO_URL.includes('/api/kundali') ? `${PYTHON_ASTRO_URL}/report/data` : `${PYTHON_ASTRO_URL}/api/report/data`), {
         name,
         date,
         time,
@@ -527,7 +528,7 @@ export default function D40ChartWindow() {
     } catch (err) {
       console.warn('Failed primary report/data endpoint, trying fallback /api/kundali...', err);
       try {
-        const fallbackRes = await axios.post('http://localhost:8000/api/kundali', {
+        const fallbackRes = await axios.post((PYTHON_ASTRO_URL.includes('/api/kundali') ? `${PYTHON_ASTRO_URL}/calc` : `${PYTHON_ASTRO_URL}/api/kundali`), {
           date,
           time,
           lat,

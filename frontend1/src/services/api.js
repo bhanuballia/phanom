@@ -31,6 +31,13 @@ export const API_BASE_URL = computeApiBaseUrl();
 
 export const VEDIC_ASTROLOGY_BASE_URL = getEnvValue('VITE_VEDIC_ASTROLOGY_URL') || 'http://localhost:5173';
 
+// Direct Python Astro Engine URL or routed through backend kundali proxy
+export const PYTHON_ASTRO_URL =
+  getEnvValue('VITE_PYTHON_API_BASE_URL') ||
+  (typeof window !== 'undefined' && isLocalhost(window.location.hostname)
+    ? 'http://localhost:8000'
+    : `${API_BASE_URL}/kundali`);
+
 const computeUploadsBaseUrl = () => {
   const envUrl = getEnvValue('VITE_API_BASE_URL');
   if (envUrl) {
@@ -176,9 +183,9 @@ export const kundaliAPI = {
   sendToEmail: (emailData) => api.post('/kundali/send-email', emailData),
   sendToPhone: (smsData) => api.post('/kundali/send-sms', smsData),
   getPanchang: (panchangData) => api.post('/kundali/panchang', panchangData),
-  getDailyPanchang: (params) => axios.get('http://localhost:8000/api/panchang/daily', { params }),
+  getDailyPanchang: (params) => axios.get(PYTHON_ASTRO_URL.includes('/api/kundali') ? `${PYTHON_ASTRO_URL}/panchang/daily` : `${PYTHON_ASTRO_URL}/api/panchang/daily`, { params }),
   getDailyHoroscope: (data) => api.post('/kundali/daily-horoscope', data),
-  getMonthlyPanchangSheet: (params) => axios.get('http://localhost:8000/api/panchang/monthly-sheet', { params }),
+  getMonthlyPanchangSheet: (params) => axios.get(PYTHON_ASTRO_URL.includes('/api/kundali') ? `${PYTHON_ASTRO_URL}/panchang/monthly-sheet` : `${PYTHON_ASTRO_URL}/api/panchang/monthly-sheet`, { params }),
   generatePDF: (pdfData) => api.post('/kundali/generate-pdf', pdfData, { responseType: 'blob' }),
 };
 
