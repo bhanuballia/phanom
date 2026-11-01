@@ -71,13 +71,16 @@ const generateFallbackKundaliData = (body = {}) => {
   const ascSignIdx = Math.floor(Math.abs(pseudo(1)) * 12) % 12;
   const ascDegree = Number((pseudo(2) * 30).toFixed(2));
 
-  // Build 12 houses
+  // Build 12 houses with proper sign_index, sign_num, cusp_deg
   const houses = {};
   for (let i = 1; i <= 12; i++) {
     const sIdx = (ascSignIdx + (i - 1)) % 12;
     houses[i] = {
+      house: i,
       sign: RASHIS[sIdx],
+      sign_index: sIdx,
       sign_num: sIdx + 1,
+      cusp_deg: sIdx * 30 + ascDegree,
       degree: ascDegree,
       planets: []
     };
@@ -96,33 +99,30 @@ const generateFallbackKundaliData = (body = {}) => {
     const isRetro = pName === 'Rahu' || pName === 'Ketu' || pseudo(pIdx * 19 + 50) > 0.8;
     const isCombust = pName !== 'Sun' && pName !== 'Rahu' && pName !== 'Ketu' && pseudo(pIdx * 23 + 60) > 0.88;
 
-    planet_positions[pName] = {
+    const planetObj = {
+      planet: pName,
+      name: pName,
       house: hNum,
       sign: RASHIS[sIdx],
+      sign_index: sIdx,
+      sign_lord: RASHIS[sIdx],
       degree: pDeg,
       nakshatra: NAKSHATRAS[nakIdx],
       nakshatra_pada: nakPada,
+      pada: nakPada,
       is_retrograde: isRetro,
       is_combust: isCombust,
       sidereal: {
         lon: pDeg,
         nakshatra: NAKSHATRAS[nakIdx],
+        sign: RASHIS[sIdx],
         sign_lord: RASHIS[sIdx]
       }
     };
 
+    planet_positions[pName] = planetObj;
     houses[hNum].planets.push(pName);
-
-    formattedPlanets.push({
-      planet: pName,
-      degree: pDeg,
-      nakshatra: NAKSHATRAS[nakIdx],
-      nakshatra_pada: nakPada,
-      sign_lord: RASHIS[sIdx],
-      is_retrograde: isRetro,
-      is_combust: isCombust,
-      house: hNum
-    });
+    formattedPlanets.push(planetObj);
   });
 
   const upagrahas = {
@@ -133,13 +133,34 @@ const generateFallbackKundaliData = (body = {}) => {
     indrachapa: { house: ((ascSignIdx + 10) % 12) + 1, degree: 22.1 }
   };
 
+  const createVargaChart = (division) => {
+    const vHouses = {};
+    for (let i = 1; i <= 12; i++) {
+      const vSignIdx = (ascSignIdx * division + (i - 1)) % 12;
+      vHouses[i] = {
+        house: i,
+        sign: RASHIS[vSignIdx],
+        sign_index: vSignIdx,
+        sign_num: vSignIdx + 1,
+        cusp_deg: vSignIdx * 30,
+        planets: []
+      };
+    }
+    PLANET_NAMES.forEach((pName, pIdx) => {
+      const vHouseNum = (Math.floor(pseudo(pIdx * division + 15) * 12) % 12) + 1;
+      vHouses[vHouseNum].planets.push(pName);
+    });
+    return { houses: vHouses, planet_positions };
+  };
+
   return {
     basic_details: { name, date, time, lat, lon, tz_offset, place: location_name },
     charts: {
       houses,
       planet_positions,
       upagrahas,
-      ascendant: { sign: RASHIS[ascSignIdx], degree: ascDegree }
+      ascendant: { sign: RASHIS[ascSignIdx], sign_index: ascSignIdx, degree: ascDegree },
+      ascendant_sign_index: ascSignIdx
     },
     planet_positions: formattedPlanets,
     yamakantaka: upagrahas.yamakantaka,
@@ -149,21 +170,21 @@ const generateFallbackKundaliData = (body = {}) => {
     indrachapa: upagrahas.indrachapa,
     vargas: {
       d1: { houses, planet_positions },
-      d2: { houses, planet_positions },
-      d3: { houses, planet_positions },
-      d4: { houses, planet_positions },
-      d7: { houses, planet_positions },
-      d9: { houses, planet_positions },
-      d10: { houses, planet_positions },
-      d12: { houses, planet_positions },
-      d16: { houses, planet_positions },
-      d20: { houses, planet_positions },
-      d24: { houses, planet_positions },
-      d27: { houses, planet_positions },
-      d30: { houses, planet_positions },
-      d40: { houses, planet_positions },
-      d45: { houses, planet_positions },
-      d60: { houses, planet_positions }
+      d2: createVargaChart(2),
+      d3: createVargaChart(3),
+      d4: createVargaChart(4),
+      d7: createVargaChart(7),
+      d9: createVargaChart(9),
+      d10: createVargaChart(10),
+      d12: createVargaChart(12),
+      d16: createVargaChart(16),
+      d20: createVargaChart(20),
+      d24: createVargaChart(24),
+      d27: createVargaChart(27),
+      d30: createVargaChart(30),
+      d40: createVargaChart(40),
+      d45: createVargaChart(45),
+      d60: createVargaChart(60)
     }
   };
 };
