@@ -94,9 +94,9 @@ const Navigation = () => {
   const navServices = [
     {
       name: 'Daily Panchang',
-      path: `${VEDIC_ASTROLOGY_BASE_URL}/?panchang=true&hide_search=true`,
+      path: '/daily-calendar',
       icon: CalendarDays,
-      isExternal: true
+      isExternal: false
     },
     {
       name: 'Monthly Calendar',

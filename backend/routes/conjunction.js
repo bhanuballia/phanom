@@ -131,3 +131,4 @@ router.get('/four/detail/:p1/:p2/:p3/:p4', async (req, res) => {
 });
 
 module.exports = router;
+

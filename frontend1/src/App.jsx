@@ -219,11 +219,7 @@ function App() {
             />
             <Route
               path="/daily-calendar"
-              element={
-                <ProtectedRoute>
-                  <DailyCalendar />
-                </ProtectedRoute>
-              }
+              element={<DailyCalendar />}
             />
             <Route
               path="/monthly-panchang"
