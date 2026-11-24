@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { createPortal } from 'react-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { walletAPI, VEDIC_ASTROLOGY_BASE_URL } from '../services/api';
@@ -34,12 +35,21 @@ import {
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [vastuModalOpen, setVastuModalOpen] = useState(false);
+
+  const handleCloseVastuModal = () => {
+    setVastuModalOpen(false);
+    if (location.pathname !== '/vastu-shastra') {
+      navigate('/vastu-shastra');
+    }
+  };
   const [showScrollDown, setShowScrollDown] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const { currentLang, currentLangObj, changeLanguage, supportedLanguages, t } = useLanguage();
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Close language dropdown on outside click
   useEffect(() => {
@@ -94,15 +104,16 @@ const Navigation = () => {
   const navServices = [
     {
       name: 'Daily Panchang',
-      path: '/daily-calendar',
+      path: '/daily-panchang',
       icon: CalendarDays,
-      isExternal: false
+      isExternal: false,
+      openNewWindow: true
     },
     {
       name: 'Monthly Calendar',
-      path: `${VEDIC_ASTROLOGY_BASE_URL}/?monthly_panchang=true&hide_search=true`,
+      path: '/monthly-calendar',
       icon: Calendar,
-      isExternal: true
+      isExternal: false
     },
     {
       name: 'Monthly Panchang',
@@ -112,21 +123,23 @@ const Navigation = () => {
     },
     {
       name: 'Relationship Horoscope',
-      path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true&calculator=weekly-relationship&hide_search=true`,
+      path: '/relationship-horoscope',
       icon: HeartHandshake,
-      isExternal: true
+      isExternal: false
     },
     {
       name: 'Advance Muhurt',
-      path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_muhurt=true&hide_search=true`,
+      path: '/advance-muhurt',
       icon: Clock,
-      isExternal: true
+      isExternal: false,
+      openNewWindow: true
     },
     {
       name: 'Adv. Nakshatra',
-      path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_nakshatra=true&only_planetary=true&hide_search=true`,
+      path: '/advanced-nakshatra',
       icon: Star,
-      isExternal: true
+      isExternal: false,
+      openNewWindow: true
     },
     {
       name: 'Vastu Shastra',
@@ -338,20 +351,38 @@ const Navigation = () => {
       : 'text-slate-800 hover:text-amber-600 hover:bg-amber-50/70 border border-transparent hover:border-amber-200'
       }`;
 
-    return service.isExternal ? (
-      <a
-        key={service.name}
-        href={service.path}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={buttonClasses}
-      >
-        {linkContent}
-      </a>
-    ) : (
+    if (service.path === '/vastu-shastra') {
+      return (
+        <button
+          key={service.name}
+          type="button"
+          onClick={() => setVastuModalOpen(true)}
+          className={buttonClasses}
+        >
+          {linkContent}
+        </button>
+      );
+    }
+
+    if (service.isExternal) {
+      return (
+        <a
+          key={service.name}
+          href={service.path}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonClasses}
+        >
+          {linkContent}
+        </a>
+      );
+    }
+    return (
       <Link
         key={service.name}
         to={service.path}
+        target={service.openNewWindow ? '_blank' : undefined}
+        rel={service.openNewWindow ? 'noopener noreferrer' : undefined}
         className={buttonClasses}
       >
         {linkContent}
@@ -509,10 +540,27 @@ const Navigation = () => {
                         >
                           {content}
                         </a>
+                      ) : service.path === '/vastu-shastra' ? (
+                        <button
+                          key={service.name}
+                          type="button"
+                          onClick={() => {
+                            setIsOpen(false);
+                            setVastuModalOpen(true);
+                          }}
+                          className={`flex items-center gap-2 p-2 rounded-xl border transition text-left ${isCurrent
+                            ? 'bg-amber-50 border-amber-300 text-amber-700'
+                            : 'bg-slate-50 border-slate-200 hover:bg-amber-50 text-slate-800'
+                            }`}
+                        >
+                          {content}
+                        </button>
                       ) : (
                         <Link
                           key={service.name}
                           to={service.path}
+                          target={service.openNewWindow ? '_blank' : undefined}
+                          rel={service.openNewWindow ? 'noopener noreferrer' : undefined}
                           onClick={() => setIsOpen(false)}
                           className={`flex items-center gap-2 p-2 rounded-xl border transition ${isCurrent
                             ? 'bg-amber-50 border-amber-300 text-amber-700'
@@ -626,6 +674,70 @@ const Navigation = () => {
           </div>
         )}
       </div>
+
+      {/* Vastu Shastra Image Popup Window (VK2.jpg) - Rendered via Portal at document.body for absolute viewport centering */}
+      {vastuModalOpen && typeof document !== 'undefined' && createPortal(
+        <div
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) handleCloseVastuModal();
+          }}
+        >
+          <div className="relative bg-slate-950 border-2 border-amber-400 rounded-3xl overflow-hidden shadow-2xl max-w-2xl w-full flex flex-col animate-in zoom-in-95 duration-200 max-h-[85vh]">
+            {/* Modal Header with Close Button */}
+            <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-red-950 via-stone-900 to-amber-950 border-b border-amber-500/30 text-white shrink-0">
+              <div className="flex items-center gap-2.5">
+                <Building2 className="w-5 h-5 text-amber-400" />
+                <span className="font-cinzel font-bold text-sm sm:text-base text-amber-100">
+                  वास्तु शास्त्र मार्गदर्शिका (Vastu Shastra Visual Guide)
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleCloseVastuModal}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer"
+                title="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Image Body */}
+            <div className="p-3 sm:p-4 flex items-center justify-center bg-stone-950/95 overflow-hidden">
+              <img
+                src="/images/VK2.jpg"
+                alt="Vastu Shastra Guide"
+                className="w-full max-h-[50vh] object-contain rounded-2xl shadow-xl border border-amber-400/30 mx-auto"
+              />
+            </div>
+
+            {/* Modal Footer with Action Buttons */}
+            <div className="px-5 py-3 bg-stone-900/95 border-t border-amber-500/20 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
+              <span className="text-stone-300 font-medium hidden sm:inline-block">
+                प्राचीन वैदिक स्थापत्य शास्त्र एवं दिशा संतुलन
+              </span>
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <Link
+                  to="/vastu-shastra"
+                  onClick={handleCloseVastuModal}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold transition hover:scale-105 shadow"
+                >
+                  विस्तृत वास्तु परामर्श पृष्ठ खोलें
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleCloseVastuModal}
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition cursor-pointer"
+                >
+                  बंद करें (Close)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
 
     </nav>
   );

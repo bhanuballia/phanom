@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Navigation from '../components/Navigation';
-import { Star, Calendar, Heart, Briefcase, Zap, User, Moon, Sun, MapPin, Loader, GraduationCap, Users, DollarSign, Activity, Sparkles } from 'lucide-react';
+import { Star, Calendar, Heart, Briefcase, Zap, User, Moon, Sun, MapPin, Loader, GraduationCap, Users, DollarSign, Activity, Sparkles, ChevronRight, PhoneCall, ArrowRight, ArrowUpRight, ShieldCheck, Compass, CheckCircle2, X, Radio, Video, Phone } from 'lucide-react';
 import { calculateBothSigns, getZodiacSignByName } from '../utils/zodiacCalculator';
-import { API_BASE_URL } from '../services/api';
+import { API_BASE_URL, authAPI, buildAssetUrl } from '../services/api';
 
 const ZodiacSigns = () => {
+  const { user } = useAuth();
   const [selectedSign, setSelectedSign] = useState(null);
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState('');
@@ -29,6 +32,56 @@ const ZodiacSigns = () => {
   const [forecastCache, setForecastCache] = useState({});
   const [isFetchingForecast, setIsFetchingForecast] = useState(false);
   const [forecastPerspective, setForecastPerspective] = useState('Moon'); // 'Sun' or 'Moon'
+
+  // Live Astrologers State
+  const [liveAstrologers, setLiveAstrologers] = useState([]);
+  const [isLoadingLiveAstrologers, setIsLoadingLiveAstrologers] = useState(false);
+
+  // Fetch Live Astrologers
+  useEffect(() => {
+    const fetchLive = async () => {
+      setIsLoadingLiveAstrologers(true);
+      try {
+        const response = await authAPI.getAstrologers();
+        const all = response?.data?.astrologers || [];
+        const live = all.filter(a => a.isLive || a.status === 'live');
+        setLiveAstrologers(live.length > 0 ? live : all.slice(0, 8)); // fallback to active if none flagged live
+      } catch (err) {
+        console.error('Failed to fetch live astrologers:', err);
+      } finally {
+        setIsLoadingLiveAstrologers(false);
+      }
+    };
+    fetchLive();
+  }, []);
+
+  // Helper to remove prefixes like "Astrologer", "Pt.", "Pandit", "Acharya", "Dr.", etc.
+  const formatAstrologerName = (fullName) => {
+    if (!fullName) return '';
+    return fullName
+      .replace(/^(Astrologer|Astro\.|Pandit|Pt\.|Acharya|Acharyaa|Dr\.|Shri|Smt\.)\s+/i, '')
+      .trim();
+  };
+
+  // Auto-detect user details when authenticated
+  useEffect(() => {
+    if (user) {
+      if (user.name) setName(prev => prev || user.name);
+      if (user.dateOfBirth) {
+        let dob = user.dateOfBirth;
+        if (typeof dob === 'string' && dob.includes('T')) dob = dob.split('T')[0];
+        setBirthDate(prev => prev || dob);
+      }
+      if (user.timeOfBirth) setBirthTime(prev => (prev === '12:00' ? user.timeOfBirth.substring(0, 5) : prev));
+      if (user.city || user.placeOfBirth) {
+        setCity(prev => prev || user.city || user.placeOfBirth.split(',')[0].trim());
+      }
+      if (user.state) setState(prev => prev || user.state);
+      if (user.country) setCountry(prev => prev || user.country);
+      if (user.lat) setLatitude(prev => prev || String(user.lat));
+      if (user.lon) setLongitude(prev => prev || String(user.lon));
+    }
+  }, [user]);
 
   const zodiacSigns = [
     {
@@ -551,1075 +604,1051 @@ const ZodiacSigns = () => {
   };
 
   return (
-    <div
-      className="min-h-screen relative overflow-hidden bg-cover bg-center bg-no-repeat bg-fixed text-gray-100"
-      style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(228, 228, 238, 0.hsla(240, 14%, 95%, 0.92)0.92)), url('/images/zodic2.jpeg')`
-      }}
-    >
-      <style>{`
-        @keyframes rotate-wheel {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.2); }
-        }
-        @keyframes orbit {
-          from { transform: rotate(0deg) translateX(150px) rotate(0deg); }
-          to { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
-        }
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.1); }
-          50% { box-shadow: 0 0 40px rgba(147, 197, 253, 0.2); }
-        }
-        .animate-float-slow {
-          animation: float-slow 4s ease-in-out infinite;
-        }
-        .animate-pulse-glow {
-          animation: pulse-glow 3s ease-in-out infinite;
-        }
-        .animate-rotate-slow {
-          animation: rotate-wheel 120s linear infinite;
-        }
-        .star-field {
-          position: absolute;
-          inset: 0;
-          overflow: hidden;
-          pointer-events: none;
-        }
-        .star {
-          position: absolute;
-          background: white;
-          border-radius: 50%;
-          animation: twinkle var(--duration) ease-in-out infinite;
-          opacity: 0.3;
-        }
-        .zodiac-wheel-circle {
-          stroke-dasharray: 2 40;
-          stroke-linecap: round;
-        }
-        .glass-premium {
-          background: rgba(22, 22, 35, 0.7);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-premium:hover {
-          background: rgba(28, 28, 45, 0.85);
-          transform: translateY(-5px) scale(1.02);
-          box-shadow: 0 30px 60px -12px rgba(147, 197, 253, 0.2);
-          border-color: rgba(212, 175, 55, 0.4);
-        }
-        .text-glow {
-          text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-        }
-        .gold-gradient {
-          background: linear-gradient(to right, #D4AF37, #F59E0B, #D4AF37);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-      `}</style>
-
+    <div className="min-h-screen bg-[#fffdfa] flex flex-col font-sans text-slate-800 selection:bg-amber-200">
       <Navigation />
 
-      {/* Star Field Background */}
-      <div className="star-field">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="star"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 3}px`,
-              height: `${Math.random() * 3}px`,
-              '--duration': `${2 + Math.random() * 4}s`
-            }}
-          />
-        ))}
-      </div>
+      <main className="flex-1 w-full pt-20 sm:pt-24 pb-16 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
 
-      {/* Hero Section Redesigned */}
-      <section className="relative z-10 pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-16">
-          <div className="flex-1 space-y-8 text-center lg:text-left">
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[25px] font-bold uppercase tracking-[0.3em] text-orange-600 animate-in slide-in-from-left duration-700">
-              <Star className="h-4 w-4 animate-pulse" />
-              ब्रह्‍मांड दर्शन • Know Your Horoscope
+        {/* 1. Top Breadcrumb & Quick Navigation Links */}
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 text-slate-700 text-[15px] font-medium">
+            <Link to="/" className="hover:text-amber-800 transition">होम (Home)</Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-amber-900 font-bold">राशि चक्र एवं फलादेश (Zodiac & Horoscopes)</span>
+          </div>
+
+          {/* Center: First Talk Free CTA */}
+          <div className="flex items-center justify-center my-1 sm:my-0">
+            <Link
+              to="/astrologers"
+              title="First Talk Free"
+              className="group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-md hover:shadow-amber-500/30 border border-yellow-200/80 hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              <div className="w-5 h-5 rounded-full bg-white/95 text-amber-900 flex items-center justify-center shrink-0">
+                <PhoneCall className="w-3.5 h-3.5 text-orange-600 animate-pulse" />
+              </div>
+              <span className="font-extrabold text-[22px] tracking-wide text-slate-950">First Talk Free</span>
+              <span className="text-[10px] bg-red-600 text-white font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider animate-bounce shadow-xs">
+                FREE
+              </span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-slate-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link
+              to="/astrologers"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[16px] font-bold bg-orange-300 hover:bg-amber-50 text-slate-800 border border-amber-900 shadow-2xs transition"
+            >
+              <PhoneCall className="w-3.5 h-3.5 text-amber-700" />
+              <span>ज्योतिषी से बात करें</span>
+              <ArrowUpRight className="w-3 h-3 text-slate-500" />
+            </Link>
+
+            <Link
+              to="/booking"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[16px] font-bold bg-lime-300 hover:bg-amber-50 text-slate-800 border border-amber-900 shadow-2xs transition"
+            >
+              <Calendar className="w-3.5 h-3.5 text-amber-700" />
+              <span>परामर्श बुक करें</span>
+              <ArrowUpRight className="w-3 h-3 text-slate-500" />
+            </Link>
+          </div>
+        </div>
+
+        {/* 2. Celestial Hero Section: Half-Width Vedic Banner paired with Live Zodiac Animation */}
+        <div className="flex flex-col md:flex-row items-stretch justify-between gap-4">
+          {/* Half-width Hero Banner with Celestial Vedic Styling */}
+          <div className="w-full md:w-1/2 md:max-w-[50%] relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-950 via-stone-900 to-amber-950 text-white px-5 py-4 sm:px-6 sm:py-5 shadow-lg border border-amber-500/25 flex flex-col justify-center">
+            <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute right-4 top-3 hidden lg:flex items-center gap-3 opacity-15 pointer-events-none">
+              <Sun className="w-16 h-16 stroke-[1.2] text-amber-300" />
+              <Moon className="w-14 h-14 stroke-[1.2] text-amber-100" />
+              <Star className="w-12 h-12 stroke-[1.2] text-yellow-200" />
             </div>
 
-            <div className="space-y-4">
-              <h1 className="text-6xl md:text-8xl font-cinzel font-bold text-black tracking-tighter animate-in fade-in slide-in-from-bottom duration-1000">
-                Zodiac <span className="relative gold-gradient">
-                  Signs
-                  <span className="absolute -bottom-2 left-0 w-full h-1 bg-gold/20 rounded-full"></span>
-                </span>
+            <div className="relative z-10 space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[11px] font-bold tracking-wide">
+                <Sparkles className="w-3 h-3 text-amber-300" />
+                <span>द्वादश राशि मंडल • 12 Vedic Zodiac Horizons</span>
+              </div>
+
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-extrabold font-cinzel text-amber-100 tracking-wide leading-snug">
+                वैदिक राशि चक्र, ग्रह गोचर एवं दैनिक फलादेश
               </h1>
-              <p className="text-xl text-violet-700 leading-relaxed max-w-xl mx-auto lg:mx-0 animate-in fade-in slide-in-from-bottom delay-300 duration-1000">
-                Journey through the 12 celestial houses. Decode the ancient alignment of stars and their profound influence on your terrestrial existence.
-              </p>
-            </div>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
-              <button
-                onClick={() => setShowCalculator(true)}
-                className="px-8 py-4 bg-emerald-200 text-black rounded-3xl font-bold tracking-widest uppercase hover:bg-gold-500 hover:text-white transition-all duration-500 shadow-xl hover:shadow-gold-500/50 transform hover:-translate-y-1"
-              >
-                Find My Sign
-              </button>
-              <div className="flex -space-x-3">
-                {zodiacSigns.slice(0, 5).map((s, i) => (
-                  <div key={i} className="w-10 h-10 rounded-full bg-zinc-300 border-2 border-white/10 flex items-center justify-center text-xl shadow-sm">
-                    {s.symbol}
+              <p className="text-xs text-amber-200/85 leading-relaxed font-normal">
+                12 राशियों के तत्व, स्वामी ग्रह एवं सूक्ष्म चारित्रिक विशेषताओं का गहन अवलोकन करें तथा अपनी जन्म तिथि व समय से सटीक सूर्य व चंद्र राशि जानें।
+              </p>
+
+              <div className="pt-2 flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowCalculator(!showCalculator)}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-slate-950 text-xs font-black uppercase tracking-wider hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer flex items-center gap-1.5"
+                >
+                  <Compass className="w-3.5 h-3.5 text-slate-950" />
+                  <span>{showCalculator ? 'कैलकुलेटर छिपाएं' : 'अपनी राशि जानें (Find My Sign)'}</span>
+                </button>
+                <div className="flex -space-x-2 items-center">
+                  {zodiacSigns.slice(0, 6).map((s, i) => (
+                    <div
+                      key={i}
+                      title={s.name}
+                      className="w-7 h-7 rounded-full bg-amber-900 border border-amber-300/60 flex items-center justify-center text-xs text-amber-200 shadow-xs"
+                    >
+                      {s.symbol}
+                    </div>
+                  ))}
+                  <div className="w-7 h-7 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black border border-amber-200 flex items-center justify-center shadow-xs">
+                    +6
                   </div>
-                ))}
-                <div className="w-10 h-10 rounded-full bg-white text-black border-2 border-[#05050a] flex items-center justify-center text-xs font-bold">
-                  +7
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="relative flex-1 flex items-center justify-center animate-in zoom-in duration-1000">
-            {/* Zodiac Sign Video Animation */}
-            <div className="relative w-80 h-80 md:w-[500px] md:h-[500px] flex items-center justify-center overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover rounded-3xl"
-              >
-                <source src="/images/zodiacsign.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
+          {/* Right Side: Visual Zodiac Hero Image Card (ZD1.jpg) */}
+          <div className="w-full md:w-1/2 md:max-w-[50%] flex items-center justify-center">
+            <Link
+              to="/astrologers"
+              title="ज्योतिषी से बात करें (Consult Astrologers)"
+              className="w-full h-full min-h-[170px] max-h-[230px] rounded-2xl overflow-hidden border border-amber-300/80 shadow-lg hover:shadow-2xl hover:border-amber-500 bg-gradient-to-br from-amber-50 to-orange-100/50 flex items-center justify-center relative group cursor-pointer transition-all duration-300"
+            >
+              <img
+                src="/images/ZD1.jpg"
+                alt="द्वादश वैदिक राशि चक्र (12 Zodiac Signs)"
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/85 transition-colors pointer-events-none" />
+              <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-[11px] font-bold text-amber-100 bg-black/60 backdrop-blur-xs px-3 py-1 rounded-full border border-amber-400/40 group-hover:border-amber-400 transition-colors">
+                <span>✨ 12 वैदिक राशि चक्र</span>
+                <span className="text-amber-300">• ज्योतिषी से व्यक्तिगत परामर्श लें</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-amber-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </Link>
           </div>
         </div>
-      </section>
 
-      {/* Sun and Moon Sign Calculator */}
-      <div className="relative rounded-2xl p-6 mb-12 border border-white/10 shadow-[0_35px_100px_rgba(0,0,0,0.4)] bg-[#10101a]/80 backdrop-blur-lg overflow-hidden">
-        {/* Overlay Effect - Only visible on the card */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 pointer-events-none opacity-30"></div>
-        <div className="relative z-10">
-          <div className="flex flex-wrap justify-between items-center mb-4">
-            <h2 className="flex items-center justify-center text-2xl font-cinzel font-bold text-white">
-              Discover Your <span className="text-yellow-400 border-b-2 border-yellow-400/20 pb-0.5 ml-2">Sun & Moon Sign</span>
-            </h2>
-            <button
-              onClick={() => setShowCalculator(!showCalculator)}
-              className="flex items-center justify-center text-yellow-400 font-bold hover:text-white transition-colors"
-            >
-              {showCalculator ? 'Hide Calculator' : 'Show Calculator'}
-            </button>
+        {/* 3. Vedic Sun & Moon Sign Calculator Section with Right-Side "Know Your Today Horoscope" Flex */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Calculator Card (~7 of 12 cols on lg) */}
+          <div className="lg:col-span-7 bg-gradient-to-br from-amber-50/70 via-white to-orange-50/40 rounded-3xl border border-amber-300 p-5 sm:p-7 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200 pb-4 mb-5">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-950 text-[11px] font-bold mb-1">
+                  <Sun className="w-3.5 h-3.5 text-amber-700" />
+                  <span>सूर्य एवं चंद्र राशि कैलकुलेटर (Sidereal Calculation)</span>
+                </div>
+                <h2 className="text-lg sm:text-xl font-bold font-cinzel text-stone-900">
+                  अपनी सटीक वैदिक सूर्य एवं चंद्र राशि जानें
+                </h2>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCalculator(!showCalculator)}
+                  className="px-4 py-2 rounded-xl text-[16px] font-bold bg-emerald-300 hover:bg-yellow-400 text-amber-900 border border-orange-600 shadow-2xs transition cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>{showCalculator ? 'कैलकुलेटर समेटें (Hide)' : 'Calculate Zodic Sign (Open)'}</span>
+                  <ChevronRight className={`w-3.5 h-3.5 transition-transform ${showCalculator ? 'rotate-90' : ''}`} />
+                </button>
+              </div>
+            </div>
+
+            {showCalculator ? (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                <div className="p-3.5 bg-amber-100/60 border border-amber-300/80 rounded-2xl flex items-center justify-between gap-3 text-xs text-amber-950">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">ℹ️</span>
+                    <span>
+                      यह कैलकुलेटर वैदिक निरयण (Sidereal Lahiri Ayanamsha) सिद्धांतों अनुसार आपके जन्म समय व स्थान के आधार पर राशि गणना करता है।
+                    </span>
+                  </div>
+                  {user && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 shrink-0">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-700" />
+                      Auto-filled ({user.name?.split(' ')[0] || 'User'})
+                    </span>
+                  )}
+                </div>
+
+                {/* Form Input Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 mb-1 flex items-center gap-1">
+                      <User className="w-3.5 h-3.5 text-amber-700" />
+                      <span>पूरा नाम (Full Name) *</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Enter your name"
+                      className="w-full text-xs font-medium bg-white border border-amber-300 rounded-xl p-2.5 text-stone-900 focus:outline-none focus:ring-1 focus:ring-amber-500 shadow-2xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 mb-1 flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5 text-amber-700" />
+                      <span>जन्म तिथि (Birth Date) *</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={birthDate}
+                      onChange={(e) => setBirthDate(e.target.value)}
+                      className="w-full text-xs font-medium bg-white border border-amber-300 rounded-xl p-2.5 text-stone-900 focus:outline-none focus:ring-1 focus:ring-amber-500 shadow-2xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 mb-1 flex items-center gap-1">
+                      <CalendarDays className="w-3.5 h-3.5 text-amber-700" />
+                      <span>जन्म समय (Birth Time)</span>
+                    </label>
+                    <input
+                      type="time"
+                      value={birthTime}
+                      onChange={(e) => setBirthTime(e.target.value)}
+                      className="w-full text-xs font-medium bg-white border border-amber-300 rounded-xl p-2.5 text-stone-900 focus:outline-none focus:ring-1 focus:ring-amber-500 shadow-2xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 mb-1 flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-amber-700" />
+                      <span>जन्म शहर (Birth City)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={city}
+                      onChange={handleCityChange}
+                      placeholder="e.g. New Delhi, Mumbai"
+                      className="w-full text-xs font-medium bg-white border border-amber-300 rounded-xl p-2.5 text-stone-900 focus:outline-none focus:ring-1 focus:ring-amber-500 shadow-2xs"
+                    />
+                  </div>
+                </div>
+
+                {/* Coordinates & Mode Actions */}
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-stone-600">सटीकता मोड:</span>
+                    <div className="inline-flex items-center bg-white border border-amber-300 rounded-xl p-1 shadow-2xs">
+                      <button
+                        type="button"
+                        onClick={() => setUseVedAstro(false)}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${!useVedAstro ? 'bg-amber-900 text-white shadow-xs' : 'text-stone-700 hover:text-amber-900'
+                          }`}
+                      >
+                        डेमो गणना (Demo)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setUseVedAstro(true)}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${useVedAstro ? 'bg-amber-900 text-white shadow-xs' : 'text-stone-700 hover:text-amber-900'
+                          }`}
+                      >
+                        सटीक वैदिक (VedAstro)
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={fetchLocationData}
+                      disabled={!city || isFetchingLocation}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${city && !isFetchingLocation
+                        ? 'bg-white hover:bg-amber-50 text-amber-950 border border-amber-300 shadow-2xs cursor-pointer'
+                        : 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed'
+                        }`}
+                    >
+                      {isFetchingLocation ? (
+                        <>
+                          <Loader className="w-3.5 h-3.5 animate-spin" />
+                          <span>स्थान ढूंढ रहे हैं...</span>
+                        </>
+                      ) : (
+                        <>
+                          <MapPin className="w-3.5 h-3.5 text-amber-700" />
+                          <span>निर्देशांक प्राप्त करें</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleCalculateSigns}
+                      disabled={!birthDate || !name || isCalculating}
+                      className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-2 ${birthDate && name && !isCalculating
+                        ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white hover:scale-105 active:scale-95 cursor-pointer'
+                        : 'bg-stone-200 text-stone-500 cursor-not-allowed'
+                        }`}
+                    >
+                      {isCalculating ? (
+                        <>
+                          <Loader className="w-4 h-4 animate-spin text-white" />
+                          <span>गणना हो रही है...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 text-amber-200" />
+                          <span>राशि गणना करें (Calculate Signs)</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {locationError && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-xl text-xs font-medium">
+                    ⚠️ {locationError}
+                  </div>
+                )}
+
+                {/* Calculated Results Display */}
+                {calculatedSigns && (
+                  <div className="mt-5 p-5 bg-white rounded-2xl border-2 border-amber-400/80 shadow-md space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200 pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-900 font-bold flex items-center justify-center text-lg">
+                          {calculatedSigns.name?.charAt(0) || '👤'}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-stone-900 text-sm sm:text-base">
+                            {calculatedSigns.name} की खगोलीय कुंडली पहचान
+                          </h3>
+                          <p className="text-[11px] text-stone-500">
+                            {calculatedSigns.city || 'स्थान उपलब्ध'} • विधि: {calculatedSigns.calculationMethod}
+                          </p>
+                        </div>
+                      </div>
+                      {calculatedSigns.nakshatra && (
+                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300">
+                          ✨ जन्म नक्षत्र: {calculatedSigns.nakshatra} (चरण {calculatedSigns.nakshatraPad || '1'})
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Sun vs Moon Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Sun Sign Card */}
+                      <div className="p-4 rounded-xl border border-amber-300 bg-amber-50/50 flex items-center justify-between">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-1.5 text-xs text-amber-900 font-bold">
+                            <Sun className="w-4 h-4 text-orange-600" />
+                            <span>वैदिक सूर्य राशि (Sun Sign)</span>
+                          </div>
+                          <div className="text-xl font-black font-cinzel text-stone-900">
+                            {calculatedSigns.sunSignName}
+                          </div>
+                          <p className="text-[11px] text-stone-600">आत्मबल, प्रतिष्ठा एवं बाहरी व्यक्तित्व</p>
+                        </div>
+                        <span className="text-4xl text-amber-800">{calculatedSigns.sun?.symbol || '☀️'}</span>
+                      </div>
+
+                      {/* Moon Sign Card */}
+                      <div className="p-4 rounded-xl border border-blue-300 bg-blue-50/50 flex items-center justify-between">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-1.5 text-xs text-blue-900 font-bold">
+                            <Moon className="w-4 h-4 text-blue-600" />
+                            <span>वैदिक चंद्र राशि (Moon / Janma Rashi)</span>
+                          </div>
+                          <div className="text-xl font-black font-cinzel text-stone-900">
+                            {calculatedSigns.moonSignName}
+                          </div>
+                          <p className="text-[11px] text-stone-600">मन, भावनाएं, अंतःकरण एवं स्वभाव</p>
+                        </div>
+                        <span className="text-4xl text-blue-800">{calculatedSigns.moon?.symbol || '🌙'}</span>
+                      </div>
+                    </div>
+
+                    {/* Daily Horoscopes for Calculated Signs */}
+                    <div className="pt-3 border-t border-amber-200">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-950 mb-3 flex items-center gap-1.5">
+                        <Sparkles className="w-4 h-4 text-amber-600" />
+                        <span>आज का दिन विशेष फलादेश (Today's Personal Horoscope)</span>
+                      </h4>
+
+                      {isFetchingHoroscopes ? (
+                        <div className="py-8 text-center text-xs text-stone-500 flex items-center justify-center gap-2">
+                          <Loader className="w-4 h-4 animate-spin text-amber-700" />
+                          <span>गोचर स्थिति का विश्लेषण किया जा रहा है...</span>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                          {sunHoroscope && (
+                            <div className="p-4 rounded-xl border border-amber-200 bg-white space-y-2">
+                              <span className="font-bold text-amber-900 flex items-center gap-1">
+                                <Sun className="w-3.5 h-3.5 text-orange-600" />
+                                <span>सूर्य राशि फलादेश: {calculatedSigns.sunSignName}</span>
+                              </span>
+                              <p className="text-stone-700 leading-relaxed">{sunHoroscope.overview}</p>
+                              <div className="pt-2 flex items-center justify-between text-[11px] text-stone-600 border-t border-stone-100">
+                                <span>शुभ अंक: <strong className="text-amber-900">{sunHoroscope.luckyNumber}</strong></span>
+                                <span>शुभ रंग: <strong className="text-amber-900">{sunHoroscope.luckyColor}</strong></span>
+                              </div>
+                            </div>
+                          )}
+
+                          {moonHoroscope && (
+                            <div className="p-4 rounded-xl border border-blue-200 bg-white space-y-2">
+                              <span className="font-bold text-blue-900 flex items-center gap-1">
+                                <Moon className="w-3.5 h-3.5 text-blue-600" />
+                                <span>चंद्र राशि फलादेश: {calculatedSigns.moonSignName}</span>
+                              </span>
+                              <p className="text-stone-700 leading-relaxed">{moonHoroscope.overview}</p>
+                              <div className="pt-2 flex items-center justify-between text-[11px] text-stone-600 border-t border-stone-100">
+                                <span>शुभ अंक: <strong className="text-blue-900">{moonHoroscope.luckyNumber}</strong></span>
+                                <span>शुभ रंग: <strong className="text-blue-900">{moonHoroscope.luckyColor}</strong></span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div >
+
+
+              </div>
+            )}
+
+            {/* Slogan Flex on left side below calculator: "Detailed Horoscope Report (Weekly, Monthly, Yearly) for Current Year" */}
+            <div className="mt-5 p-4 rounded-2xl bg-gradient-to-r from-amber-900 via-stone-900 to-amber-950 border border-amber-400/50 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-3 group">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-stone-950 flex items-center justify-center font-bold text-lg shadow-sm shrink-0 group-hover:scale-105 transition-transform">
+                  📊
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-4 bg-amber-400 rounded-full" />
+                    <h3 className="text-xs sm:text-sm font-bold font-cinzel text-amber-200 tracking-wide">
+                      Detailed Horoscope Report (Weekly , Monthly, Yearly) for Current Year
+                    </h3>
+                  </div>
+                  <p className="text-[11px] text-amber-200/80 pt-0.5">
+                    वर्तमान वर्ष के लिए साप्ताहिक, मासिक एवं वार्षिक वैदिक गोचर व ग्रह स्थिति की विस्तृत रिपोर्ट
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+                <Link
+                  to="/astrologers"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 hover:scale-105 active:scale-95 transition-all shadow-xs cursor-pointer"
+                >
+                  <span>रिपोर्ट प्राप्त करें</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-stone-950" />
+                </Link>
+              </div>
+            </div>
           </div>
 
-          {showCalculator && (
-            <div className="flex flex-col space-y-4">
-              <div className="p-3 bg-white/85 backdrop-blur-lg rounded-lg border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.15)] mb-4 relative overflow-hidden">
-                {/* Overlay Effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/50 to-transparent pointer-events-none"></div>
-                <p className="relative z-10 flex items-center justify-center text-black text-sm">
-                  <span className="flex items-center justify-center text-center">
-                    <strong>Note:</strong> This calculator provides approximate results for demonstration purposes.
-                    For accurate Hindu astrology Moon sign calculation, please use our{' '}
-                    <a href="/kundali" className="underline hover:text-black font-bold text-black">
-                      Professional Kundali Service
-                    </a>.
-                  </span>
+          {/* Right Column: Sleek & Compact "Know Your Today Horoscope" Flex Card (~5 of 12 cols on lg) */}
+          <div className="lg:col-span-5">
+            <button
+              type="button"
+              onClick={() => {
+                const target = document.getElementById('daily-horoscope-section');
+                if (target) {
+                  target.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="w-full text-left p-5 rounded-3xl bg-gradient-to-br from-amber-950 via-stone-900 to-amber-900 border-2 border-amber-400/60 hover:border-amber-400 shadow-lg hover:shadow-xl hover:shadow-amber-500/20 transition-all duration-300 relative overflow-hidden group cursor-pointer flex flex-col justify-between text-white"
+            >
+              {/* Glowing Background Accents */}
+              <div className="absolute -right-8 -top-8 w-36 h-36 bg-amber-500/20 rounded-full blur-2xl group-hover:bg-amber-500/30 transition-all duration-500 pointer-events-none" />
+              <div className="absolute right-3 bottom-2 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
+                <Sparkles className="w-24 h-24 text-amber-300 stroke-[0.8]" />
+              </div>
+
+              {/* Top Tag & Slogan Header */}
+              <div className="relative z-10 space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[11px] font-bold tracking-wide">
+                  <Sparkles className="w-3 h-3 text-amber-400 animate-pulse" />
+                  <span>दैनिक गोचर एवं नक्षत्र फलादेश</span>
+                </div>
+
+                {/* Slogan Flex */}
+                <div className="flex items-center gap-2.5 pt-0.5">
+                  <div className="w-1.5 h-8 bg-gradient-to-b from-amber-400 to-orange-500 rounded-full group-hover:scale-y-110 transition-transform" />
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-bold font-cinzel text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-yellow-300 tracking-wide">
+                      Click  Here To Know Your Today Horoscope
+                    </h3>
+                    <p className="text-[11px] text-amber-300/90 font-medium">
+                      आज का दिन आपके लिए क्या लेकर आया है? संपूर्ण फलादेश जानें
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-amber-200/80 leading-relaxed">
+                  करियर, शिक्षा, प्रेम संबंध, स्वास्थ्य और वित्त का 12 राशियों के अनुसार आज का सटीक राशिफल देखें।
                 </p>
               </div>
 
-              <p className="flex items-center justify-center text-[20px] text-orange-400 mb-4">
-                Enter your details to discover your Sun and Moon signs
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col">
-                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
-                    <User className="inline h-4 w-4 mr-2 text-yellow-400" />
-                    Full Name <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your full name"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent"
-                  />
+              {/* Compact 3 Highlight Badges */}
+              <div className="relative z-10 my-3 grid grid-cols-3 gap-2 text-center">
+                <div className="py-1.5 px-2 rounded-xl bg-white/5 border border-white/10 group-hover:border-amber-400/40 transition-colors">
+                  <span className="inline-block text-xs mr-1">💼</span>
+                  <span className="text-[10px] font-bold text-amber-200">करियर</span>
                 </div>
-
-                <div className="flex flex-col">
-                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
-                    <Calendar className="inline h-4 w-4 mr-2 text-yellow-400" />
-                    Birth Date <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={birthDate}
-                    onChange={(e) => setBirthDate(e.target.value)}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent"
-                  />
+                <div className="py-1.5 px-2 rounded-xl bg-white/5 border border-white/10 group-hover:border-amber-400/40 transition-colors">
+                  <span className="inline-block text-xs mr-1">❤️</span>
+                  <span className="text-[10px] font-bold text-amber-200">प्रेम</span>
                 </div>
-
-                <div className="flex flex-col">
-                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
-                    <Moon className="inline h-4 w-4 mr-2 text-yellow-400" />
-                    Birth Time (Optional)
-                  </label>
-                  <input
-                    type="time"
-                    value={birthTime}
-                    onChange={(e) => setBirthTime(e.target.value)}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
-                    <MapPin className="inline h-4 w-4 mr-2 text-yellow-400" />
-                    City <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={city}
-                    onChange={handleCityChange}
-                    placeholder="Enter your city"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
-                    <MapPin className="inline h-4 w-4 mr-2 text-yellow-400" />
-                    State/Province (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    value={state}
-                    onChange={handleStateChange}
-                    placeholder="Enter your state or province"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
-                    <MapPin className="inline h-4 w-4 mr-2 text-yellow-400" />
-                    Country (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    value={country}
-                    onChange={handleCountryChange}
-                    placeholder="Enter your country"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
-                    Latitude
-                  </label>
-                  <input
-                    type="text"
-                    value={latitude}
-                    onChange={handleLatitudeChange}
-                    placeholder="Enter latitude"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="flex items-center block text-[15px] font-medium text-orange-300 mb-2">
-                    Longitude
-                  </label>
-                  <input
-                    type="text"
-                    value={longitude}
-                    onChange={handleLongitudeChange}
-                    placeholder="Enter longitude"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent"
-                  />
+                <div className="py-1.5 px-2 rounded-xl bg-white/5 border border-white/10 group-hover:border-amber-400/40 transition-colors">
+                  <span className="inline-block text-xs mr-1">💰</span>
+                  <span className="text-[10px] font-bold text-amber-200">धन-लाभ</span>
                 </div>
               </div>
 
-              {/* Calculation Method Toggle */}
-              <div className="flex items-center justify-center gap-3 p-4 bg-white/5 rounded-lg border border-white/10 mb-4">
-                <span className={`text-sm font-medium ${!useVedAstro ? 'text-white' : 'text-gray-500'}`}>
-                  Demo Mode
-                </span>
-                <button
-                  onClick={() => setUseVedAstro(!useVedAstro)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${useVedAstro ? 'bg-yellow-500' : 'bg-gray-700'}`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${useVedAstro ? 'translate-x-6' : 'translate-x-1'}`}
-                  />
-                </button>
-                <span className={`text-sm font-medium ${useVedAstro ? 'text-white' : 'text-gray-500'}`}>
-                  VedAstro (Accurate)
+              {/* Bottom Interactive Click Prompt */}
+              <div className="relative z-10 pt-2.5 border-t border-amber-500/30 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-amber-300 group-hover:text-yellow-300">
+                  <span>राशिफल डैशबोर्ड पर जाएं</span>
+                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 shadow-xs group-hover:scale-105 transition-transform">
+                  क्लिक करें ↓
                 </span>
               </div>
+            </button>
+          </div>
+        </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                <button
-                  onClick={fetchLocationData}
-                  disabled={!city || isFetchingLocation}
-                  className={`flex-1 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center ${city && !isFetchingLocation
-                    ? 'bg-yellow-500 text-black hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] transform hover:scale-105'
-                    : 'bg-gray-800 text-gray-600 cursor-not-allowed border border-white/5'
-                    }`}
-                >
-                  {isFetchingLocation ? (
-                    <>
-                      <Loader className="h-5 w-5 animate-spin mr-2" />
-                      Fetching Location...
-                    </>
-                  ) : (
-                    <>
-                      <MapPin className="h-5 w-5 mr-2" />
-                      Get Coordinates
-                    </>
-                  )}
-                </button>
-
-                <button
-                  onClick={handleCalculateSigns}
-                  disabled={!birthDate || !name || isCalculating}
-                  className={`flex-1 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center ${birthDate && name && !isCalculating
-                    ? 'bg-yellow-500 text-black hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] transform hover:scale-105'
-                    : 'bg-gray-800 text-gray-600 cursor-not-allowed border border-white/5'
-                    }`}
-                >
-                  {isCalculating ? (
-                    <>
-                      <Loader className="h-5 w-5 animate-spin mr-2" />
-                      Calculating...
-                    </>
-                  ) : (
-                    `Calculate My Signs ${useVedAstro ? '(VedAstro)' : '(Demo)'}`
-                  )}
-                </button>
+        {/* Live Astrologers Horizontal Single Row Section */}
+        <div className="bg-gradient-to-r from-amber-50/80 via-white to-orange-50/80 rounded-3xl border border-amber-200/90 p-4 sm:p-5 shadow-sm space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200/70 pb-2.5">
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+              </span>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm sm:text-base font-bold font-cinzel text-stone-900 flex items-center gap-1.5">
+                  <Radio className="w-4 h-4 text-red-600 animate-pulse" />
+                  <span>लाइव ज्योतिषी (Live Astrologers Online)</span>
+                </h3>
+                <span className="text-[10px] bg-red-600 text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  LIVE NOW
+                </span>
               </div>
+            </div>
 
-              {locationError && (
-                <div className="mt-3 p-3 bg-red-100 border border-red-300 rounded-lg relative overflow-hidden">
-                  {/* Overlay Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 via-transparent to-red-50/50 opacity-50 pointer-events-none"></div>
-                  <p className="relative z-10 flex items-center justify-center text-red-800 text-sm">{locationError}</p>
+            <Link
+              to="/live-astrologers"
+              className="text-[16px] font-bold text-amber-900 hover:text-orange-700 flex items-center gap-1 group transition-colors"
+            >
+              <span>सभी लाइव ज्योतिषी देखें ({liveAstrologers.length})</span>
+              <ArrowUpRight className="w-4.5 h-4.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
+          </div>
+
+          {/* Single Row Horizontal Scrollable Container */}
+          <div className="overflow-x-auto no-scrollbar scroll-smooth py-1">
+            <div className="flex items-center gap-3.5 min-w-max">
+              {isLoadingLiveAstrologers ? (
+                <div className="py-6 px-8 flex items-center gap-2 text-xs text-stone-500">
+                  <Loader className="w-4 h-4 animate-spin text-amber-700" />
+                  <span>लाइव ज्योतिषी लोड हो रहे हैं...</span>
                 </div>
-              )}
-
-              {calculatedSigns && (
-                <div className="mt-6 p-4 bg-[#1a1a2e]/60 backdrop-blur-lg rounded-xl border border-white/10 shadow-[0_35px_100px_rgba(0,0,0,0.4)] relative overflow-hidden">
-                  {/* Overlay Effect - Only on card */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent pointer-events-none"></div>
-                  <div className="relative z-10">
-                    <h3 className="flex items-center justify-center text-lg font-semibold text-white mb-3">Your Cosmic Identity</h3>
-
-                    <div className="mb-4 p-3 bg-white/5 backdrop-blur-lg rounded-lg border border-white/5 relative overflow-hidden">
-                      <div className="relative z-10 flex flex-col space-y-1">
-                        <div className="flex items-center">
-                          <User className="h-5 w-5 text-yellow-400 mr-2" />
-                          <span className="font-semibold text-orange-300">Name:</span>
-                          <span className="ml-2 text-white">{calculatedSigns.name}</span>
-                        </div>
-                        {(calculatedSigns.city || calculatedSigns.state || calculatedSigns.country) && (
-                          <div className="flex items-center">
-                            <MapPin className="h-5 w-5 text-yellow-400 mr-2" />
-                            <span className="font-semibold text-orange-300">Location:</span>
-                            <span className="ml-2 text-white">
-                              {calculatedSigns.city}
-                              {calculatedSigns.city && calculatedSigns.state ? ', ' : ''}
-                              {calculatedSigns.state}
-                              {(calculatedSigns.city || calculatedSigns.state) && calculatedSigns.country ? ', ' : ''}
-                              {calculatedSigns.country}
-                            </span>
-                          </div>
-                        )}
-                        {(calculatedSigns.latitude && calculatedSigns.longitude) && (
-                          <div className="flex items-center">
-                            <MapPin className="h-5 w-5 text-yellow-400 mr-2" />
-                            <span className="font-semibold text-orange-300">Coordinates:</span>
-                            <span className="ml-2 text-white">
-                              {calculatedSigns.latitude}, {calculatedSigns.longitude}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="relative rounded-lg p-4 border border-white/10 bg-white/5 backdrop-blur-lg shadow-lg overflow-hidden">
-                        <div className="relative z-10 flex flex-col">
-                          <div className="flex items-center mb-2">
-                            <Sun className="h-5 w-5 text-yellow-400 mr-2" />
-                            <h4 className="flex items-center font-semibold text-white">
-                              {calculatedSigns.sun.name} | {calculatedSigns.sun.sanskrit}
-                            </h4>
-                          </div>
-                          {calculatedSigns.sun ? (
-                            <div className="flex flex-col">
-                              <div className="flex items-center justify-center text-3xl mb-1">{calculatedSigns.sun.symbol}</div>
-                              <button
-                                onClick={() => setSelectedSign(calculatedSigns.sun)}
-                                className="flex items-center justify-center mt-2 text-xs text-yellow-500 hover:text-white transition-colors font-bold"
-                              >
-                                View Details
-                              </button>
-                            </div>
+              ) : liveAstrologers.length > 0 ? (
+                liveAstrologers.map((astro) => {
+                  const rawImage = astro.profilePicture || astro.image || astro.imageUrl || astro.photo;
+                  const imageSrc = rawImage ? buildAssetUrl(rawImage) : null;
+                  return (
+                    <Link
+                      key={astro._id || astro.id || astro.name}
+                      to={`/live-astrologers`}
+                      className="group relative flex items-center gap-3 p-2.5 pr-4 rounded-2xl bg-white hover:bg-amber-50/60 border border-amber-200/80 hover:border-amber-400 shadow-2xs hover:shadow-md transition-all duration-300 w-64 shrink-0"
+                    >
+                      {/* Avatar with Live Pulse */}
+                      <div className="relative shrink-0">
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-amber-400/80 shadow-xs bg-stone-100 flex items-center justify-center">
+                          {imageSrc ? (
+                            <img
+                              src={imageSrc}
+                              alt={astro.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            />
                           ) : (
-                            <div className="flex items-center justify-center text-gray-500">Unable to determine</div>
+                            <span className="font-bold text-[12px] text-amber-900">
+                              {astro.name?.charAt(0) || 'A'}
+                            </span>
                           )}
                         </div>
+                        <span className="absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600 border border-white"></span>
+                        </span>
                       </div>
 
-                      <div className="relative rounded-lg p-4 border border-white/10 bg-white/5 backdrop-blur-lg shadow-lg overflow-hidden">
-                        <div className="relative z-10 flex flex-col">
-                          <div className="flex items-center mb-2">
-                            <Moon className="h-5 w-5 text-cyan-400 mr-2" />
-                            <h4 className="flex items-center font-semibold text-white">
-                              {calculatedSigns.moon.name} | {calculatedSigns.moon.sanskrit}
-                            </h4>
-                          </div>
-                          {calculatedSigns.moon ? (
-                            <div className="flex flex-col">
-                              <div className="flex items-center justify-center text-3xl mb-1">{calculatedSigns.moon.symbol}</div>
-                              {calculatedSigns.nakshatra && (
-                                <div className="flex items-center justify-center text-xs text-gray-400 mt-1">
-                                  Nakshatra: {calculatedSigns.nakshatra} {calculatedSigns.nakshatraPad && `(Pad ${calculatedSigns.nakshatraPad})`}
-                                </div>
-                              )}
-                              <button
-                                onClick={() => setSelectedSign(calculatedSigns.moon)}
-                                className="flex items-center justify-center mt-2 text-xs text-cyan-500 hover:text-white transition-colors font-bold"
-                              >
-                                View Details
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="flex items-center justify-center text-gray-500">Unable to determine</div>
-                          )}
+                      {/* Info Details */}
+                      <div className="overflow-hidden flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-1">
+                          <h4 className="text-[14px] font-bold text-stone-900 truncate group-hover:text-amber-900 transition-colors" title={formatAstrologerName(astro.name)}>
+                            {formatAstrologerName(astro.name)}
+                          </h4>
+                          <span className="text-[12px] font-bold text-amber-600 flex items-center shrink-0">
+                            ★ {astro.rating || '4.9'}
+                          </span>
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex flex-col items-center justify-center text-center">
-                      {/* Calculation Method Badge */}
-                      {calculatedSigns.calculationMethod && (
-                        <div className={`mb-3 px-4 py-2 rounded-full text-xs font-medium ${calculatedSigns.isAccurate
-                          ? 'bg-green-100 text-green-800 border border-green-300'
-                          : 'bg-yellow-100 text-yellow-800 border border-yellow-300'
-                          }`}>
-                          {calculatedSigns.calculationMethod}
-                        </div>
-                      )}
-
-                      <div className="mt-4 flex flex-col items-center justify-center text-center">
-                        <p className="flex items-center justify-center text-sm text-gray-400">
-                          <span className="flex items-center justify-center text-center">Your Sun sign represents your core personality, while your Moon sign reflects your emotional nature and inner self.</span>
+                        <p className="text-[14px] text-stone-900 truncate">
+                          {astro.specialties?.slice(0, 2).join(', ') || astro.expertise || 'वैदिक ज्योतिष'}
                         </p>
-
-                        {!calculatedSigns.isAccurate && (
-                          <div className="p-3 bg-white/5 backdrop-blur-lg rounded-lg mt-3 border border-white/10 relative overflow-hidden">
-                            <p className="relative z-10 flex items-center justify-center text-xs text-gray-500">
-                              <span className="flex items-center justify-center text-center">
-                                <strong className="text-yellow-500">Important:</strong> The Moon sign calculation above is for demonstration purposes only.
-                                Accurate Moon sign requires precise birth time and location.
-                                For a professional Kundali, please use our <a href="/kundali" className="underline hover:text-white text-yellow-500 ml-1">Kundali Generation Service</a>.
-                              </span>
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Daily Horoscopes Section */}
-                    {(sunHoroscope || moonHoroscope || isFetchingHoroscopes) && (
-                      <div className="mt-12 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        <div className="flex flex-col items-center">
-                          <h3 className="text-3xl font-cinzel font-bold text-center text-white mb-2">Daily Horoscopes</h3>
-                          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
-                          <p className="text-xs text-gray-500 uppercase tracking-[0.3em] mt-3">Celestial Guidance for Today</p>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                          {/* Sun Sign Horoscope */}
-                          <div className="bg-[#10101a]/95 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden relative group transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.6)] hover:-translate-y-1">
-                            <div className="absolute -top-10 -right-10 p-4 opacity-[0.03] rotate-12 transition-transform duration-700 group-hover:rotate-0 group-hover:scale-110">
-                              <Sun className="h-48 w-48 text-white" />
-                            </div>
-                            <div className="relative z-10">
-                              <div className="flex items-center gap-4 mb-8">
-                                <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-4xl shadow-inner border border-white/5">
-                                  {calculatedSigns.sun?.symbol}
-                                </div>
-                                <div>
-                                  <h4 className="font-cinzel text-2xl font-bold text-white tracking-tight">Sun Sign: {calculatedSigns.sun?.name}</h4>
-                                  <p className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-medium">Your Outer Self & Soul</p>
-                                </div>
-                              </div>
-
-                              {isFetchingHoroscopes ? (
-                                <div className="flex flex-col items-center justify-center py-16">
-                                  <div className="relative">
-                                    <Loader className="h-12 w-12 animate-spin text-yellow-500" />
-                                  </div>
-                                  <p className="text-sm text-gray-400 mt-6 font-medium animate-pulse">Scanning the solar flares...</p>
-                                </div>
-                              ) : sunHoroscope ? (
-                                <div className="space-y-6">
-                                  <div className="p-5 bg-white/5 rounded-2xl border border-white/10 leading-relaxed text-gray-300 text-sm">
-                                    <p>{sunHoroscope.overview}</p>
-                                  </div>
-
-                                  <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl transition-all hover:bg-white/[0.08] hover:border-white/20">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Heart className="h-3 w-3 text-red-400" />
-                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">LOVE</span>
-                                      </div>
-                                      <p className="text-[11px] leading-relaxed text-gray-400">{sunHoroscope.love}</p>
-                                    </div>
-                                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl transition-all hover:bg-white/[0.08] hover:border-white/20">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Briefcase className="h-3 w-3 text-cyan-400" />
-                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">CAREER</span>
-                                      </div>
-                                      <p className="text-[11px] leading-relaxed text-gray-400">{sunHoroscope.career}</p>
-                                    </div>
-                                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl transition-all hover:bg-white/[0.08] hover:border-white/20">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Zap className="h-3 w-3 text-yellow-400" />
-                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">HEALTH</span>
-                                      </div>
-                                      <p className="text-[11px] leading-relaxed text-gray-400">{sunHoroscope.health}</p>
-                                    </div>
-                                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl transition-all hover:bg-white/[0.08] hover:border-white/20">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Star className="h-3 w-3 text-amber-400" />
-                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">FINANCE</span>
-                                      </div>
-                                      <p className="text-[11px] leading-relaxed text-gray-400">{sunHoroscope.finance}</p>
-                                    </div>
-                                  </div>
-
-                                  <div className="flex justify-between items-center py-4 px-6 bg-white/5 rounded-2xl border border-white/5">
-                                    <div className="flex flex-col items-center">
-                                      <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Lucky No.</span>
-                                      <span className="text-xl font-bold text-yellow-500 leading-none">{sunHoroscope.luckyNumber}</span>
-                                    </div>
-                                    <div className="h-8 w-[1px] bg-white/10"></div>
-                                    <div className="flex flex-col items-center">
-                                      <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Lucky Color</span>
-                                      <span className="text-sm font-bold text-white leading-none">{sunHoroscope.luckyColor}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="text-center py-20 bg-black/20 rounded-3xl">
-                                  <p className="text-sm text-gray-600 italic">Horoscope drifted into another galaxy...</p>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Moon Sign Horoscope */}
-                          <div className="bg-[#10101a]/95 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden relative group transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.6)] hover:-translate-y-1">
-                            <div className="absolute -top-10 -right-10 p-4 opacity-[0.03] -rotate-12 transition-transform duration-700 group-hover:rotate-0 group-hover:scale-110">
-                              <Moon className="h-48 w-48 text-white" />
-                            </div>
-                            <div className="relative z-10">
-                              <div className="flex items-center gap-4 mb-8">
-                                <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-4xl shadow-inner border border-white/5">
-                                  {calculatedSigns.moon?.symbol}
-                                </div>
-                                <div>
-                                  <h4 className="font-cinzel text-2xl font-bold text-white tracking-tight">Moon Sign: {calculatedSigns.moon?.name}</h4>
-                                  <p className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-medium">Your Inner Self & Emotions</p>
-                                </div>
-                              </div>
-
-                              {isFetchingHoroscopes ? (
-                                <div className="flex flex-col items-center justify-center py-16">
-                                  <div className="relative">
-                                    <Loader className="h-12 w-12 animate-spin text-cyan-400" />
-                                  </div>
-                                  <p className="text-sm text-gray-400 mt-6 font-medium animate-pulse">Decoding the lunar whispers...</p>
-                                </div>
-                              ) : moonHoroscope ? (
-                                <div className="space-y-6">
-                                  <div className="p-5 bg-white/5 rounded-2xl border border-white/10 leading-relaxed text-gray-300 text-sm">
-                                    <p>{moonHoroscope.overview}</p>
-                                  </div>
-
-                                  <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl transition-all hover:bg-white/[0.08] hover:border-white/20">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Heart className="h-3 w-3 text-red-400" />
-                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">LOVE</span>
-                                      </div>
-                                      <p className="text-[11px] leading-relaxed text-gray-400">{moonHoroscope.love}</p>
-                                    </div>
-                                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl transition-all hover:bg-white/[0.08] hover:border-white/20">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Briefcase className="h-3 w-3 text-cyan-400" />
-                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">CAREER</span>
-                                      </div>
-                                      <p className="text-[11px] leading-relaxed text-gray-400">{moonHoroscope.career}</p>
-                                    </div>
-                                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl transition-all hover:bg-white/[0.08] hover:border-white/20">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Zap className="h-3 w-3 text-yellow-400" />
-                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">HEALTH</span>
-                                      </div>
-                                      <p className="text-[11px] leading-relaxed text-gray-400">{moonHoroscope.health}</p>
-                                    </div>
-                                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl transition-all hover:bg-white/[0.08] hover:border-white/20">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Star className="h-3 w-3 text-amber-400" />
-                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">FINANCE</span>
-                                      </div>
-                                      <p className="text-[11px] leading-relaxed text-gray-400">{moonHoroscope.finance}</p>
-                                    </div>
-                                  </div>
-
-                                  <div className="flex justify-between items-center py-4 px-6 bg-white/5 rounded-2xl border border-white/5">
-                                    <div className="flex flex-col items-center">
-                                      <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Lucky No.</span>
-                                      <span className="text-xl font-bold text-cyan-400 leading-none">{moonHoroscope.luckyNumber}</span>
-                                    </div>
-                                    <div className="h-8 w-[1px] bg-white/10"></div>
-                                    <div className="flex flex-col items-center">
-                                      <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Lucky Color</span>
-                                      <span className="text-sm font-bold text-white leading-none">{moonHoroscope.luckyColor}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="text-center py-20 bg-black/20 rounded-3xl">
-                                  <p className="text-sm text-gray-600 italic">Emotions temporarily obscured by clouds...</p>
-                                </div>
-                              )}
-                            </div>
-                          </div>
+                        <div className="flex items-center justify-between pt-1 text-[14px]">
+                          <span className="font-semibold text-emerald-700">
+                            {astro.experience || '8+'} वर्ष अनुभव
+                          </span>
+                          <span className="inline-flex items-center gap-0.5 text-amber-800 font-bold group-hover:translate-x-0.5 transition-transform">
+                            <span>जुड़ें</span>
+                            <ArrowRight className="w-2.5 h-2.5" />
+                          </span>
                         </div>
                       </div>
-                    )}
-                  </div>
+                    </Link>
+                  );
+                })
+              ) : (
+                <div className="py-4 px-6 text-xs text-stone-500">
+                  वर्तमान में कोई ज्योतिषी लाइव नहीं है। सभी विशेषज्ञ प्रोफाइल देखने के लिए क्लिक करें।
                 </div>
               )}
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* Inspirational Quote Banner */}
-      <section className="relative z-10 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-xl p-8 bg-[#1a1a2e]/60 backdrop-blur-lg border border-white/10 shadow-[0_35px_100px_rgba(0,0,0,0.4)] overflow-hidden">
-            <div className="absolute inset-0 bg-yellow-100 via-transparent to-transparent pointer-events-none"></div>
-            <p className="relative z-10 text-center text-lg md:text-xl font-hindi font-medium text-red-600 leading-relaxed italic">
-              "जिंदगी में परेशानी तभी खत्म होती है जब हम अपने कर्म को पहचानें, ग्रहों के संकेतों को समझें और सही दिशा में कदम उठाएँ।"
-            </p>
           </div>
         </div>
-      </section>
 
-      {/* Daily Horoscope Forecasts Dashboard */}
-      <section className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-cinzel font-bold text-orange-600 mb-4">Daily Horoscope Forecasts</h2>
-            <div className="w-32 h-1 bg-yellow-500 mx-auto mb-6"></div>
-            <p className="text-slate-900 max-w-2xl mx-auto">
-              Select a sign to reveal the celestial messages and energetic shifts for today.
-              Whether it's your Sun, Moon, or Rising sign, the stars have a path for you.
+        {/* 4. Daily Horoscope Forecasts Dashboard */}
+        <div id="daily-horoscope-section" className="bg-white rounded-3xl border border-amber-200 p-5 sm:p-7 shadow-sm space-y-6 scroll-mt-20">
+          <div className="text-center space-y-1.5 max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[11px] font-bold">
+              <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+              <span>दैनिक राशिफल व खगोलीय मार्गदर्शन</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black font-cinzel text-stone-900">
+              दैनिक राशिफल एवं जीवन क्षेत्र विश्लेषण
+            </h2>
+            <p className="text-[16px] text-stone-900">
+              अपनी राशि अथवा मूलांक का चयन करें और करियर, शिक्षा, प्रेम, स्वास्थ्य व वित्त की वर्तमान ऊर्जा स्थिति देखें।
             </p>
           </div>
 
-          {/* Perspective Selector */}
-          <div className="flex justify-center mb-10">
-            <div className="bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 flex flex-wrap justify-center gap-2">
+          {/* Perspective Selector Tabs */}
+          <div className="flex justify-center">
+            <div className="inline-flex bg-amber-50 p-1.5 rounded-2xl border border-amber-300 gap-1.5 shadow-2xs">
               <button
-                onClick={() => setForecastPerspective('Sun')}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${forecastPerspective === 'Sun'
-                  ? 'bg-yellow-300 text-black font-bold shadow-md'
-                  : ' text-orange-600 hover:text-indigo-500 hover:bg-white/5'
-                  }`}
-              >
-                <Sun className={`h-6 w-6 ${forecastPerspective === 'Sun' ? 'fill-black' : ''}`} />
-                Sun Sign Perspective
-              </button>
-              <button
+                type="button"
                 onClick={() => setForecastPerspective('Moon')}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${forecastPerspective === 'Moon'
-                  ? 'bg-yellow-300 text-black font-bold shadow-md'
-                  : ' text-orange-600 hover:text-indigo-500 hover:bg-white/5'
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[16px] font-bold transition cursor-pointer ${forecastPerspective === 'Moon'
+                  ? 'bg-amber-900 text-white shadow-xs'
+                  : 'text-stone-700 hover:text-amber-400 hover:bg-white/60'
                   }`}
               >
-                <Moon className={`h-4 w-4 ${forecastPerspective === 'Moon' ? 'fill-black' : ''}`} />
-                Moon Sign Perspective
+                <Moon className="w-3.5 h-3.5 text-amber-900" />
+                <span>चंद्र राशि (Moon Sign)</span>
               </button>
+
               <button
-                onClick={() => setForecastPerspective('Numerology')}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${forecastPerspective === 'Numerology'
-                  ? 'bg-yellow-300 text-black font-bold shadow-md'
-                  : 'text-orange-600 hover:text-indigo-500 hover:bg-white/5'
+                type="button"
+                onClick={() => setForecastPerspective('Sun')}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[16px] font-bold transition cursor-pointer ${forecastPerspective === 'Sun'
+                  ? 'bg-amber-900 text-white shadow-xs'
+                  : 'text-stone-900 hover:text-amber-900 hover:bg-white/60'
                   }`}
               >
-                <Sparkles className="h-4 w-4 text-amber-300" />
-                Numerology Number Perspective
+                <Sun className="w-3.5 h-3.5 text-amber-900" />
+                <span>सूर्य राशि (Sun Sign)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setForecastPerspective('Numerology')}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[16px] font-bold transition cursor-pointer ${forecastPerspective === 'Numerology'
+                  ? 'bg-amber-900 text-white shadow-xs'
+                  : 'text-stone-900 hover:text-amber-900 hover:bg-white/60'
+                  }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>अंक ज्योतिष (Numerology)</span>
               </button>
             </div>
           </div>
 
-          {/* Sign / Number Grid Icons */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {(forecastPerspective === 'Numerology' ? numerologyNumbers : zodiacSigns).map((item) => (
-              <button
-                key={item.id}
-                onClick={() => fetchSignForecast(item.name)}
-                className={`group flex flex-col items-center p-4 rounded-2xl transition-all duration-300 w-24 h-24 border ${activeForecastSign?.name === item.name
-                  ? 'bg-yellow-300 border-yellow-500 text-black shadow-xl scale-110 z-20'
-                  : 'bg-emerald-100 border-emerald-500 text-black opacity-60 hover:opacity-100'
-                  }`}
-              >
-                <span className="text-3xl mb-1 group-hover:scale-110 transition-transform">{item.symbol}</span>
-                <span className={`text-[12px] font-bold uppercase tracking-widest ${activeForecastSign?.name === item.name ? 'text-black' : 'text-slate-900'}`}>{item.name}</span>
-                <span className={`text-[10px] font-hindi ${activeForecastSign?.name === item.name ? 'text-black' : 'text-slate-900'}`}>{item.sanskrit?.split(' ')[0]}</span>
-              </button>
-            ))}
+          {/* Sign / Number Grid Selector Pills */}
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+            {(forecastPerspective === 'Numerology' ? numerologyNumbers : zodiacSigns).map((item) => {
+              const isSelected = activeForecastSign?.name === item.name;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => fetchSignForecast(item.name)}
+                  className={`flex flex-col items-center justify-center p-2.5 rounded-2xl border transition-all cursor-pointer w-20 sm:w-24 h-20 sm:h-24 ${isSelected
+                    ? 'bg-amber-900 border-amber-950 text-white shadow-md scale-105 ring-2 ring-amber-400/60'
+                    : 'bg-amber-50/50 hover:bg-amber-100/70 border-amber-900 text-stone-900'
+                    }`}
+                >
+                  <span className="text-2xl sm:text-3xl mb-1">{item.symbol}</span>
+                  <span className={`text-[14px] font-bold truncate max-w-full ${isSelected ? 'text-amber-200' : 'text-stone-900'}`}>
+                    {item.name}
+                  </span>
+                  <span className={`text-[14px] opacity-80 truncate max-w-full ${isSelected ? 'text-amber-100' : 'text-stone-900'}`}>
+                    {item.sanskrit?.split(' ')[0]}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Forecast Card Display */}
-          <div className="min-h-[400px] flex items-center justify-center">
+          {/* Detailed Forecast Display Card */}
+          <div className="mt-4">
             {isFetchingForecast ? (
-              <div className="flex flex-col items-center">
-                <Loader className="h-12 w-12 animate-spin text-black mb-4" />
-                <p className="text-black font-medium animate-pulse">Reading the cosmic alignment...</p>
+              <div className="py-16 text-center text-xs text-stone-500 flex flex-col items-center justify-center gap-3">
+                <Loader className="w-8 h-8 animate-spin text-amber-700" />
+                <p className="font-semibold text-stone-700">खगोलीय गोचर और ग्रह स्थिति पढ़ी जा रही है...</p>
               </div>
             ) : activeForecastSign ? (
-              <div className="w-full bg-[#10101a]/90 backdrop-blur-xl rounded-[3rem] p-10 border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden animate-in fade-in zoom-in duration-500">
-                {/* Overlay Effect - Only on card */}
-                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-cyan-500/5 pointer-events-none"></div>
-                {/* Decorative background symbol */}
-                <div className="absolute -bottom-20 -right-20 opacity-[0.03] pointer-events-none">
-                  <span className="text-[20rem] leading-none text-white">
-                    {[...zodiacSigns, ...numerologyNumbers].find(s => s.name === activeForecastSign.name)?.symbol}
-                  </span>
-                </div>
-
-                <div className="relative z-10">
-                  <div className="flex flex-col md:flex-row items-center gap-8 mb-10 pb-8 border-b border-white/5">
-                    <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center text-6xl text-black shadow-md">
-                      {[...zodiacSigns, ...numerologyNumbers].find(s => s.name === activeForecastSign.name)?.symbol}
+              <div className="p-5 sm:p-7 bg-gradient-to-br from-amber-50/60 via-white to-orange-50/40 rounded-3xl border border-amber-300 shadow-xs space-y-6">
+                {/* Header of Active Sign */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-amber-200 pb-5">
+                  <div className="flex items-center gap-4 text-center sm:text-left">
+                    <div className="w-16 h-16 rounded-2xl bg-amber-900 text-amber-200 text-3xl font-bold flex items-center justify-center shadow-md">
+                      {[...zodiacSigns, ...numerologyNumbers].find((s) => s.name === activeForecastSign.name)?.symbol}
                     </div>
-                    <div className="text-center md:text-left">
-                      <h3 className="text-4xl font-cinzel font-bold text-white tracking-tight">
-                        {activeForecastSign.name} | {[...zodiacSigns, ...numerologyNumbers].find(s => s.name === activeForecastSign.name)?.sanskrit?.split(' ')[0]}
-                        <span className="text-gray-400 ml-2 opacity-60">Forecast</span>
-                        <span className={`ml-4 px-3 py-1 rounded-full text-[20px] uppercase tracking-widest bg-yellow-500/20 text-red-500`}>
-                          {activeForecastSign.perspective} {activeForecastSign.perspective === 'Numerology' ? 'Number' : 'Sign'}
-                        </span>
+                    <div>
+                      <h3 className="text-lg sm:text-2xl font-black font-cinzel text-stone-900">
+                        {activeForecastSign.name} (
+                        {[...zodiacSigns, ...numerologyNumbers].find((s) => s.name === activeForecastSign.name)?.sanskrit?.split(' ')[0]}
+                        )
                       </h3>
-                      <p className="text-yellow-500 font-medium tracking-[0.2em] uppercase mt-2">
-                        Today's Horoscope (आज का राशिफल)
+                      <p className="text-[16px] text-stone-900 font-medium">
+                        दृष्टिकोण: <strong className="text-amber-900">{activeForecastSign.perspective}</strong> • आज का विस्तृत राशिफल
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Left & Middle Columns: 6 Detailed Topic Cards */}
-                    <div className="md:col-span-2 space-y-6">
-                      {/* Overview / General Day Explanation */}
-                      <div className="bg-white/5 p-6 rounded-3xl border border-white/10 shadow-lg">
-                        <h4 className="text-[20px] font-bold text-yellow-400 uppercase tracking-[0.2em] mb-3 flex items-center">
-                          <Zap className="h-4 w-4 mr-2 text-yellow-400" />
-                          General Explanation for Day (Overview)
-                        </h4>
-                        <p className="text-[18px] leading-relaxed text-gray-200 font-medium italic">
-                          "{activeForecastSign.overview}"
-                        </p>
-                      </div>
-
-                      {/* 2x2 Grid for Job, Study, Love, Marriage */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div className="group p-5 bg-white/5 border border-white/10 rounded-3xl hover:border-blue-500/30 hover:bg-white/[0.07] transition-all">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="p-2 bg-blue-500/10 rounded-xl"><Briefcase className="h-4 w-4 text-blue-400" /></div>
-                            <span className="font-bold text-yellow-400 uppercase tracking-widest text-[20px]">Job & Career</span>
-                          </div>
-                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.career}</p>
-                        </div>
-
-                        <div className="group p-5 bg-white/5 border border-white/10 rounded-3xl hover:border-purple-500/30 hover:bg-white/[0.07] transition-all">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="p-2 bg-purple-500/10 rounded-xl"><GraduationCap className="h-4 w-4 text-purple-400" /></div>
-                            <span className="font-bold text-yellow-400 uppercase tracking-widest text-[20px]">Study & Education</span>
-                          </div>
-                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.study}</p>
-                        </div>
-
-                        <div className="group p-5 bg-white/5 border border-white/10 rounded-3xl hover:border-red-500/30 hover:bg-white/[0.07] transition-all">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="p-2 bg-red-500/10 rounded-xl"><Heart className="h-4 w-4 text-red-400" /></div>
-                            <span className="font-bold text-yellow-400 uppercase tracking-widest text-[20px]">Love & Romance</span>
-                          </div>
-                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.love}</p>
-                        </div>
-
-                        <div className="group p-5 bg-white/5 border border-white/10 rounded-3xl hover:border-pink-500/30 hover:bg-white/[0.07] transition-all">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="p-2 bg-pink-500/10 rounded-xl"><Users className="h-4 w-4 text-pink-400" /></div>
-                            <span className="font-bold text-yellow-400 uppercase tracking-widest text-[20px]">Marriage & Partnership</span>
-                          </div>
-                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.marriage}</p>
-                        </div>
-                      </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <div className="px-3.5 py-1.5 rounded-xl bg-amber-100 border border-amber-300 text-center">
+                      <span className="text-[14px] uppercase font-bold text-stone-900 block">शुभ अंक</span>
+                      <span className="text-[16px] font-black text-amber-950 font-cinzel">{activeForecastSign.luckyNumber}</span>
                     </div>
-
-                    {/* Right Column: Health, Finance & Key Details */}
-                    <div className="space-y-6">
-                      <div className="p-6 bg-white/5 rounded-3xl space-y-4 border border-white/10">
-                        <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10 shadow-sm">
-                          <span className="text-[20px] font-bold text-yellow-400 uppercase tracking-widest">Lucky Number</span>
-                          <span className="text-[20px] font-bold text-yellow-400">{activeForecastSign.luckyNumber}</span>
-                        </div>
-                        <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10 shadow-sm">
-                          <span className="text-[20px] font-bold text-yellow-400 uppercase tracking-widest">Lucky Color</span>
-                          <span className="text-[20px] font-bold text-gray-200">{activeForecastSign.luckyColor}</span>
-                        </div>
-                      </div>
-
-                      <div className="p-6 bg-white/5 rounded-3xl border border-white/10 space-y-5">
-                        <div>
-                          <h5 className="text-[20px] font-bold text-emerald-400 uppercase tracking-widest mb-2 flex items-center">
-                            <Activity className="h-4 w-4 mr-2 text-emerald-400" />
-                            Health & Wellness
-                          </h5>
-                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.health}</p>
-                        </div>
-
-                        <div className="pt-4 border-t border-white/10">
-                          <h5 className="text-[20px] font-bold text-amber-400 uppercase tracking-widest mb-2 flex items-center">
-                            <DollarSign className="h-4 w-4 mr-2 text-amber-400" />
-                            Finance & Wealth
-                          </h5>
-                          <p className="text-[18px] text-gray-300 leading-relaxed">{activeForecastSign.finance}</p>
-                        </div>
-                      </div>
+                    <div className="px-3.5 py-1.5 rounded-xl bg-amber-100 border border-amber-300 text-center">
+                      <span className="text-[14px] uppercase font-bold text-stone-900 block">शुभ रंग</span>
+                      <span className="text-[16px] font-bold text-amber-950">{activeForecastSign.luckyColor}</span>
                     </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="text-center group cursor-pointer" onClick={() => fetchSignForecast('Aries')}>
-                <div className="w-32 h-32 rounded-full border-2 border-dashed border-white/20 flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:border-yellow-500 transition-all duration-500">
-                  <Star className="h-12 w-12 text-gray-500 group-hover:text-yellow-500 group-hover:rotate-45 transition-all duration-500" />
-                </div>
-                <h3 className="text-2xl font-cinzel font-bold text-orange-200 group-hover:text-yellow-400 transition-colors">Select a Moon or Sun Sign</h3>
-                <p className="text-[16px] text-emerald-200 mt-2 italic">Tap any sign above to unveil its daily stellar forecast</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
 
-      {/* Elements Overview */}
-      <section className="relative z-10 py-12 px-4 sm:px-6 lg:px-8">
-        {/* Floating Nebula Decor */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-yellow-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
-        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none animate-pulse delay-700"></div>
-
-        <div className="max-w-6xl mx-auto flex flex-col">
-          <h2 className="flex flex-wrap items-center justify-center text-3xl font-cinzel font-bold text-center text-orange-600 mb-12">
-            <span className="flex items-center justify-center">The Four</span>
-            <span className="flex items-center justify-center text-yellow-500 ml-2 underline decoration-yellow-500/20 underline-offset-8">Elements</span>
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {Object.entries(elements).map(([element, data], idx) => (
-              <div key={element}
-                className="relative rounded-xl p-6 text-center border border-white/10 bg-[#161623]/80 backdrop-blur-lg overflow-hidden shadow-lg animate-float-slow hover:animate-none group hover:border-yellow-500/30 transition-all"
-                style={{ animationDelay: `${idx * 0.5}s` }}>
-                <div className="relative z-10 flex flex-col items-center justify-center">
-                  <div className={`w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10 group-hover:bg-yellow-500/10 transition-colors`}>
-                    <Zap className="h-8 w-8 text-yellow-500" />
-                  </div>
-                  <h3 className="flex items-center justify-center text-[20px] font-semibold text-yellow-600 mb-2">{element}</h3>
-                  <p className="flex items-center justify-center text-[18px] text-orange-600 mb-3">
-                    {data.signs.join(', ')}
+                {/* Day Overview Banner */}
+                <div className="p-4 bg-white rounded-2xl border border-amber-200 shadow-2xs space-y-1">
+                  <h4 className="text-[14px] font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-amber-900" />
+                    <span>दिन का सामान्य सार (Day Overview)</span>
+                  </h4>
+                  <p className="text-xs sm:text-[18px] text-stone-900 leading-relaxed font-medium italic">
+                    &ldquo;{activeForecastSign.overview}&rdquo;
                   </p>
                 </div>
+
+                {/* 6 Key Life Domain Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                  <div className="p-4 bg-white rounded-2xl border border-amber-200 space-y-1.5 shadow-2xs hover:border-amber-400 transition">
+                    <div className="flex items-center gap-2 text-[14px] font-bold text-stone-900">
+                      <Briefcase className="w-4 h-4 text-blue-600" />
+                      <span>कार्य एवं आजीविका (Career)</span>
+                    </div>
+                    <p className="text-[16px] text-stone-900 leading-relaxed">{activeForecastSign.career}</p>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-2xl border border-amber-200 space-y-1.5 shadow-2xs hover:border-amber-400 transition">
+                    <div className="flex items-center gap-2 text-[14px] font-bold text-stone-900">
+                      <GraduationCap className="w-4 h-4 text-purple-600" />
+                      <span>शिक्षा एवं अध्ययन (Study)</span>
+                    </div>
+                    <p className="text-[16px] text-stone-900 leading-relaxed">{activeForecastSign.study}</p>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-2xl border border-amber-200 space-y-1.5 shadow-2xs hover:border-amber-400 transition">
+                    <div className="flex items-center gap-2 text-[14px] font-bold text-stone-900">
+                      <Heart className="w-4 h-4 text-rose-600" />
+                      <span>प्रेम व संबंध (Love)</span>
+                    </div>
+                    <p className="text-[16px] text-stone-900 leading-relaxed">{activeForecastSign.love}</p>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-2xl border border-amber-200 space-y-1.5 shadow-2xs hover:border-amber-400 transition">
+                    <div className="flex items-center gap-2 text-[14px] font-bold text-stone-900">
+                      <Users className="w-4 h-4 text-pink-600" />
+                      <span>वैवाहिक जीवन (Marriage)</span>
+                    </div>
+                    <p className="text-[16px] text-stone-900 leading-relaxed">{activeForecastSign.marriage}</p>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-2xl border border-amber-200 space-y-1.5 shadow-2xs hover:border-amber-400 transition">
+                    <div className="flex items-center gap-2 text-[14px] font-bold text-stone-900">
+                      <Activity className="w-4 h-4 text-emerald-600" />
+                      <span>स्वास्थ्य एवं आरोग्य (Health)</span>
+                    </div>
+                    <p className="text-[16px] text-stone-900 leading-relaxed">{activeForecastSign.health}</p>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-2xl border border-amber-200 space-y-1.5 shadow-2xs hover:border-amber-400 transition">
+                    <div className="flex items-center gap-2 text-[14px] font-bold text-stone-900">
+                      <DollarSign className="w-4 h-4 text-amber-600" />
+                      <span>धन व आर्थिक स्थिति (Finance)</span>
+                    </div>
+                    <p className="text-[16px] text-stone-900 leading-relaxed">{activeForecastSign.finance}</p>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        {/* 5. The Four Elements Overview (Agni, Prithvi, Vayu, Jal) */}
+        <div className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-yellow-500/10 rounded-3xl border border-amber-200 p-5 sm:p-7 shadow-sm space-y-4">
+          <div className="text-center space-y-1 max-w-xl mx-auto">
+            <span className="text-xs font-bold text-amber-900 uppercase tracking-widest">पंचमहाभूत वर्गीकरण</span>
+            <h3 className="text-lg sm:text-xl font-bold font-cinzel text-stone-900">
+              चार राशितत्व: अग्नि, पृथ्वी, वायु एवं जल
+            </h3>
+            <p className="text-[16px] text-stone-900">
+              प्रत्येक राशि का मूल स्वभाव उसके अधिष्ठाता तत्व से निर्धारित होता है।
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-2">
+            {Object.entries(elements).map(([element, data]) => (
+              <div
+                key={element}
+                className="bg-white rounded-2xl p-4 border border-amber-200 text-center space-y-2 shadow-2xs hover:border-amber-400 transition"
+              >
+                <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-900 font-bold flex items-center justify-center mx-auto text-lg">
+                  {element === 'Fire' ? '🔥' : element === 'Earth' ? '🌍' : element === 'Air' ? '💨' : '🌊'}
+                </div>
+                <h4 className="font-bold text-stone-900 text-sm">
+                  {element === 'Fire' ? 'अग्नि तत्व (Fire)' : element === 'Earth' ? 'पृथ्वी तत्व (Earth)' : element === 'Air' ? 'वायु तत्व (Air)' : 'जल तत्व (Water)'}
+                </h4>
+                <p className="text-[16px] text-amber-900 font-semibold">{data.signs.join(', ')}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* Zodiac Grid */}
-      <section className="relative z-10 py-12 px-4 sm:px-6 lg:px-8" >
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* 6. All 12 Zodiac Signs Grid Cards */}
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <span className="text-xs font-bold text-amber-900 uppercase tracking-wider">समस्त 12 राशियां</span>
+              <h3 className="text-lg sm:text-xl font-bold font-cinzel text-stone-900">
+                वैदिक राशियां एवं चारित्रिक लक्षण (12 Celestial Signs)
+              </h3>
+            </div>
+            <p className="text-[14px] text-stone-900">किसी भी राशि पर क्लिक कर विस्तृत खगोलीय रूपरेखा देखें</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {zodiacSigns.map((sign) => (
               <button
                 key={sign.id}
+                type="button"
                 onClick={() => setSelectedSign(sign)}
-                className="bg-rose-50 relative rounded-2xl p-8 text-center group"
+                className="group p-5 rounded-2xl border border-amber-900 bg-yellow-200 hover:bg-amber-50/60 hover:border-amber-400 text-left transition-all duration-300 shadow-2xs hover:shadow-md cursor-pointer flex flex-col justify-between"
               >
-                {/* Overlay Effect - Only on card */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative z-10 flex flex-col items-center justify-center">
-                  <div className="flex items-center justify-center text-6xl mb-4 transform group-hover:scale-125 transition-transform duration-500">{sign.symbol}</div>
-                  <h3 className="flex items-center justify-center text-[22px] font-cinzel font-bold text-orange-600 mb-1 group-hover:text-yellow-400 transition-colors">
-                    {sign.name} | {sign.sanskrit.split(' ')[0]}
-                  </h3>
-                  <p className="flex items-center justify-center text-[20px] text-emerald-400 mb-2">{sign.dates}</p>
-                  <div className={`flex items-center justify-center px-4 py-1 bg-white/10 text-black text-[18px] font-bold uppercase tracking-widest rounded-full shadow-sm group-hover:bg-yellow-500 group-hover:text-black transition-colors`}>
-                    {sign.element}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">{sign.symbol}</span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-950 border border-amber-300">
+                      {sign.element}
+                    </span>
                   </div>
+
+                  <h4 className="font-cinzel font-bold text-base text-stone-900 group-hover:text-amber-900 transition-colors">
+                    {sign.name} • {sign.sanskrit.split(' ')[0]}
+                  </h4>
+                  <p className="text-[14px] text-stone-900 font-medium mt-0.5">{sign.dates}</p>
+
+                  <p className="text-[16px] text-stone-900 line-clamp-2 mt-2 leading-relaxed">
+                    {sign.description}
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-amber-100 flex items-center justify-between text-[14px] font-bold text-amber-900">
+                  <span>स्वामी: {sign.rulingPlanet}</span>
+                  <span className="flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+                    <span>विवरण</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </span>
                 </div>
               </button>
             ))}
           </div>
         </div>
-      </section >
 
-      {/* Sign Detail Modal */}
-      {
-        selectedSign && (
-          <div className="fixed inset-0 bg-[#05050a]/90 flex items-center justify-center p-4 z-50 animate-in fade-in duration-300 backdrop-blur-md">
-            <div className="relative rounded-[2.5rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.8)] bg-[#10101a]/95 overflow-hidden">
-              {/* Overlay Effect - Only in modal */}
-              <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent pointer-events-none"></div>
-
-              <div className="relative z-10 p-10">
-                <div className="flex justify-between items-start mb-10">
-                  <div className="flex flex-col items-center sm:items-start gap-2">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center text-5xl text-black shadow-lg">
-                      {selectedSign.symbol}
-                    </div>
-                    <h2 className="text-4xl font-cinzel font-bold text-white mt-4">
-                      {selectedSign.name} | {selectedSign.sanskrit.split(' ')[0]}
-                    </h2>
-                    <p className="text-gray-500 font-medium tracking-[0.2em] uppercase text-xs">
-                      Celestial Profile & Wisdom
+        {/* 7. Sign Detail Modal */}
+        {selectedSign && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="relative bg-[#fffdfa] border-2 border-amber-400 rounded-3xl overflow-hidden shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200">
+              {/* Header */}
+              <div className="px-6 py-4 bg-gradient-to-r from-red-950 via-stone-900 to-amber-950 border-b border-amber-500/30 text-white flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{selectedSign.symbol}</span>
+                  <div>
+                    <h3 className="text-lg font-bold font-cinzel text-amber-100">
+                      {selectedSign.name} | {selectedSign.sanskrit}
+                    </h3>
+                    <p className="text-xs text-amber-200/80">
+                      तत्व: {selectedSign.element} • स्वामी: {selectedSign.rulingPlanet}
                     </p>
                   </div>
-                  <button
-                    onClick={() => setSelectedSign(null)}
-                    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-yellow-500 hover:text-black transition-all duration-300"
-                  >
-                    ×
-                  </button>
                 </div>
 
-                <div className="grid grid-cols-1 gap-8">
-                  <div className="bg-white/5 p-8 rounded-3xl space-y-4 border border-white/5">
-                    <h3 className="text-[20px] font-bold text-yellow-500 uppercase tracking-widest flex items-center">
-                      <Star className="h-4 w-4 mr-2" />
-                      Essence & Overview
-                    </h3>
-                    <p className="text-[18px] leading-relaxed text-gray-200 font-medium italic">
-                      "{selectedSign.description}"
-                    </p>
+                <button
+                  type="button"
+                  onClick={() => setSelectedSign(null)}
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer"
+                  title="Close"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-6 overflow-y-auto space-y-5 text-xs text-stone-700">
+                <div className="p-4 bg-amber-50/70 rounded-2xl border border-amber-200 space-y-1">
+                  <span className="text-[11px] uppercase font-bold text-amber-900">राशि स्वभाव एवं परिचय</span>
+                  <p className="text-xs sm:text-sm text-stone-800 leading-relaxed font-medium">
+                    &ldquo;{selectedSign.description}&rdquo;
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-3.5 bg-white rounded-xl border border-amber-200">
+                    <span className="font-bold text-stone-500 block text-[10px] uppercase">अनुकूल राशियां (Compatibility)</span>
+                    <span className="font-bold text-stone-900 mt-1 block">
+                      {selectedSign.compatibility?.join(', ') || 'Various'}
+                    </span>
+                  </div>
+                  <div className="p-3.5 bg-white rounded-xl border border-amber-200">
+                    <span className="font-bold text-stone-500 block text-[10px] uppercase">अवधि (Solar Transit Dates)</span>
+                    <span className="font-bold text-stone-900 mt-1 block">{selectedSign.dates}</span>
+                  </div>
+                </div>
+
+                {/* Traits */}
+                <div>
+                  <span className="font-bold text-stone-800 block mb-2">मुख्य गुण व विशेषताएं (Key Traits):</span>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSign.traits.map((t, idx) => (
+                      <span key={idx} className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Domains */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="p-3.5 bg-white rounded-xl border border-amber-200 space-y-1">
+                    <span className="font-bold text-blue-900 flex items-center gap-1">
+                      <Briefcase className="w-3.5 h-3.5 text-blue-600" />
+                      <span>करियर (Career)</span>
+                    </span>
+                    <p className="text-stone-600 leading-relaxed">{selectedSign.career}</p>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl shadow-sm">
-                      <span className="block text-[20px] font-bold text-yellow-400 uppercase tracking-widest mb-1">Elemental Power</span>
-                      <span className="text-white font-bold text-[18px]">{selectedSign.element}</span>
-                    </div>
-                    <div className="p-4 bg-white/5 border border-white/5 rounded-2xl shadow-sm">
-                      <span className="block text-[20px] font-bold text-yellow-400 uppercase tracking-widest mb-1">Ruling Celestial Body</span>
-                      <span className="text-white font-bold text-[18px]">{selectedSign.rulingPlanet}</span>
-                    </div>
+                  <div className="p-3.5 bg-white rounded-xl border border-amber-200 space-y-1">
+                    <span className="font-bold text-rose-900 flex items-center gap-1">
+                      <Heart className="w-3.5 h-3.5 text-rose-600" />
+                      <span>प्रेम व संबंध (Love)</span>
+                    </span>
+                    <p className="text-stone-600 leading-relaxed">{selectedSign.love}</p>
                   </div>
 
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-[20px] font-bold text-yellow-400 uppercase tracking-widest mb-4">Core Vibrations (Traits)</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedSign.traits.map((trait, index) => (
-                          <span key={index} className="px-4 py-2 bg-yellow-500/10 text-[18px] text-emerald-500 border border-yellow-500/20 text-xs rounded-full font-bold tracking-wide">
-                            {trait}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-white/5">
-                      <div className="space-y-3">
-                        <h4 className="text-[20px] font-bold text-red-400 uppercase tracking-widest flex items-center">
-                          <Heart className="h-4 w-4 mr-2" /> Love & Union
-                        </h4>
-                        <p className="text-[18px] text-gray-300 leading-relaxed font-medium">{selectedSign.love}</p>
-                      </div>
-                      <div className="space-y-3">
-                        <h4 className="text-[20px] font-bold text-cyan-400 uppercase tracking-widest flex items-center">
-                          <Briefcase className="h-4 w-4 mr-2" /> Career & Purpose
-                        </h4>
-                        <p className="text-[18px] text-gray-300 leading-relaxed font-medium">{selectedSign.career}</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3 pt-6 border-t border-white/5">
-                      <h4 className="text-[20px] font-bold text-green-400 uppercase tracking-widest">Vitality & Health</h4>
-                      <p className="text-[18px] text-gray-300 leading-relaxed font-medium">{selectedSign.health}</p>
-                    </div>
-                  </div>
-
-                  <div className="pt-8 text-center">
-                    <button
-                      onClick={() => setSelectedSign(null)}
-                      className="w-full py-4 bg-yellow-500 text-black rounded-2xl font-bold tracking-[0.2em] uppercase hover:bg-yellow-400 transition-all duration-500 transform hover:-translate-y-1"
-                    >
-                      Close Celestial Map
-                    </button>
+                  <div className="p-3.5 bg-white rounded-xl border border-amber-200 space-y-1">
+                    <span className="font-bold text-emerald-900 flex items-center gap-1">
+                      <Activity className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>स्वास्थ्य (Health)</span>
+                    </span>
+                    <p className="text-stone-600 leading-relaxed">{selectedSign.health}</p>
                   </div>
                 </div>
               </div>
+
+              {/* Footer */}
+              <div className="p-4 bg-amber-50/80 border-t border-amber-200 flex items-center justify-between shrink-0">
+                <Link
+                  to="/astrologers"
+                  onClick={() => setSelectedSign(null)}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold text-xs uppercase tracking-wider shadow hover:scale-105 transition"
+                >
+                  इस राशि हेतु विशेषज्ञ से बात करें
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedSign(null)}
+                  className="px-4 py-2 rounded-xl bg-white hover:bg-stone-100 text-stone-800 font-bold text-xs border border-amber-300 transition cursor-pointer"
+                >
+                  बंद करें (Close)
+                </button>
+              </div>
             </div>
           </div>
-        )
-      }
+        )}
 
-      {/* CTA Section */}
-      <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
-          <div className="relative rounded-2xl p-12 border border-white/10 shadow-[0_35px_100px_rgba(0,0,0,0.4)] bg-[#10101a]/80 backdrop-blur-lg overflow-hidden">
-            {/* Overlay Effect - Only in CTA card */}
-            <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-cyan-500/5 pointer-events-none"></div>
-            <div className="relative z-10 flex flex-col items-center justify-center">
-              <h2 className="flex flex-wrap items-center justify-center text-3xl font-cinzel font-bold text-white mb-4">
-                <span className="flex items-center justify-center">Discover Your</span>
-                <span className="flex items-center justify-center text-yellow-500 ml-2 underline decoration-yellow-500/20 underline-offset-8">Cosmic Blueprint</span>
-              </h2>
-              <p className="flex items-center justify-center text-xl text-yellow-400 mb-8">
-                Get a personalized reading based on your unique zodiac profile and birth chart.
+        {/* 8. Personalized Consultation Footer CTA Card */}
+        <div className="rounded-3xl bg-gradient-to-r from-red-950 via-stone-900 to-amber-950 text-white p-6 sm:p-8 lg:p-10 shadow-xl border border-amber-500/30 flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="space-y-3 text-center lg:text-left max-w-2xl">
+            <span className="text-xs font-bold text-amber-300 uppercase tracking-widest flex items-center justify-center lg:justify-start gap-1.5">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              व्यक्तिगत खगोलीय मार्गदर्शन
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-extrabold font-cinzel text-amber-100">
+              अपनी जन्म कुंडली व राशि अनुसार संपूर्ण जीवन फलादेश प्राप्त करें
+            </h3>
+
+            {/* Vedic Slogan Flex Box */}
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-amber-500/15 border border-amber-400/30 backdrop-blur-xs text-amber-200">
+              <span className="text-base sm:text-lg">🕉️</span>
+              <p className="text-xs sm:text-sm font-semibold tracking-wide text-amber-100 italic leading-snug">
+                &ldquo;जिंदगी में परेशानी तभी खत्म होती है जब हम अपने कर्म को पहचानें, ग्रहों के संकेतों को समझें और सही दिशा में कदम उठाएँ।&rdquo;
               </p>
-              <a
-                href="/book-appointment"
-                className="inline-flex items-center px-8 py-4 bg-yellow-500 text-black font-semibold rounded-xl hover:bg-yellow-400 hover:shadow-[0_15px_40px_rgba(234,179,8,0.3)] transition-all duration-500 transform hover:scale-105"
-              >
-                <Star className="h-5 w-5 mr-2" />
-                Get Personal Reading
-              </a>
             </div>
+
+            <p className="text-xs sm:text-sm text-amber-200/80 leading-relaxed font-normal">
+              हमारे वरिष्ठ वैदिक ज्योतिषी आपकी जन्म कुंडली, महादशा और गोचर का सूक्ष्म विश्लेषण कर करियर, विवाह और धन से जुड़ी सटीक दिशा प्रदान करते हैं।
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+            <Link
+              to="/astrologers"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl shadow-amber-500/20 hover:scale-105 transition"
+            >
+              <PhoneCall className="w-4 h-4 text-orange-600" />
+              <span>ज्योतिषी से बात करें</span>
+            </Link>
+
+            <Link
+              to="/booking"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/20 transition"
+            >
+              <Calendar className="w-4 h-4 text-amber-300" />
+              <span>परामर्श बुक करें</span>
+            </Link>
           </div>
         </div>
-      </section>
-    </div >
+
+      </main>
+    </div>
   );
 };
 

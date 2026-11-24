@@ -24,7 +24,11 @@ const D30TrimshamshaTranslation = require('../models/D30TrimshamshaTranslation')
 const D40KhavedamshaTranslation = require('../models/D40KhavedamshaTranslation');
 const D45AkshavedamshaTranslation = require('../models/D45AkshavedamshaTranslation');
 const D60ShashtiamshaTranslation = require('../models/D60ShashtiamshaTranslation');
+const MatchmakingTranslation = require('../models/MatchmakingTranslation');
+const SunSignCompatibilityTranslation = require('../models/SunSignCompatibilityTranslation');
 const { defaultTranslations } = require('../services/astroTranslationSeeder');
+const { defaultMatchmakingData } = require('../services/matchmakingTranslationSeeder');
+const { sunSignSeedData } = require('../services/sunSignTranslationSeeder');
 const https = require('https');
 
 // Highly resilient Google Translate fallback when Gemini free tier quota (429) is exhausted
@@ -47,6 +51,74 @@ const translateFallback = (text, targetLang) => {
     }).on('error', () => resolve(text));
   });
 };
+
+// GET /api/translate/matchmaking/:lang
+router.get('/matchmaking/:lang', async (req, res) => {
+  try {
+    const lang = (req.params.lang || 'en').toLowerCase().trim();
+
+    if (lang === 'en') {
+      return res.json({ success: true, lang: 'en', data: null });
+    }
+
+    // 1. Try finding in MongoDB
+    let translation = await MatchmakingTranslation.findOne({ lang }).lean();
+
+    // 2. If not found in DB, seed from defaultMatchmakingData and save into DB
+    if (!translation && defaultMatchmakingData[lang]) {
+      const seedData = defaultMatchmakingData[lang];
+      translation = seedData;
+      MatchmakingTranslation.findOneAndUpdate({ lang }, seedData, { upsert: true }).catch(() => {});
+    }
+
+    if (!translation) {
+      return res.status(404).json({ success: false, message: `No matchmaking translations found for language: ${lang}` });
+    }
+
+    return res.json({
+      success: true,
+      lang,
+      data: translation
+    });
+  } catch (error) {
+    console.error('Error fetching matchmaking translations from DB:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// GET /api/translate/sun-sign-compatibility/:lang
+router.get('/sun-sign-compatibility/:lang', async (req, res) => {
+  try {
+    const lang = (req.params.lang || 'en').toLowerCase().trim();
+
+    if (lang === 'en') {
+      return res.json({ success: true, lang: 'en', data: null });
+    }
+
+    // 1. Try finding in MongoDB
+    let translation = await SunSignCompatibilityTranslation.findOne({ lang }).lean();
+
+    // 2. Fallback to seed data and upsert to MongoDB
+    if (!translation && sunSignSeedData[lang]) {
+      const seedData = sunSignSeedData[lang];
+      translation = seedData;
+      SunSignCompatibilityTranslation.findOneAndUpdate({ lang }, seedData, { upsert: true }).catch(() => {});
+    }
+
+    if (!translation) {
+      return res.status(404).json({ success: false, message: `No Sun Sign compatibility translations found for language: ${lang}` });
+    }
+
+    return res.json({
+      success: true,
+      lang,
+      data: translation
+    });
+  } catch (error) {
+    console.error('Error fetching sun sign compatibility translations from DB:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 // GET /api/translate/astro-dictionary/:lang
 router.get('/astro-dictionary/:lang', async (req, res) => {

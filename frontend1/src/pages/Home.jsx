@@ -168,15 +168,13 @@ const heroShortcutItems = [
   },
   {
     label: 'Match Making',
-    path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true&hide_search=true`,
-    icon: HeartHandshake,
-    isExternal: true
+    path: '/kundali-matching',
+    icon: HeartHandshake
   },
   {
     label: 'Love Calculator',
-    path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true&hide_search=true`,
-    icon: Heart,
-    isExternal: true
+    path: '/love-calculator',
+    icon: Heart
   },
   {
     label: 'Numerology',
@@ -190,9 +188,8 @@ const heroShortcutItems = [
   },
   {
     label: 'Face Reading',
-    path: `${VEDIC_ASTROLOGY_BASE_URL}/?face_reading=true&hide_search=true`,
-    icon: User,
-    isExternal: true
+    path: '/face-reading',
+    icon: User
   },
   {
     label: 'Palmistry',
@@ -281,8 +278,8 @@ const exploreServices = [
   { name: 'Astrologers', path: '/astrologers', icon: Users, color: 'from-purple-500 to-pink-600' },
   { name: 'Consult Astrologer', path: '/booking', icon: CalendarClock, color: 'from-emerald-500 to-teal-600' },
   { name: 'Kundali', path: '/kundali', icon: ScrollText, color: 'from-amber-500 to-orange-600' },
-  { name: 'Kundali Matching', path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true&hide_search=true`, icon: HeartHandshake, color: 'from-rose-500 to-pink-600', isExternal: true },
-  { name: 'Love Calculator', path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true&hide_search=true`, icon: Heart, color: 'from-red-500 to-rose-600', isExternal: true },
+  { name: 'Kundali Matching', path: '/kundali-matching', icon: HeartHandshake, color: 'from-rose-500 to-pink-600' },
+  { name: 'Love Calculator', path: '/love-calculator', icon: Heart, color: 'from-red-500 to-rose-600' },
   { name: 'Relationship Horoscope', path: `${VEDIC_ASTROLOGY_BASE_URL}/?compatibility-hub=true&calculator=weekly-relationship&hide_search=true`, icon: HeartHandshake, color: 'from-fuchsia-500 to-pink-600', isExternal: true },
   { name: 'Advanced Muhurt', path: `${VEDIC_ASTROLOGY_BASE_URL}/?advanced_muhurt=true&hide_search=true`, icon: Calendar, color: 'from-orange-500 to-amber-600', isExternal: true },
   { name: 'Ask Prashna', path: `${VEDIC_ASTROLOGY_BASE_URL}/?prashna=true&hide_search=true`, icon: MessageCircle, color: 'from-purple-500 to-indigo-600', isExternal: true },
@@ -295,7 +292,7 @@ const exploreServices = [
   { name: 'Numerology', path: '/numerology', icon: Calculator, color: 'from-teal-500 to-cyan-600' },
   { name: 'Tarot Reading', path: '/tarot-reading', icon: Sparkles, color: 'from-purple-500 to-indigo-600' },
   { name: 'Palmistry', path: '/palmistry', icon: Hand, color: 'from-fuchsia-500 to-purple-600' },
-  { name: 'Face Reading', path: `${VEDIC_ASTROLOGY_BASE_URL}/?face_reading=true&hide_search=true`, icon: User, color: 'from-rose-500 to-pink-600', isExternal: true },
+  { name: 'Face Reading', path: '/face-reading', icon: User, color: 'from-rose-500 to-pink-600' },
   { name: 'Vastu Shastra', path: '/vastu-shastra', icon: Building2, color: 'from-orange-500 to-amber-600' },
   { name: 'Garg Shutra', path: `${VEDIC_ASTROLOGY_BASE_URL}/?garga=true&hide_search=true`, icon: BookOpen, color: 'from-indigo-500 to-purple-600', isExternal: true },
   { name: 'Zodiac Signs', path: '/zodiac', icon: MoonStar, color: 'from-violet-500 to-purple-600' },
@@ -382,8 +379,8 @@ const consultationSlogans = [
 
 const consultationButtons = [
   {
-    type: 'external',
-    path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true`,
+    type: 'internal',
+    path: '/kundali-matching',
     label: 'गुण मिलने के बाद भी शादी में दोष क्यों ?'
   },
   {
@@ -417,8 +414,8 @@ const consultationButtons = [
     label: 'Check Your Love Compatibility!'
   },
   {
-    type: 'external',
-    path: `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true`,
+    type: 'internal',
+    path: '/kundali-matching',
     label: 'Match Kundali For Free'
   },
   {
@@ -834,7 +831,7 @@ const Home = () => {
       sessionStorage.setItem('lastGeneratedKundali', JSON.stringify(submissionData));
 
       if (activeTarget === 'matchmaking') {
-        window.location.href = `${VEDIC_ASTROLOGY_BASE_URL}/?matchmaking=true&hide_search=true`;
+        navigate('/kundali-matching');
       } else {
         // Redirect to KundaliHub
         navigate('/kundali-hub', { state: { birthData: submissionData } });

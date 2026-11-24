@@ -193,7 +193,18 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    return {
+      isAuthenticated: false,
+      user: null,
+      token: null,
+      loading: false,
+      error: null,
+      login: async () => ({ success: false, error: 'AuthProvider not found' }),
+      register: async () => ({ success: false, error: 'AuthProvider not found' }),
+      logout: () => {},
+      updateUser: () => {},
+      clearError: () => {}
+    };
   }
   return context;
 };

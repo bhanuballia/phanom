@@ -331,6 +331,17 @@ export const palmistryAPI = {
   getMySubmissions: () => api.get('/palmistry/my-submissions')
 };
 
+// Face Reading API
+export const faceReadingAPI = {
+  submitFaceReading: (formData) => {
+    return api.post('/palmistry/submit', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
+};
+
 export default api;
 // Live Chat API
 export const liveChatAPI = {
@@ -359,3 +370,34 @@ export const walletAPI = {
   verifyPayment: (data) => api.post('/wallet/verify', data),
   deduct: (data) => api.post('/wallet/deduct', data)
 };
+
+
+// Vastu Analysis API caller (Python Astro Engine)
+export async function fetchVastuAnalysis(payload) {
+  const url = `${PYTHON_ASTRO_URL}/api/vastu/analyze`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || 'Failed to fetch Vastu Analysis');
+  }
+  return res.json();
+}
+
+// Weekly Relationship Horoscope API caller (Python Astro Engine)
+export async function fetchWeeklyRelationshipHoroscope(payload) {
+  const url = `${API_BASE_URL}/astrology/compatibility/weekly-horoscope`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || 'Failed to fetch Weekly Relationship Horoscope');
+  }
+  return res.json();
+}

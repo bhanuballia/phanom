@@ -424,6 +424,38 @@ app.get('/', (req, res) => {
 });
 app.use('/api/auth', authRoutes);
 app.use('/api/appointments', appointmentRoutes);
+// Proxy /api/muhurt, /api/matchmaking, /api/astrology, /api/numerology, /api/report to Python Astrology Engine (Port 8000 / PYTHON_ASTRO_URL)
+const PYTHON_ASTRO_URL = process.env.PYTHON_ASTRO_URL || 'http://localhost:8000';
+
+const createPythonProxy = (prefix, timeout = 30000) => async (req, res) => {
+  try {
+    const axios = require('axios');
+    const targetUrl = `${PYTHON_ASTRO_URL}${prefix}${req.url}`;
+    const response = await axios({
+      method: req.method,
+      url: targetUrl,
+      data: req.body,
+      params: req.query,
+      headers: { 'Content-Type': 'application/json' },
+      timeout,
+    });
+    return res.status(response.status).json(response.data);
+  } catch (err) {
+    console.error(`Proxy ${prefix}${req.url} error:`, err.message);
+    const status = err.response?.status || 502;
+    const data = err.response?.data || { error: 'Astro engine error', details: err.message };
+    return res.status(status).json(data);
+  }
+};
+
+app.use('/api/muhurt', createPythonProxy('/api/muhurt', 15000));
+app.use('/api/matchmaking', createPythonProxy('/api/matchmaking', 30000));
+app.use('/api/astrology', createPythonProxy('/api/astrology', 30000));
+// 25-Page Hybrid Numerology Life Book Route
+app.use('/api/numerology', require('./routes/numerologyHybrid'));
+app.use('/api/numerology', createPythonProxy('/api/numerology', 30000));
+app.use('/api/report', createPythonProxy('/api/report', 45000));
+
 app.use('/api/kundali', kundaliRoutes);
 app.use('/api/kundali-matching', kundaliMatchingRoutes);
 app.use('/api/admin', adminRoutes);

@@ -11,8 +11,15 @@ import ZodiacSigns from './pages/ZodiacSigns';
 import ContactUs from './pages/ContactUs';
 import Kundali from './pages/Kundali';
 import KundaliMatching from './pages/KundaliMatching';
+import MatchmakingPage from './pages/MatchmakingPage';
+import LoveCalculatorPage from './pages/LoveCalculatorPage';
 import DailyCalendar from './pages/DailyCalendar';
+import DailyPanchangPage from './pages/DailyPanchangPage';
+import MonthlyCalendar from './pages/MonthlyCalendar';
 import MonthlyPanchang from './pages/MonthlyPanchang';
+import RelationshipHoroscopePage from './pages/RelationshipHoroscopePage';
+import AdvanceMuhurtPage from './pages/AdvanceMuhurtPage';
+import AdvancedNakshatraPage from './pages/AdvancedNakshatraPage';
 import AdminDashboard from './Admin/AdminDashboard';
 import AstrologerManagement from './Admin/AstrologerManagement';
 import AddAstrologer from './Admin/AddAstrologer';
@@ -40,7 +47,10 @@ import KundaliMatchingBackgroundUpload from './Admin/KundaliMatchingBackgroundUp
 import HomePageBackgroundUpload from './Admin/HomePageBackgroundUpload';
 import LalKitab from './pages/LalKitab';
 import Numerology from './pages/Numerology';
+import NumerologyDashboardPage from './components/NumerologyDashboardPage';
 import Palmistry from './pages/Palmistry';
+import PalmistryCalculator from './pages/PalmistryCalculator';
+import FaceReadingPage from './pages/FaceReadingPage';
 import VastuShastra from './pages/VastuShastra';
 import AIAstrologer from './pages/AIAstrologer';
 import LiveChat from './pages/LiveChat';
@@ -211,19 +221,51 @@ function App() {
 
             <Route
               path="/kundali-matching"
-              element={
-                <ProtectedRoute>
-                  <KundaliMatching />
-                </ProtectedRoute>
-              }
+              element={<MatchmakingPage />}
+            />
+            <Route
+              path="/matchmaking"
+              element={<MatchmakingPage />}
+            />
+            <Route
+              path="/match-making"
+              element={<MatchmakingPage />}
+            />
+            <Route
+              path="/love-calculator"
+              element={<LoveCalculatorPage />}
+            />
+            <Route
+              path="/compatibility-hub"
+              element={<LoveCalculatorPage />}
             />
             <Route
               path="/daily-calendar"
               element={<DailyCalendar />}
             />
             <Route
+              path="/monthly-calendar"
+              element={<MonthlyCalendar />}
+            />
+            <Route
+              path="/daily-panchang"
+              element={<DailyPanchangPage />}
+            />
+            <Route
               path="/monthly-panchang"
               element={<MonthlyPanchang />}
+            />
+            <Route
+              path="/relationship-horoscope"
+              element={<RelationshipHoroscopePage />}
+            />
+            <Route
+              path="/advance-muhurt"
+              element={<AdvanceMuhurtPage />}
+            />
+            <Route
+              path="/advanced-nakshatra"
+              element={<AdvancedNakshatraPage />}
             />
             <Route
               path="/lal-kitab"
@@ -241,6 +283,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/numerology-dashboard"
+              element={
+                <ProtectedRoute>
+                  <NumerologyDashboardPage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/contact" element={<ContactUs />} />
             <Route
               path="/booking"
@@ -254,7 +304,31 @@ function App() {
               path="/palmistry"
               element={
                 <ProtectedRoute>
+                  <PalmistryCalculator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/palmistry-calculator"
+              element={
+                <ProtectedRoute>
+                  <PalmistryCalculator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/palmistry-consult"
+              element={
+                <ProtectedRoute>
                   <Palmistry />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/face-reading"
+              element={
+                <ProtectedRoute>
+                  <FaceReadingPage />
                 </ProtectedRoute>
               }
             />

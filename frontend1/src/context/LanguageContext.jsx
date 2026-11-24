@@ -148,7 +148,17 @@ export const LanguageProvider = ({ children }) => {
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    return {
+      currentLang: 'en',
+      currentLangObj: { code: 'en', name: 'English', native: 'English' },
+      changeLanguage: () => {},
+      supportedLanguages: [
+        { code: 'en', name: 'English', native: 'English' },
+        { code: 'hi', name: 'Hindi', native: 'हिन्दी' }
+      ],
+      t: (key, fallback) => fallback || key,
+      isTranslating: false
+    };
   }
   return context;
 };
