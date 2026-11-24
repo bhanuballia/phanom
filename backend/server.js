@@ -425,7 +425,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/appointments', appointmentRoutes);
 // Proxy /api/muhurt, /api/matchmaking, /api/astrology, /api/numerology, /api/report to Python Astrology Engine (Port 8000 / PYTHON_ASTRO_URL)
-const PYTHON_ASTRO_URL = process.env.PYTHON_ASTRO_URL || 'http://localhost:8000';
+const PYTHON_ASTRO_URL = process.env.PYTHON_ASTRO_URL || (process.env.NODE_ENV === 'production' ? 'https://pinak-bdvt.onrender.com' : 'http://localhost:8000');
 
 const createPythonProxy = (prefix, timeout = 30000) => async (req, res) => {
   try {

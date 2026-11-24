@@ -44,7 +44,7 @@ router.post('/calculate-signs', kundaliController.calculateZodiacSigns);
 router.post('/daily-horoscope', kundaliController.getDailyHoroscope);
 
 // ── Reverse Proxy / Bridge to Python Astrology Engine (Port 8000 / PYTHON_ASTRO_URL) ──
-const PYTHON_ASTRO_URL = process.env.PYTHON_ASTRO_URL || 'http://localhost:8000';
+const PYTHON_ASTRO_URL = process.env.PYTHON_ASTRO_URL || (process.env.NODE_ENV === 'production' ? 'https://pinak-bdvt.onrender.com' : 'http://localhost:8000');
 
 // Fallback generator when Python backend is offline / unreachable
 const generateFallbackKundaliData = (body = {}) => {
