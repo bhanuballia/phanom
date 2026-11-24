@@ -457,6 +457,21 @@ app.use('/api/numerology', createPythonProxy('/api/numerology', 30000));
 app.use('/api/report', createPythonProxy('/api/report', 45000));
 
 app.use('/api/kundali', kundaliRoutes);
+
+// Panchang, Locations and Transit routes (supports both direct and /kundali paths)
+app.use('/api/panchang', (req, res, next) => {
+  req.url = '/panchang' + req.url;
+  return kundaliRoutes(req, res, next);
+});
+app.use('/api/locations', (req, res, next) => {
+  req.url = '/locations' + req.url;
+  return kundaliRoutes(req, res, next);
+});
+app.use('/api/transit', (req, res, next) => {
+  req.url = '/transit' + req.url;
+  return kundaliRoutes(req, res, next);
+});
+
 app.use('/api/kundali-matching', kundaliMatchingRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/chatbot', chatbotRoutes);
