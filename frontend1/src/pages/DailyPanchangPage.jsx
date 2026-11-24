@@ -314,6 +314,12 @@ export const DailyPanchangPage = () => {
 
 
 const generateClientFallbackPanchang = (targetDate, coords) => {
+  const dateStr = query.date;
+  let targetDate = new Date();
+  if (dateStr) {
+    const parsed = new Date(dateStr);
+    if (!isNaN(parsed.getTime())) targetDate = parsed;
+  }
   const d = targetDate.getDate();
   const m = targetDate.getMonth() + 1;
   const y = targetDate.getFullYear();
@@ -321,53 +327,73 @@ const generateClientFallbackPanchang = (targetDate, coords) => {
   const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const dayName = weekdays[targetDate.getDay()];
 
-  const tithisHindi = ['प्रतिपदा', 'द्वितीया', 'तृतीया', 'चतुर्थी', 'पंचमी', 'षष्ठी', 'सप्तमी', 'अष्टमी', 'नवमी', 'दशमी', 'एकादशी', 'द्वादशी', 'त्रयोदशी', 'चतुर्दशी', 'पूर्णिमा / अमावस्या'];
-  const nakshatrasHindi = ['अश्विनी', 'भरणी', 'कृत्तिका', 'रोहिणी', 'मृगशिरा', 'आर्द्रा', 'पुनर्वसु', 'पुष्य', 'अश्लेषा', 'मघा', 'पूर्वाफाल्गुनी', 'उत्तराफाल्गुनी', 'हस्त', 'चित्रा', 'स्वाति', 'विशाखा', 'अनुराधा', 'ज्येष्ठा', 'मूल', 'पूर्वाषाढ़ा', 'उत्तराषाढ़ा', 'श्रवण', 'धनिष्ठा', 'शतभिषा', 'पूर्वाभाद्रपद', 'उत्तराभाद्रपद', 'रेवती'];
-  const yogasHindi = ['विष्कम्भ', 'प्रीति', 'आयुष्मान', 'सौभाग्य', 'शोभन', 'अतिगण्ड', 'सुकर्मा', 'धृति', 'शूल', 'गण्ड', 'वृद्धि', 'ध्रुव', 'व्याघात', 'हर्षण', 'वज्र', 'सिद्धि', 'व्यतीपात', 'वरीयान्', 'परिघ', 'शिव', 'सिद्ध', 'साध्य', 'शुभ', 'शुक्ल', 'ब्रह्म', 'इन्द्र', 'वैधृति'];
-  const karanasHindi = ['बव', 'बालव', 'कौलव', 'तैतिल', 'गर', 'वणिज', 'विष्टि (भद्रा)', 'शकुनि', 'चतुष्पाद', 'नाग', 'किंस्तुघ्न'];
+  const tithiIndex = (d - 1) % 30;
+  const paksha = tithiIndex < 15 ? 'Shukla' : 'Krishna';
+  const baseTithiNum = (tithiIndex % 15) + 1;
+  const tithiNameEn = paksha + ' Paksha - Tithi ' + baseTithiNum;
 
-  const tithiIndex = (d - 1) % 15;
-  const paksha = ((d - 1) % 30 < 15) ? 'शुक्ल पक्ष' : 'कृष्ण पक्ष';
-  const tithiName = tithisHindi[tithiIndex];
-  const nakName = nakshatrasHindi[(d + 4) % 27];
-  const yogaName = yogasHindi[(d + 7) % 27];
-  const karanaName = karanasHindi[(d * 2) % 11];
+  const nakIndex = (d + 3) % 27;
+  const nakNamesEn = [
+    'Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashira', 'Ardra', 'Punarvasu', 'Pushya', 'Ashlesha',
+    'Magha', 'Purva Phalguni', 'Uttara Phalguni', 'Hasta', 'Chitra', 'Swati', 'Vishakha', 'Anuradha',
+    'Jyeshtha', 'Mula', 'Purva Ashadha', 'Uttara Ashadha', 'Shravana', 'Dhanishta', 'Shatabhisha',
+    'Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati'
+  ];
+  const nakNameEn = nakNamesEn[nakIndex];
+
+  const yogaIndex = (d + 6) % 27;
+  const yogaNamesEn = [
+    'Vishkambha', 'Priti', 'Ayushman', 'Saubhagya', 'Shobhana', 'Atiganda', 'Sukarma', 'Dhriti', 'Shula',
+    'Ganda', 'Vriddhi', 'Dhruva', 'Vyaghata', 'Harshana', 'Vajra', 'Siddhi', 'Vyatipata', 'Variyana',
+    'Parigha', 'Shiva', 'Siddha', 'Sadhya', 'Shubha', 'Shukla', 'Brahma', 'Indra', 'Vaidhriti'
+  ];
+  const yogaNameEn = yogaNamesEn[yogaIndex];
+
+  const karanaIndex = ((d - 1) * 2) % 11;
+  const karanaNamesEn = [
+    'Bava', 'Balava', 'Kaulava', 'Taitila', 'Gara', 'Vanija', 'Vishti', 'Shakuni', 'Chatushpada', 'Naga', 'Kimstughna'
+  ];
+  const karanaNameEn = karanaNamesEn[karanaIndex];
 
   const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const formattedDate = `${d} ${monthNamesEn[m - 1]} ${y}`;
+  const formattedDate = d + ' ' + monthNamesEn[m - 1] + ' ' + y;
 
   return {
     date: formattedDate,
     day: dayName,
     tithi: {
-      name: `${paksha} ${tithiName}`,
-      paksha: paksha,
-      number: tithiIndex + 1,
-      start_time: '04:15 AM',
-      end_time: '11:45 PM',
+      tithi_index: tithiIndex,
+      tithi_name: tithiNameEn,
+      tithi_fraction: 0.45,
+      start_time: '04:15 AM, ' + d + ' ' + monthNamesEn[m - 1].slice(0, 3),
+      end_time: '11:45 PM, ' + d + ' ' + monthNamesEn[m - 1].slice(0, 3),
       end_time_short: '11:45 PM'
     },
     nakshatra: {
-      name: nakName,
-      number: ((d + 4) % 27) + 1,
-      start_time: '06:20 AM',
-      end_time: '04:30 AM',
+      nakshatra_index: nakIndex,
+      nakshatra_name: nakNameEn,
+      pada: ((d % 4) + 1),
+      start_time: '06:20 AM, ' + d + ' ' + monthNamesEn[m - 1].slice(0, 3),
+      end_time: '04:30 AM, ' + (d + 1) + ' ' + monthNamesEn[m - 1].slice(0, 3),
       end_time_short: '04:30 AM'
     },
     yoga: {
-      name: yogaName,
-      number: ((d + 7) % 27) + 1,
-      start_time: '05:10 AM',
-      end_time: '02:15 AM',
+      yoga_index: yogaIndex,
+      yoga_name: yogaNameEn,
+      value_deg: ((d * 13.33) % 360),
+      start_time: '05:10 AM, ' + d + ' ' + monthNamesEn[m - 1].slice(0, 3),
+      end_time: '02:15 AM, ' + (d + 1) + ' ' + monthNamesEn[m - 1].slice(0, 3),
       end_time_short: '02:15 AM'
     },
     karana: {
-      name: karanaName,
-      number: ((d * 2) % 11) + 1
+      karana_index: karanaIndex,
+      karana_name: karanaNameEn
     },
     muhurtas: {
+      abhijit: { start: '11:48 AM', end: '12:36 PM' },
       abhijit_muhurta: { start: '11:48 AM', end: '12:36 PM' },
       brahma_muhurta: { start: '04:55 AM', end: '05:45 AM' },
+      rahu_kaal: { start: '04:30 PM', end: '05:55 PM' },
       rahu_kalam: { start: '04:30 PM', end: '05:55 PM' },
       yamaganda: { start: '12:20 PM', end: '01:45 PM' },
       gulikai_kalam: { start: '03:00 PM', end: '04:25 PM' },
@@ -410,7 +436,12 @@ const generateClientFallbackPanchang = (targetDate, coords) => {
       ]
     },
     sankranti: { is_sankranti: false, sankranti_name: null },
-    monthly_sankranti: { name: 'वृश्चिक संक्रांति' }
+    monthly_sankranti: {
+      name: 'वृश्चिक संक्रांति',
+      rashi: 'वृश्चिक',
+      date: '16 नवंबर 2026',
+      exact_time: 'प्रातः 07:14 बजे'
+    }
   };
 };
 
