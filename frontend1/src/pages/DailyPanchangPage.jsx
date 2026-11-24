@@ -313,11 +313,12 @@ export const DailyPanchangPage = () => {
   const [forecastLoading, setForecastLoading] = useState(false);
 
 
-const generateClientFallbackPanchang = (targetDate, coords) => {
-  const dateStr = query.date;
+const generateClientFallbackPanchang = (inputDate, coords) => {
   let targetDate = new Date();
-  if (dateStr) {
-    const parsed = new Date(dateStr);
+  if (inputDate instanceof Date && !isNaN(inputDate.getTime())) {
+    targetDate = inputDate;
+  } else if (typeof inputDate === 'string') {
+    const parsed = new Date(inputDate);
     if (!isNaN(parsed.getTime())) targetDate = parsed;
   }
   const d = targetDate.getDate();
