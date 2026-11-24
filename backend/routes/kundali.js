@@ -453,7 +453,7 @@ const forwardToPython = async (req, res, targetPath) => {
       data: req.body,
       params: req.query,
       headers: { 'Content-Type': 'application/json' },
-      timeout: 10000,
+      timeout: 3500, // Quick timeout so fallback kicks in immediately if python engine is sleeping
     });
     return res.status(response.status).json(response.data);
   } catch (err) {
