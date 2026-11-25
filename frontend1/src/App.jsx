@@ -338,14 +338,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <VastuShastra />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/vastu-analyzer"
               element={
                 <ProtectedRoute>
                   <VastuAnalyzer />
-                </ProtectedRoute>
-              }
-            />
                 </ProtectedRoute>
               }
             />
