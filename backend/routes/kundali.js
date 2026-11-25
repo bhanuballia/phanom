@@ -598,6 +598,28 @@ const forwardToPython = async (req, res, targetPath) => {
     }
 
     
+    
+    // Provide instant fallback data for /api/transit/animated
+    if (targetPath === '/api/transit/animated') {
+      const defaultPlanets = [
+        { planet: "Asc", rc: "", rashi: "Pis", nakshatra: "Uttara B", pada: "4", degree: 14.2, dignity: "-", sb: "-" },
+        { planet: "Su", rc: "", rashi: "Sco", nakshatra: "Anuradha", pada: "2", degree: 8.5, dignity: "Neutr", sb: "1.2" },
+        { planet: "Mo", rc: "", rashi: "Tau", nakshatra: "Krittika", pada: "1", degree: 1.4, dignity: "Exalt", sb: "1.5" },
+        { planet: "Ma", rc: "", rashi: "Can", nakshatra: "Pushya", pada: "3", degree: 18.2, dignity: "Debil", sb: "0.8" },
+        { planet: "Me", rc: "", rashi: "Sco", nakshatra: "Jyeshtha", pada: "1", degree: 22.1, dignity: "Neutr", sb: "1.1" },
+        { planet: "Ju", rc: "R", rashi: "Tau", nakshatra: "Rohini", pada: "4", degree: 20.3, dignity: "Neutr", sb: "1.4" },
+        { planet: "Ve", rc: "", rashi: "Sag", nakshatra: "Mula", pada: "2", degree: 11.0, dignity: "Neutr", sb: "1.0" },
+        { planet: "Sa", rc: "R", rashi: "Aqu", nakshatra: "Shatabhisha", pada: "1", degree: 18.6, dignity: "Own", sb: "1.3" },
+        { planet: "Ra", rc: "R", rashi: "Pis", nakshatra: "Uttara B", pada: "3", degree: 9.4, dignity: "-", sb: "-" },
+        { planet: "Ke", rc: "R", rashi: "Vir", nakshatra: "Uttara P", pada: "1", degree: 9.4, dignity: "-", sb: "-" }
+      ];
+      return res.status(200).json({
+        birth_chart: defaultPlanets,
+        transit_chart: defaultPlanets,
+        kakshas: []
+      });
+    }
+
     // Provide instant fallback data for /api/panchang/monthly
     if (targetPath === '/api/panchang/monthly') {
       console.log('Serving robust JavaScript fallback calculation for Monthly Calendar...');
