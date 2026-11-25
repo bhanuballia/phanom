@@ -52,6 +52,7 @@ import Palmistry from './pages/Palmistry';
 import PalmistryCalculator from './pages/PalmistryCalculator';
 import FaceReadingPage from './pages/FaceReadingPage';
 import VastuShastra from './pages/VastuShastra';
+import VastuAnalyzer from './pages/VastuAnalyzer';
 import AIAstrologer from './pages/AIAstrologer';
 import LiveChat from './pages/LiveChat';
 import LiveStream from './pages/LiveStream';
@@ -337,6 +338,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <VastuShastra />
+            <Route
+              path="/vastu-analyzer"
+              element={
+                <ProtectedRoute>
+                  <VastuAnalyzer />
+                </ProtectedRoute>
+              }
+            />
                 </ProtectedRoute>
               }
             />
