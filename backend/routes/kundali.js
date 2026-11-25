@@ -538,13 +538,15 @@ const generateFallbackMonthlyPanchang = (query = {}) => {
 
 const forwardToPython = async (req, res, targetPath) => {
   try {
+    // Heavy calculation endpoints (like monthly-sheet, full reports) take 5-8 seconds on free tier
+    const requestTimeout = (targetPath.includes('monthly') || targetPath.includes('report') || targetPath.includes('animated')) ? 16000 : 8000;
     const response = await axios({
       method: req.method,
       url: `${PYTHON_ASTRO_URL}${targetPath}`,
       data: req.body,
       params: req.query,
       headers: { 'Content-Type': 'application/json' },
-      timeout: 3500, // Quick timeout so fallback kicks in immediately if python engine is sleeping
+      timeout: requestTimeout,
     });
     return res.status(response.status).json(response.data);
   } catch (err) {
