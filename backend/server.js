@@ -458,6 +458,12 @@ app.use('/api/report', createPythonProxy('/api/report', 45000));
 
 app.use('/api/kundali', kundaliRoutes);
 
+// Support requests formed by frontend appending /api/... to PYTHON_ASTRO_URL (which equals API_BASE_URL + '/kundali')
+app.use('/api/kundali/api', (req, res, next) => {
+  return kundaliRoutes(req, res, next);
+});
+
+
 // Panchang, Locations and Transit routes (supports both direct and /kundali paths)
 app.use('/api/panchang', (req, res, next) => {
   req.url = '/panchang' + req.url;

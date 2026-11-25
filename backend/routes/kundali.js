@@ -645,6 +645,7 @@ router.all('/panchang/next-adhik-maas', (req, res) => forwardToPython(req, res, 
 
 router.all('/locations/search', (req, res) => forwardToPython(req, res, '/api/locations/search'));
 router.all('/transit/predictions_advanced', (req, res) => forwardToPython(req, res, '/api/transit/predictions_advanced'));
+router.all('/transit/animated', (req, res) => forwardToPython(req, res, '/api/transit/animated'));
 router.all('/panchang/choghadiya-oracle', (req, res) => forwardToPython(req, res, '/api/panchang/choghadiya-oracle'));
 
 
