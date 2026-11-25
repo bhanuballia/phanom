@@ -18,7 +18,10 @@ import {
   CalendarDays,
   CheckCircle2,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Info,
+  HelpCircle,
+  BookOpen
 } from 'lucide-react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -46,6 +49,7 @@ export default function RelationshipHoroscopePage() {
   const [dateA, setDateA] = useState('');
   const [timeA, setTimeA] = useState('');
   const [latLonA, setLatLonA] = useState(null);
+  const [typedPlaceA, setTypedPlaceA] = useState('');
   const [tzOffsetA, setTzOffsetA] = useState(5.5);
 
   // Partner B Form State
@@ -53,8 +57,10 @@ export default function RelationshipHoroscopePage() {
   const [dateB, setDateB] = useState('');
   const [timeB, setTimeB] = useState('');
   const [latLonB, setLatLonB] = useState(null);
+  const [typedPlaceB, setTypedPlaceB] = useState('');
   const [tzOffsetB, setTzOffsetB] = useState(5.5);
 
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -100,23 +106,75 @@ export default function RelationshipHoroscopePage() {
     }
   };
 
+  // Helper to resolve typed text to lat/lon if user did not click dropdown
+  const resolveLocation = async (currentLatLon, typedText) => {
+    if (currentLatLon && currentLatLon.lat && currentLatLon.lon) {
+      return currentLatLon;
+    }
+    const query = typedText?.trim();
+    if (query && query.length >= 2) {
+      try {
+        const baseUrl = PYTHON_ASTRO_URL.replace(/\/api\/kundali\/?$/, '').replace(/\/+$/, '');
+        const res = await axios.get(`${baseUrl}/api/locations/search`, {
+          params: { q: query }
+        });
+        if (Array.isArray(res.data) && res.data.length > 0) {
+          const item = res.data[0];
+          return {
+            display_name: item.display_name || item.name || query,
+            lat: parseFloat(item.lat),
+            lon: parseFloat(item.lon),
+            tz_offset_hours: item.tz_offset_hours !== undefined 
+              ? parseFloat(item.tz_offset_hours) 
+              : (item.tz !== undefined ? parseFloat(item.tz) : 5.5)
+          };
+        }
+      } catch (err) {
+        console.warn('Auto location resolve failed:', err);
+      }
+    }
+    return null;
+  };
+
   const handleCalculate = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+    setError(null);
+
+    let activeLatLonA = latLonA;
+    let activeLatLonB = latLonB;
+    let activeTzA = tzOffsetA;
+    let activeTzB = tzOffsetB;
+
     if (calculationMode === 'astrology') {
-      if (!dateA || !timeA || !latLonA || !dateB || !timeB || !latLonB) {
-        setError('कृपया दोनों जातकों के लिए जन्म तिथि, समय और जन्म स्थान (Place) दर्ज करें।');
+      if (!activeLatLonA && typedPlaceA) {
+        activeLatLonA = await resolveLocation(null, typedPlaceA);
+        if (activeLatLonA) {
+          setLatLonA(activeLatLonA);
+          if (activeLatLonA.tz_offset_hours) activeTzA = activeLatLonA.tz_offset_hours;
+        }
+      }
+      if (!activeLatLonB && typedPlaceB) {
+        activeLatLonB = await resolveLocation(null, typedPlaceB);
+        if (activeLatLonB) {
+          setLatLonB(activeLatLonB);
+          if (activeLatLonB.tz_offset_hours) activeTzB = activeLatLonB.tz_offset_hours;
+        }
+      }
+
+      if (!dateA || !timeA || !activeLatLonA || !dateB || !timeB || !activeLatLonB) {
+        setError('कृपया दोनों जातकों के लिए जन्म तिथि, समय और जन्म स्थान (Place) दर्ज करें। (सुझाव: सूची में से शहर पर क्लिक करें)');
+        setLoading(false);
         return;
       }
     } else {
       if (!nameA || !dateA || !nameB || !dateB) {
         setError('कृपया दोनों जातकों के लिए नाम और जन्म तिथि दर्ज करें।');
+        setLoading(false);
         return;
       }
     }
-
-    setLoading(true);
-    setError(null);
 
     const payload = {
       mode: calculationMode,
@@ -124,17 +182,17 @@ export default function RelationshipHoroscopePage() {
         name: nameA || 'Partner A',
         date: dateA,
         time: timeA || '12:00',
-        lat: latLonA ? latLonA.lat : 28.6139,
-        lon: latLonA ? latLonA.lon : 77.2090,
-        tz_offset: tzOffsetA
+        lat: activeLatLonA ? activeLatLonA.lat : 28.6139,
+        lon: activeLatLonA ? activeLatLonA.lon : 77.2090,
+        tz_offset: activeTzA
       },
       partner_b: {
         name: nameB || 'Partner B',
         date: dateB,
         time: timeB || '12:00',
-        lat: latLonB ? latLonB.lat : 28.6139,
-        lon: latLonB ? latLonB.lon : 77.2090,
-        tz_offset: tzOffsetB
+        lat: activeLatLonB ? activeLatLonB.lat : 28.6139,
+        lon: activeLatLonB ? activeLatLonB.lon : 77.2090,
+        tz_offset: activeTzB
       },
       start_date: new Date().toISOString().split('T')[0]
     };
@@ -157,10 +215,12 @@ export default function RelationshipHoroscopePage() {
     setDateA('');
     setTimeA('');
     setLatLonA(null);
+    setTypedPlaceA('');
     setNameB('');
     setDateB('');
     setTimeB('');
     setLatLonB(null);
+    setTypedPlaceB('');
     setError(null);
   };
 
@@ -293,38 +353,87 @@ export default function RelationshipHoroscopePage() {
                 </h1>
               </div>
 
-              {/* Mode Toggle Pills */}
-              <div className="inline-flex p-0.5 bg-amber-50 rounded-xl border border-amber-200 shadow-2xs self-stretch sm:self-auto justify-center">
+              {/* Mode Toggle Pills & Info Button */}
+              <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
                 <button
                   type="button"
-                  onClick={() => {
-                    setCalculationMode('astrology');
-                    setError(null);
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${calculationMode === 'astrology'
-                    ? 'bg-gradient-to-r from-red-800 to-amber-900 text-white shadow-2xs'
-                    : 'text-amber-950 hover:bg-amber-100/60'
-                    }`}
+                  onClick={() => setShowHowItWorks(!showHowItWorks)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-amber-900 bg-amber-100/70 hover:bg-amber-200/70 border border-amber-300 transition cursor-pointer"
+                  title="यह गणना कैसे कार्य करती है देखें"
                 >
-                  <Compass className="w-3.5 h-3.5" />
-                  <span>वैदिक ज्योतिष (Vedic)</span>
+                  <HelpCircle className="w-3.5 h-3.5 text-amber-800" />
+                  <span>यह कैसे काम करता है? (How it works)</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCalculationMode('numerology');
-                    setError(null);
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${calculationMode === 'numerology'
-                    ? 'bg-gradient-to-r from-purple-800 to-indigo-900 text-white shadow-2xs'
-                    : 'text-amber-950 hover:bg-amber-100/60'
-                    }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>अंकज्योतिष (Numerology)</span>
-                </button>
+
+                <div className="inline-flex p-0.5 bg-amber-50 rounded-xl border border-amber-200 shadow-2xs">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCalculationMode('astrology');
+                      setError(null);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${calculationMode === 'astrology'
+                      ? 'bg-gradient-to-r from-red-800 to-amber-900 text-white shadow-2xs'
+                      : 'text-amber-950 hover:bg-amber-100/60'
+                      }`}
+                  >
+                    <Compass className="w-3.5 h-3.5" />
+                    <span>वैदिक ज्योतिष (Vedic)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCalculationMode('numerology');
+                      setError(null);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${calculationMode === 'numerology'
+                      ? 'bg-gradient-to-r from-purple-800 to-indigo-900 text-white shadow-2xs'
+                      : 'text-amber-950 hover:bg-amber-100/60'
+                      }`}
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>अंकज्योतिष (Numerology)</span>
+                  </button>
+                </div>
               </div>
             </div>
+
+            {/* Explanatory "How It Works" Banner */}
+            {showHowItWorks && (
+              <div className="bg-gradient-to-r from-amber-50 via-rose-50/40 to-amber-50 border border-amber-300 rounded-xl p-3.5 text-xs text-stone-800 space-y-2 animate-fade-in shadow-xs">
+                <div className="flex items-center justify-between border-b border-amber-200/80 pb-1.5">
+                  <div className="flex items-center gap-1.5 font-extrabold text-amber-950 font-cinzel">
+                    <BookOpen className="w-4 h-4 text-rose-700" />
+                    <span>यह साप्ताहिक संबंध व प्रेम राशिफल कैसे कार्य करता है?</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowHowItWorks(false)}
+                    className="text-stone-400 hover:text-stone-700 font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-[11px] leading-relaxed">
+                  <div className="bg-white/80 p-2.5 rounded-lg border border-amber-200/70">
+                    <span className="font-bold text-rose-900 block mb-1">१. जन्म चंद्र राशि निर्धारण:</span>
+                    दोनों जातकों के जन्म विवरण (DOB, Time, Place) से वास्तविक स्विस एफिमेरिस (Swiss Ephemeris) द्वारा सटीक चंद्र राशि (Moon Sign) निकाली जाती है।
+                  </div>
+                  <div className="bg-white/80 p-2.5 rounded-lg border border-amber-200/70">
+                    <span className="font-bold text-rose-900 block mb-1">२. मूल अनुकूलता (Baseline Score):</span>
+                    पारस्परिक तत्व सामंजस्य (अग्नि, पृथ्वी, वायु, जल) और षडाष्टक/त्रिकोण संबंधों के आधार पर 100% में से कुल अनुकूलता स्कोर निकाला जाता है।
+                  </div>
+                  <div className="bg-white/80 p-2.5 rounded-lg border border-amber-200/70">
+                    <span className="font-bold text-rose-900 block mb-1">३. आगामी 7-दिवसीय दैनिक गोचर:</span>
+                    वर्तमान चंद्र, शुक्र और मंगल के गोचर से प्रत्येक दिन का Harmony (सद्भाव), Passion (आकर्षण) व Talks (वार्तालाप) स्कोर और दैनिक सलाह तय होती है।
+                  </div>
+                </div>
+                <div className="text-[10px] text-amber-800 font-medium pt-1 flex items-center gap-1">
+                  <Info className="w-3 h-3 shrink-0" />
+                  <span>सुझाव: जन्म स्थान में शहर का नाम लिखते ही ड्रॉपडाउन सूची में से अपने शहर पर क्लिक करें।</span>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleCalculate} className="space-y-3.5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -394,16 +503,28 @@ export default function RelationshipHoroscopePage() {
 
                     {calculationMode === 'astrology' && (
                       <div>
-                        <label className="text-[11px] font-bold text-amber-950 flex items-center gap-1 mb-0.5">
-                          <MapPin className="w-3 h-3 text-amber-800" />
-                          <span>जन्म स्थान (Birth Place)</span>
+                        <label className="text-[11px] font-bold text-amber-950 flex items-center justify-between gap-1 mb-0.5">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-amber-800" />
+                            <span>जन्म स्थान (Birth Place)</span>
+                          </span>
+                          <span className="text-[10px] text-amber-700 font-normal">
+                            (सूची से चयन करें या नाम लिखें)
+                          </span>
                         </label>
                         <PlaceAutocomplete
-                          value={latLonA?.display_name || ''}
+                          value={latLonA?.display_name || typedPlaceA}
                           onSelect={onPlaceSelectedA}
+                          onInputChange={(text) => setTypedPlaceA(text)}
                           placeholder="शहर या जिले का नाम खोजें (उदा. New Delhi, Mumbai)..."
                           inputClassName="w-full bg-white border border-amber-300 rounded-lg pl-8 pr-8 py-1.5 text-stone-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition placeholder:text-stone-400 font-medium"
                         />
+                        {latLonA && (
+                          <div className="mt-1 flex items-center gap-1 text-[10px] text-emerald-700 font-medium">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span>चयनित: {latLonA.display_name?.split(',')[0]} ({latLonA.lat.toFixed(2)}°, {latLonA.lon.toFixed(2)}°)</span>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -475,16 +596,28 @@ export default function RelationshipHoroscopePage() {
 
                     {calculationMode === 'astrology' && (
                       <div>
-                        <label className="text-[11px] font-bold text-amber-950 flex items-center gap-1 mb-0.5">
-                          <MapPin className="w-3 h-3 text-amber-800" />
-                          <span>जन्म स्थान (Birth Place)</span>
+                        <label className="text-[11px] font-bold text-amber-950 flex items-center justify-between gap-1 mb-0.5">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-amber-800" />
+                            <span>जन्म स्थान (Birth Place)</span>
+                          </span>
+                          <span className="text-[10px] text-amber-700 font-normal">
+                            (सूची से चयन करें या नाम लिखें)
+                          </span>
                         </label>
                         <PlaceAutocomplete
-                          value={latLonB?.display_name || ''}
+                          value={latLonB?.display_name || typedPlaceB}
                           onSelect={onPlaceSelectedB}
+                          onInputChange={(text) => setTypedPlaceB(text)}
                           placeholder="शहर या जिले का नाम खोजें (उदा. New Delhi, Mumbai)..."
                           inputClassName="w-full bg-white border border-amber-300 rounded-lg pl-8 pr-8 py-1.5 text-stone-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition placeholder:text-stone-400 font-medium"
                         />
+                        {latLonB && (
+                          <div className="mt-1 flex items-center gap-1 text-[10px] text-emerald-700 font-medium">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span>चयनित: {latLonB.display_name?.split(',')[0]} ({latLonB.lat.toFixed(2)}°, {latLonB.lon.toFixed(2)}°)</span>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

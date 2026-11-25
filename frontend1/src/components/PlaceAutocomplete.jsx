@@ -8,6 +8,7 @@ import { PYTHON_ASTRO_URL } from '../services/api';
  */
 export default function PlaceAutocomplete({ 
   onSelect, 
+  onInputChange,
   value = '', 
   placeholder = 'City, State, Country',
   inputClassName = '',
@@ -35,6 +36,9 @@ export default function PlaceAutocomplete({
 
   const handleSearch = async (val) => {
     setQuery(val);
+    if (onInputChange) {
+      onInputChange(val);
+    }
     if (!val || val.trim().length < 2) {
       setResults([]);
       setIsOpen(false);
