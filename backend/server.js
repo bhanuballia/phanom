@@ -451,6 +451,8 @@ const createPythonProxy = (prefix, timeout = 30000) => async (req, res) => {
 app.use('/api/muhurt', createPythonProxy('/api/muhurt', 15000));
 app.use('/api/matchmaking', createPythonProxy('/api/matchmaking', 30000));
 app.use('/api/astrology', createPythonProxy('/api/astrology', 30000));
+app.use('/api/nakshatra_advanced', createPythonProxy('/api/nakshatra_advanced', 20000));
+app.use('/api/vastu', createPythonProxy('/api/vastu', 30000));
 // 25-Page Hybrid Numerology Life Book Route
 app.use('/api/numerology', require('./routes/numerologyHybrid'));
 app.use('/api/numerology', createPythonProxy('/api/numerology', 30000));
@@ -459,6 +461,11 @@ app.use('/api/report', createPythonProxy('/api/report', 45000));
 app.use('/api/kundali', kundaliRoutes);
 
 // Support requests formed by frontend appending /api/... to PYTHON_ASTRO_URL (which equals API_BASE_URL + '/kundali')
+app.use('/api/kundali/api/nakshatra_advanced', createPythonProxy('/api/nakshatra_advanced', 20000));
+app.use('/api/kundali/api/vastu', createPythonProxy('/api/vastu', 30000));
+app.use('/api/kundali/api/astrology', createPythonProxy('/api/astrology', 30000));
+app.use('/api/kundali/api/muhurt', createPythonProxy('/api/muhurt', 15000));
+app.use('/api/kundali/api/matchmaking', createPythonProxy('/api/matchmaking', 30000));
 app.use('/api/kundali/api', (req, res, next) => {
   return kundaliRoutes(req, res, next);
 });

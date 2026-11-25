@@ -61,16 +61,34 @@ export default function AdvancedNakshatraPage() {
     let active = true;
     const fetchLiveNakshatra = async () => {
       try {
-        let url = `${PYTHON_ASTRO_URL}/api/nakshatra_advanced/live`;
-        if (!isLive && viewDate) {
-          url += `?target_datetime=${encodeURIComponent(viewDate.toISOString())}`;
+        const queryParam = (!isLive && viewDate) ? ('?target_datetime=' + encodeURIComponent(viewDate.toISOString())) : '';
+        const cleanBase = PYTHON_ASTRO_URL.replace(/\/api\/kundali\/?$/, '').replace(/\/+$/, '');
+        const candidateUrls = [
+          PYTHON_ASTRO_URL + '/api/nakshatra_advanced/live' + queryParam,
+          cleanBase + '/api/nakshatra_advanced/live' + queryParam,
+          'https://pinak-bdvt.onrender.com/api/nakshatra_advanced/live' + queryParam
+        ];
+
+        let result = null;
+        let lastErr = null;
+        for (const candidate of candidateUrls) {
+          try {
+            const res = await fetch(candidate);
+            if (res.ok) {
+              const json = await res.json();
+              if (json && Array.isArray(json.data) && json.data.length > 0) {
+                result = json;
+                break;
+              }
+            }
+          } catch (e) {
+            lastErr = e;
+          }
         }
 
-        const res = await fetch(url);
-        if (!res.ok) {
-          throw new Error(`Failed to fetch Nakshatra data (HTTP ${res.status})`);
+        if (!result) {
+          throw lastErr || new Error('Failed to fetch Nakshatra data');
         }
-        const result = await res.json();
         if (active) {
           setData(result);
           setError(null);
