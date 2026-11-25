@@ -606,7 +606,29 @@ const MonthlyCalendar = () => {
         transit_tz_offset: parseFloat(tz)
       };
 
-      const res = await axios.post(`${PYTHON_ASTRO_URL}/api/transit/animated`, payload);
+      const cleanBase = PYTHON_ASTRO_URL.replace(/\/api\/kundali\/?$/, '').replace(/\/+$/, '');
+      const candidateUrls = [
+        PYTHON_ASTRO_URL + '/api/transit/animated',
+        cleanBase + '/api/transit/animated',
+        'https://pinak-bdvt.onrender.com/api/transit/animated'
+      ];
+
+      let res = null;
+      let lastTransitErr = null;
+      for (const targetUrl of candidateUrls) {
+        try {
+          const attempt = await axios.post(targetUrl, payload, { timeout: 12000 });
+          if (attempt?.data && (attempt.data.transit_chart || attempt.data.planets)) {
+            res = attempt;
+            break;
+          }
+        } catch (e) {
+          lastTransitErr = e;
+        }
+      }
+      if (!res) {
+        throw lastTransitErr || new Error('Failed to fetch transit chart');
+      }
 
       let lagnaName = "Aries";
       if (savedData) {
