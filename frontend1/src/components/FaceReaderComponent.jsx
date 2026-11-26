@@ -115,12 +115,31 @@ export default function FaceReader() {
     const formData = new FormData();
     formData.append('image', file);
     try {
-      const targetUrl = PYTHON_ASTRO_URL ? `${PYTHON_ASTRO_URL}/api/validate-face` : '/api/validate-face';
-      const response = await fetch(targetUrl, {
-        method: 'POST',
-        body: formData,
-      });
-      if (response.ok) {
+      const cleanBase = PYTHON_ASTRO_URL ? PYTHON_ASTRO_URL.replace(/\/api\/kundali\/?$/, '').replace(/\/+$/, '') : '';
+      const candidateUrls = [
+        cleanBase ? `${cleanBase}/api/validate-face` : null,
+        'https://pinak-bdvt.onrender.com/api/validate-face',
+        PYTHON_ASTRO_URL ? `${PYTHON_ASTRO_URL}/api/validate-face` : null,
+        '/api/validate-face'
+      ].filter(Boolean);
+
+      let response = null;
+      for (const url of candidateUrls) {
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            body: formData,
+          });
+          if (res.ok || res.status === 400 || res.status === 422) {
+            response = res;
+            break;
+          }
+        } catch {
+          // try next candidate
+        }
+      }
+
+      if (response && response.ok) {
         const data = await response.json();
         setIsFaceValid(data.valid);
         if (data.valid) {
@@ -204,15 +223,37 @@ export default function FaceReader() {
       if (city) formData.append('city', city);
 
       try {
-        const targetUrl = PYTHON_ASTRO_URL ? `${PYTHON_ASTRO_URL}/api/analyze-face` : '/api/analyze-face';
-        const response = await fetch(targetUrl, {
-          method: 'POST',
-          body: formData,
-        });
+        const cleanBase = PYTHON_ASTRO_URL ? PYTHON_ASTRO_URL.replace(/\/api\/kundali\/?$/, '').replace(/\/+$/, '') : '';
+        const candidateUrls = [
+          cleanBase ? `${cleanBase}/api/analyze-face` : null,
+          'https://pinak-bdvt.onrender.com/api/analyze-face',
+          PYTHON_ASTRO_URL ? `${PYTHON_ASTRO_URL}/api/analyze-face` : null,
+          '/api/analyze-face'
+        ].filter(Boolean);
 
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.detail || 'Analysis failed. Make sure a face is clearly visible.');
+        let response = null;
+        let lastErr = null;
+        for (const url of candidateUrls) {
+          try {
+            const res = await fetch(url, {
+              method: 'POST',
+              body: formData,
+            });
+            if (res.ok) {
+              response = res;
+              break;
+            } else if (res.status === 400 || res.status === 422) {
+              response = res;
+              break;
+            }
+          } catch (e) {
+            lastErr = e;
+          }
+        }
+
+        if (!response || !response.ok) {
+          const errData = response ? await response.json().catch(() => ({})) : null;
+          throw new Error(errData?.detail || lastErr?.message || 'Analysis failed. Make sure a face is clearly visible.');
         }
 
         const data = await response.json();

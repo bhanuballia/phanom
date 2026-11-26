@@ -431,12 +431,17 @@ const createPythonProxy = (prefix, timeout = 30000) => async (req, res) => {
   try {
     const axios = require('axios');
     const targetUrl = `${PYTHON_ASTRO_URL}${prefix}${req.url}`;
+    const contentType = req.headers['content-type'] || 'application/json';
+    const headers = {};
+    if (req.headers['content-type']) {
+      headers['content-type'] = req.headers['content-type'];
+    }
     const response = await axios({
       method: req.method,
       url: targetUrl,
       data: req.body,
       params: req.query,
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       timeout,
     });
     return res.status(response.status).json(response.data);
@@ -466,6 +471,10 @@ app.use('/api/kundali/api/vastu', createPythonProxy('/api/vastu', 30000));
 app.use('/api/kundali/api/astrology', createPythonProxy('/api/astrology', 30000));
 app.use('/api/kundali/api/muhurt', createPythonProxy('/api/muhurt', 15000));
 app.use('/api/kundali/api/matchmaking', createPythonProxy('/api/matchmaking', 30000));
+app.use('/api/kundali/api/validate-face', createPythonProxy('/api/validate-face', 30000));
+app.use('/api/kundali/api/analyze-face', createPythonProxy('/api/analyze-face', 45000));
+app.use('/api/validate-face', createPythonProxy('/api/validate-face', 30000));
+app.use('/api/analyze-face', createPythonProxy('/api/analyze-face', 45000));
 app.use('/api/kundali/api', (req, res, next) => {
   return kundaliRoutes(req, res, next);
 });
