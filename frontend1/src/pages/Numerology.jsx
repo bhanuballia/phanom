@@ -27,7 +27,7 @@ import {
   X
 } from 'lucide-react';
 import axios from 'axios';
-import { VEDIC_ASTROLOGY_BASE_URL } from '../services/api';
+import { VEDIC_ASTROLOGY_BASE_URL, authAPI, buildAssetUrl } from '../services/api';
 
 // Astrologer display helper
 const cleanAstrologerName = (rawName = '') => {
@@ -42,17 +42,17 @@ const NUMEROLOGY_POPUP_SLOGANS = [
   "मूलांक और भाग्यांक के तालमेल से जानें कि विदेश यात्रा और धन लाभ के क्या योग हैं?"
 ];
 
-// Default 9 verified live astrologers
+// Default 9 verified live astrologers with specialties
 const DEFAULT_NUMEROLOGY_ASTROLOGERS = [
-  { _id: 'astro-1', name: 'Hony Singh K...', pricing: 16, isAvailable: true, image: '/images/astrologers/hony-singh.jpg' },
-  { _id: 'astro-2', name: 'Kamal', pricing: 9, isAvailable: true, image: '/images/astrologers/kamal.jpg' },
-  { _id: 'astro-3', name: 'Krishana', pricing: 9, isAvailable: true, image: '/images/astrologers/krishana.jpg' },
-  { _id: 'astro-4', name: 'Monika Tyagi', pricing: 14, isAvailable: true, image: '/images/astrologers/monika-tyagi.jpg' },
-  { _id: 'astro-5', name: 'Poonam', pricing: 9, isAvailable: true, image: '/images/astrologers/poonam.jpg' },
-  { _id: 'astro-6', name: 'PreetPal', pricing: 9, isAvailable: true, image: '/images/astrologers/preetpal.jpg' },
-  { _id: 'astro-7', name: 'Ravi Jhangra', pricing: 9, isAvailable: true, image: '/images/astrologers/ravi-jhangra.jpg' },
-  { _id: 'astro-8', name: 'Ritu Saini', pricing: 12, isAvailable: true, image: '/images/astrologers/ritu-saini.jpg' },
-  { _id: 'astro-9', name: 'Sarika', pricing: 9, isAvailable: true, image: '/images/astrologers/sarika.jpg' }
+  { _id: 'astro-7', name: 'Astrologer Ravi Jhangra', specialization: ['Palmistry', 'Numerology', 'Vedic'], pricing: 9, isAvailable: true, image: '/images/astrologers/ravi-jhangra.jpg' },
+  { _id: 'astro-4', name: 'Monika Tyagi', specialization: ['Numerology', 'Tarot', 'Vastu'], pricing: 14, isAvailable: true, image: '/images/astrologers/monika-tyagi.jpg' },
+  { _id: 'astro-1', name: 'Hony Singh K...', specialization: ['Numerology', 'Vedic Astrology'], pricing: 16, isAvailable: true, image: '/images/astrologers/hony-singh.jpg' },
+  { _id: 'astro-2', name: 'Kamal', specialization: ['Vedic Astrology', 'Numerology'], pricing: 9, isAvailable: true, image: '/images/astrologers/kamal.jpg' },
+  { _id: 'astro-3', name: 'Krishana', specialization: ['Kundali', 'Numerology'], pricing: 9, isAvailable: true, image: '/images/astrologers/krishana.jpg' },
+  { _id: 'astro-5', name: 'Poonam', specialization: ['Vedic', 'Prashna', 'Numerology'], pricing: 9, isAvailable: true, image: '/images/astrologers/poonam.jpg' },
+  { _id: 'astro-6', name: 'PreetPal', specialization: ['Numerology', 'Palmistry'], pricing: 9, isAvailable: true, image: '/images/astrologers/preetpal.jpg' },
+  { _id: 'astro-8', name: 'Ritu Saini', specialization: ['Tarot', 'Numerology'], pricing: 12, isAvailable: true, image: '/images/astrologers/ritu-saini.jpg' },
+  { _id: 'astro-9', name: 'Sarika', specialization: ['Vedic Astrology', 'Numerology'], pricing: 9, isAvailable: true, image: '/images/astrologers/sarika.jpg' }
 ];
 
 const NUMEROLOGY_SYSTEMS = [
@@ -109,6 +109,40 @@ const Numerology = () => {
   const [sloganIndex, setSloganIndex] = useState(0);
   const [modalAstrologerIndex, setModalAstrologerIndex] = useState(0);
   const astrologers = DEFAULT_NUMEROLOGY_ASTROLOGERS;
+
+  // Rotating astrologer card state (rotates every 5 seconds)
+  const [rotatingAstroIndex, setRotatingAstroIndex] = useState(0);
+  const [liveAstrologersList, setLiveAstrologersList] = useState(DEFAULT_NUMEROLOGY_ASTROLOGERS);
+
+  // Fetch live astrologers if available, fallback gracefully to DEFAULT_NUMEROLOGY_ASTROLOGERS
+  useEffect(() => {
+    let isMounted = true;
+    const fetchAstros = async () => {
+      try {
+        const res = await authAPI.getAstrologers();
+        const list = res.data?.astrologers || [];
+        if (isMounted && list.length > 0) {
+          const available = list.filter((a) => a.isAvailable !== false);
+          if (available.length > 0) {
+            setLiveAstrologersList(available);
+          }
+        }
+      } catch {
+        // keep default astrologers list
+      }
+    };
+    fetchAstros();
+    return () => { isMounted = false; };
+  }, []);
+
+  // 5-second interval timer for rotating astrologer flex card
+  useEffect(() => {
+    const listLen = liveAstrologersList.length || DEFAULT_NUMEROLOGY_ASTROLOGERS.length;
+    const timer = setInterval(() => {
+      setRotatingAstroIndex((prev) => (prev + 1) % listLen);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [liveAstrologersList.length]);
 
   // 15-second recurring popup modal trigger
   useEffect(() => {
@@ -360,7 +394,7 @@ const Numerology = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
 
           {/* LEFT: FORM CARD (7 COLS) - CRISP WHITE CONTAINER */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-stone-600 p-6 sm:p-8 shadow-xl shadow-stone-200/50 relative overflow-hidden">
+          <div className="lg:col-span-7 bg-indigo-400 rounded-3xl border border-stone-900 p-6 sm:p-8 shadow-xl shadow-stone-200/50 relative overflow-hidden">
             <div className="flex items-center justify-between pb-6 mb-6 border-b border-stone-100">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-300 flex items-center justify-center text-amber-600 shadow-xs">
@@ -517,69 +551,101 @@ const Numerology = () => {
             </div>
           </div>
 
-          {/* RIGHT: FEATURE OVERVIEW (5 COLS) - WHITE CARDS WITH DARK TEXT */}
-          <div className="lg:col-span-5 space-y-4">
+          {/* RIGHT: FEATURE OVERVIEW & ROTATING ASTROLOGER CARD (5 COLS) */}
+          <div className="lg:col-span-5 flex flex-col gap-5">
+            {/* 5-SECOND ROTATING ASTROLOGER CARD (MATCHING HOME PAGE & UPLOADED IMAGE) */}
+            {(() => {
+              const currentAstro = liveAstrologersList[rotatingAstroIndex % liveAstrologersList.length] || DEFAULT_NUMEROLOGY_ASTROLOGERS[0];
+              const rawImg = currentAstro.profilePicture || currentAstro.image || currentAstro.imageUrl;
+              const astroImgSrc = rawImg ? (rawImg.startsWith('http') || rawImg.startsWith('/') ? rawImg : buildAssetUrl(rawImg)) : '/images/astrologers/ravi-jhangra.jpg';
+              const fallbackImg = '/images/astrologers/ravi-jhangra.jpg';
+
+              const astroSpecialty = Array.isArray(currentAstro.specialization)
+                ? currentAstro.specialization.join(', ')
+                : (currentAstro.specialization || 'Numerology, Palmistry, Vedic');
+
+              return (
+                <Link
+                  to="/live-astrologers"
+                  className="group relative rounded-3xl overflow-hidden shadow-2xl border-2 border-amber-300/85 hover:border-amber-400 transition-all duration-300 bg-gradient-to-br from-amber-950 via-slate-900 to-black flex flex-col justify-between p-5 min-h-[380px] hover:shadow-amber-500/10 hover:scale-[1.01]"
+                  title={`Talk To ${currentAstro?.name || 'Astrologer'}`}
+                >
+                  <img
+                    key={currentAstro?._id || rotatingAstroIndex}
+                    src={astroImgSrc}
+                    alt={currentAstro?.name || 'Talk To Astrologer'}
+                    className="absolute inset-0 w-full h-full object-cover object-top opacity-75 group-hover:scale-105 group-hover:opacity-85 transition-all duration-700 animate-fadeIn"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = fallbackImg;
+                    }}
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent pointer-events-none"></div>
+
+                  {/* Top Badges: Live Consultation & Available indicator */}
+                  <div className="relative z-10 flex items-center justify-between">
+                    <span className="text-[11px] font-bold bg-amber-500 text-slate-950 px-3 py-1 rounded-full shadow-md flex items-center gap-1.5">
+                      <PhoneCall className="w-3.5 h-3.5 fill-current" />
+                      Live Consultation
+                    </span>
+                    <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-full border border-amber-400/30">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span className="text-[11px] text-emerald-300 font-bold">Available</span>
+                    </div>
+                  </div>
+
+                  {/* Bottom Content: Astrologer name, Title, Subtitle & Call Now button */}
+                  <div className="relative z-10 pt-16">
+                    <div className="mb-1.5 flex items-center gap-1.5 flex-wrap">
+                      <Star className="w-4 h-4 fill-amber-400 text-amber-400 shrink-0" />
+                      <span className="text-sm font-bold text-amber-300">
+                        {currentAstro?.name?.startsWith('Astrologer') ? currentAstro.name : `Astrologer ${currentAstro?.name || 'Ravi Jhangra'}`}
+                      </span>
+                      <span className="text-xs text-slate-300 truncate max-w-[170px]">
+                        • {astroSpecialty}
+                      </span>
+                    </div>
+
+                    <h4 className="text-2xl sm:text-3xl font-serif font-black text-white tracking-wide drop-shadow-md mb-1.5">
+                      Talk To Astrologer
+                    </h4>
+                    <p className="text-xs sm:text-sm text-amber-200/90 font-medium mb-4 line-clamp-1">
+                      Connect instantly with India&apos;s verified Vedic masters
+                    </p>
+                    <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-yellow-400 px-4 py-2 rounded-xl shadow-lg group-hover:from-amber-300 group-hover:to-yellow-300 transition-all">
+                      <span>Call Now</span>
+                      <span>→</span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })()}
+
             {NUMEROLOGY_SYSTEMS.map((sys, idx) => {
               const IconComponent = sys.icon;
               return (
                 <div
                   key={idx}
-                  className="p-6 rounded-3xl bg-white border border-stone-600 hover:border-amber-400 transition-all duration-300 shadow-md hover:shadow-lg group"
+                  className="p-5 rounded-3xl bg-white border border-stone-300 hover:border-amber-400 transition-all duration-300 shadow-sm hover:shadow-md group"
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 group-hover:scale-110 transition-transform">
-                      <IconComponent className="w-5 h-5" />
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 group-hover:scale-110 transition-transform">
+                      <IconComponent className="w-4 h-4" />
                     </div>
-                    <span className="text-[16px] font-bold px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800">
+                    <span className="text-[13px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800">
                       {sys.badge}
                     </span>
                   </div>
-                  <h3 className="text-[16px] font-bold text-slate-900 group-hover:text-amber-700 transition-colors">
+                  <h3 className="text-[15px] font-bold text-slate-900 group-hover:text-amber-700 transition-colors">
                     {sys.title}
                   </h3>
-                  <p className="text-slate-900 text-xs sm:text-[16px] mt-1 leading-relaxed">
+                  <p className="text-slate-600 text-xs sm:text-[14px] mt-1 leading-relaxed">
                     {sys.desc}
                   </p>
                 </div>
               );
             })}
-
-            {/* LIVE ASTROLOGER CALLOUT BANNER - WARM CREAM CARD WITH CRISP TEXT */}
-            <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-50/80 via-white to-stone-50 border border-amber-200 shadow-md relative overflow-hidden">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 shrink-0">
-                  <Flame className="w-6 h-6 text-amber-600 animate-pulse" />
-                </div>
-                <div>
-                  <h4 className="text-base font-bold text-slate-900">Need Personal Consultation?</h4>
-                  <p className="text-xs text-slate-600">Talk directly to certified Vedic numerologists.</p>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center -space-x-2">
-                  {DEFAULT_NUMEROLOGY_ASTROLOGERS.slice(0, 4).map((a, i) => (
-                    <img
-                      key={i}
-                      src={a.image}
-                      alt={a.name}
-                      className="w-9 h-9 rounded-full border-2 border-white object-cover shadow-2xs"
-                    />
-                  ))}
-                  <span className="w-9 h-9 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-2xs">
-                    +5
-                  </span>
-                </div>
-
-                <Link
-                  to="/live-astrologers"
-                  className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm hover:shadow-md"
-                >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  Consult Live
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
 
