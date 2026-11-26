@@ -451,19 +451,40 @@ const generateClientFallbackPanchang = (inputDate, coords) => {
     setError(null);
     try {
       const dateStr = formatDateParam(targetDate);
-      const baseUrl = PYTHON_ASTRO_URL.replace(/\/api\/kundali\/?$/, '').replace(/\/+$/, '');
-      const url = `${baseUrl}/api/panchang/daily`;
+      const cleanBase = PYTHON_ASTRO_URL.replace(/\/api\/kundali\/?$/, '').replace(/\/+$/, '');
+      const candidateUrls = [
+        PYTHON_ASTRO_URL + '/api/panchang/daily',
+        cleanBase + '/api/panchang/daily',
+        'https://pinak-bdvt.onrender.com/api/panchang/daily'
+      ];
 
-      const res = await axios.get(url, {
-        params: {
-          lat: coords.lat,
-          lon: coords.lon,
-          tz: coords.tz,
-          date: dateStr
-        },
-        timeout: 8000
-      });
-      setPanchang(res.data);
+      let res = null;
+      let lastErr = null;
+      for (const targetUrl of candidateUrls) {
+        try {
+          const attempt = await axios.get(targetUrl, {
+            params: {
+              lat: coords.lat,
+              lon: coords.lon,
+              tz: coords.tz,
+              date: dateStr
+            },
+            timeout: 18000
+          });
+          if (attempt?.data && (attempt.data.tithi || attempt.data.panchang || attempt.data.nakshatra)) {
+            res = attempt;
+            break;
+          }
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+
+      if (res && res.data) {
+        setPanchang(res.data);
+      } else {
+        throw lastErr || new Error('Backend delayed or unreachable');
+      }
     } catch (err) {
       console.warn('Backend daily panchang delayed or offline, activating instant calculation fallback:', err.message);
       const fallbackPanchang = generateClientFallbackPanchang(targetDate, coords);
@@ -478,21 +499,41 @@ const generateClientFallbackPanchang = (inputDate, coords) => {
     setForecastLoading(true);
     try {
       const dateStr = formatDateParam(targetDate);
-      const baseUrl = PYTHON_ASTRO_URL.replace(/\/api\/kundali\/?$/, '').replace(/\/+$/, '');
-      const res = await axios.get(`${baseUrl}/api/transit/predictions_advanced`, {
-        params: { date: dateStr },
-        timeout: 8000
-      });
-      if (res.data?.success && Array.isArray(res.data.forecast)) {
+      const cleanBase = PYTHON_ASTRO_URL.replace(/\/api\/kundali\/?$/, '').replace(/\/+$/, '');
+      const candidateUrls = [
+        PYTHON_ASTRO_URL + '/api/transit/predictions_advanced',
+        cleanBase + '/api/transit/predictions_advanced',
+        'https://pinak-bdvt.onrender.com/api/transit/predictions_advanced'
+      ];
+
+      let res = null;
+      for (const targetUrl of candidateUrls) {
+        try {
+          const attempt = await axios.get(targetUrl, {
+            params: { date: dateStr },
+            timeout: 18000
+          });
+          if (attempt?.data?.success && Array.isArray(attempt.data.forecast)) {
+            res = attempt;
+            break;
+          }
+        } catch (e) {
+          // try next candidate
+        }
+      }
+
+      if (res && res.data?.forecast) {
         setTransitForecast(res.data.forecast);
+      } else {
+        throw new Error('Transit predictions delayed');
       }
     } catch (err) {
       console.warn('Transit forecast fallback activated:', err.message);
       setTransitForecast([
         { transit: 'सूर्य का गोचर', effect: 'मान-सम्मान व आत्मविश्वास में वृद्धि', nature: 'शुभ' },
         { transit: 'चन्द्र का नक्षत्र भ्रमण', effect: 'मानसिक प्रसन्नता एवं रचनात्मक चिंतन', nature: 'शुभ' },
-        { transit: 'गुरु की दृष्टि प्रभाव', effect: 'ज्ञानार्जन, आध्यात्मिक प्रगति एवं कार्य सिद्धि', nature: 'अत्यंत शुभ' },
-        { transit: 'शनि की स्थिरता', effect: 'धैर्य एवं कर्मठता से स्थाई लाभ की प्राप्ति', nature: 'सामान्य' }
+        { transit: 'गुरु की दृष्टि प्रभाव', effect: 'ज्ञाना hisार्य सिद्धि', nature: 'अत्यंत शुभ' },
+        { transit: 'शनि की स्थिरता', effect: 'धैर्य एवं कर्मठता से स्थायी लाभ की प्राप्ति', nature: 'सामान्य' }
       ]);
     } finally {
       setForecastLoading(false);
