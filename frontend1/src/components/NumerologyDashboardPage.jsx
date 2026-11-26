@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Sparkles, Calendar, User, ArrowLeft, RefreshCw, Star, Compass, Flame, ShieldAlert, Award, AlertCircle, ToggleLeft, CheckCircle, Heart, Coins, Baby, Briefcase, Landmark, Volume2, VolumeX, Play, Square, Radio, Activity, Zap, Clock, Sun } from "lucide-react";
+import { API_BASE_URL } from "../services/api";
 
 // Chaldean Numerology Letter Values
 const CHALDEAN_MAP = {
@@ -762,7 +763,9 @@ export default function NumerologyDashboard() {
         (async () => {
           setLoading(true);
           try {
-            const response = await fetch("/api/numerology/detailed-report", {
+            const baseUrl = (API_BASE_URL || '/api').replace(/\/+$/, '');
+            const reportUrl = `${baseUrl}/numerology/detailed-report`;
+            const response = await fetch(reportUrl, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -771,19 +774,26 @@ export default function NumerologyDashboard() {
               body: JSON.stringify({ name: urlName, dob: urlDob }),
             });
             if (response.ok) {
-              const data = await response.json();
-              setResult(data);
+              const text = await response.text();
+              if (text && text.trim()) {
+                const data = JSON.parse(text);
+                setResult(data);
+              }
             }
 
             // Also fetch Quantum Analysis
-            const qRes = await fetch("/api/numerology/quantum/calculate", {
+            const quantumUrl = `${baseUrl}/numerology/quantum/calculate`;
+            const qRes = await fetch(quantumUrl, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ name: urlName, dob: urlDob }),
             });
             if (qRes.ok) {
-              const qData = await qRes.json();
-              setQuantumData(qData);
+              const qText = await qRes.text();
+              if (qText && qText.trim()) {
+                const qData = JSON.parse(qText);
+                setQuantumData(qData);
+              }
             }
           } catch (e) {
             console.error("Auto calculation failed:", e);
@@ -801,7 +811,9 @@ export default function NumerologyDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/numerology/detailed-report", {
+      const baseUrl = (API_BASE_URL || '/api').replace(/\/+$/, '');
+      const reportUrl = `${baseUrl}/numerology/detailed-report`;
+      const response = await fetch(reportUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -812,17 +824,25 @@ export default function NumerologyDashboard() {
       if (!response.ok) {
         throw new Error("Failed to compute detailed numerology report");
       }
-      const data = await response.json();
+      const text = await response.text();
+      if (!text || !text.trim()) {
+        throw new Error("Empty response received from calculation server");
+      }
+      const data = JSON.parse(text);
       setResult(data);
 
-      const qRes = await fetch("/api/numerology/quantum/calculate", {
+      const quantumUrl = `${baseUrl}/numerology/quantum/calculate`;
+      const qRes = await fetch(quantumUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, dob }),
       });
       if (qRes.ok) {
-        const qData = await qRes.json();
-        setQuantumData(qData);
+        const qText = await qRes.text();
+        if (qText && qText.trim()) {
+          const qData = JSON.parse(qText);
+          setQuantumData(qData);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -1323,7 +1343,9 @@ export default function NumerologyDashboard() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch("/api/numerology/detailed-report", {
+        const baseUrl = (API_BASE_URL || '/api').replace(/\/+$/, '');
+        const reportUrl = `${baseUrl}/numerology/detailed-report`;
+        const response = await fetch(reportUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -1334,7 +1356,11 @@ export default function NumerologyDashboard() {
         if (!response.ok) {
           throw new Error("Failed to compute detailed report for corrected spelling");
         }
-        const data = await response.json();
+        const text = await response.text();
+        if (!text || !text.trim()) {
+          throw new Error("Empty response received from calculation server");
+        }
+        const data = JSON.parse(text);
         setResult(data);
         setActiveTab("report");
       } catch (err) {
